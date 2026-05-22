@@ -1,0 +1,23 @@
+# Core dependencies (prompt generation)
+transformers>=4.45.0
+torch>=2.4.0
+torchaudio>=2.4.0
+nltk>=3.8
+sentencepiece>=0.1.99
+soundfile>=0.12.0
+
+# TTS dependencies (optional — only needed for audio synthesis)
+# accelerate>=0.25.0
+# bitsandbytes>=0.45.0
+# einops>=0.7.0
+# safetensors>=0.4.0
+# peft>=0.7.0
+# huggingface_hub>=0.20.0
+# av>=12.0.0
+
+# Audio refinement (optional)
+# resemble-enhance>=0.0.1
+# chatterbox-tts>=0.1.0
+
+# Scoring / Best-of-N ranking (optional)
+# nemo_toolkit[asr]>=2.0.0

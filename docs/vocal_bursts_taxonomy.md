@@ -1,0 +1,193 @@
+# Vocal Bursts Taxonomy
+
+This taxonomy defines 120 non-linguistic vocal sounds organized by emotional and functional category. These vocal bursts represent the full range of human non-speech vocalizations used in voice performance annotation, from laughter and crying to physiological reflexes and social signals.
+
+## Laughter & Amusement
+
+| Name | Description |
+|------|-------------|
+| Belly Laugh | Deep, loud, uninhibited, and rhythmic laughter from the diaphragm. |
+| Chuckle | A soft, partly suppressed laugh, often with the mouth closed. |
+| Giggle | High-pitched, rapid, and often nervous or playful laughter. |
+| Snicker / Snigger | A half-suppressed, often nasal laugh expressing disrespect or schadenfreude. |
+| Chortle | A joyful, breathy gleeful laugh (a mix of a chuckle and a snort). |
+| Guffaw | A sudden, loud, and boisterous burst of laughter. |
+| Snort-Laugh | Laughter interrupted by an involuntary nasal snort. |
+| Wheezing Laugh | Breathless, high-pitched squeaking when laughing too hard to breathe. |
+| Cackle | A shrill, harsh, and often piercing laugh. |
+| Titter | A short, quiet, polite, or nervous laugh. |
+| Polite Fake Laugh | A controlled, brief, and socially obligatory laugh without genuine warmth. |
+| Sarcastic 'Ha' | A flat, single-syllable laugh expressing irony or lack of amusement. |
+| Breathless Laugh | A quiet, airy laugh at the end of a sentence or during physical exertion. |
+| Nervous Laugh | Erratic, slightly forced laughter used to diffuse tension. |
+| Ecstatic Howl | A loud, sustained vocalization of pure, uncontrollable joy. |
+
+## Crying, Sadness & Grief
+
+| Name | Description |
+|------|-------------|
+| Gentle Sob | A quiet, singular tearful inhalation. |
+| Hysterical Wailing | Loud, sustained, and highly erratic vocalizations of deep grief. |
+| Silent Tearful Gasp | A sharp intake of breath with a trembling lip, holding back tears. |
+| Whimpering | Soft, high-pitched, broken vocalizations of distress. |
+| Sniffling (Emotional) | Rapid intakes of air through the nose to hold back mucus/tears. |
+| Bawling | Loud, open-mouthed, unconstrained crying, typical in children. |
+| Trembling Exhale | A shaky, vibrating outward breath typical of coming down from a cry. |
+| Choked-up Swallow | An audible gulp and glottal constriction when trying not to cry. |
+| Mournful Keening | A high-pitched, melodic, wailing vocalization of mourning. |
+| Stifled Sob | A sudden, muffled, choking sound when trying to hide crying. |
+
+## Pain & Physical Discomfort
+
+| Name | Description |
+|------|-------------|
+| Sharp Yelp | A very brief, high-pitched cry of sudden, sharp pain. |
+| Low Groan | A prolonged, deep, guttural sound of dull, chronic pain. |
+| Agonized Scream | A loud, sustained, harsh vocalization of extreme physical agony. |
+| Guttural Moan | A heavy, vibrating sound from the chest indicating severe illness or pain. |
+| Teeth-Gritting Hiss | A sharp intake of air through closed teeth. |
+| Pain Gasp | A sudden, sharp inhalation specifically reacting to a spike in pain. |
+| Chronic Pain Whimper | A soft, continuous, helpless sound made during sustained discomfort. |
+| Straining Grunt | An explosive exhalation during intense physical exertion or lifting. |
+| Sickly Cough (Wet/Dry) | Involuntary vocalizations triggered by respiratory illness. |
+| Exhausted Panting | Rapid, heavy breathing due to physical depletion. |
+
+## Fear, Shock & Startle
+
+| Name | Description |
+|------|-------------|
+| Blood-Curdling Shriek | An extremely high-pitched, maximum-volume scream of absolute terror. |
+| Startle Gasp | A very sudden, sharp intake of breath in response to a sudden scare. |
+| Frozen Breath-Hold | An audible stopping of breath and holding it due to sudden fear. |
+| Panicked Hyperventilation | Rapid, shallow, panicked breathing out of control. |
+| Fright Yelp | A short, involuntary jump-scare vocalization. |
+| Trembling Inhale | A shaky breath drawn in while experiencing dread. |
+| Terrified Whimper | A high-pitched, soft plea of fear or submission. |
+| Startle Grunt | A sudden, low-pitched vocalization when physically startled. |
+| Breathy 'Oh no' | A whispered, almost non-verbal realization of impending danger. |
+| Squeak of Fright | A tiny, highly constricted vocalization of sudden panic. |
+
+## Anger, Aggression & Frustration
+
+| Name | Description |
+|------|-------------|
+| Guttural Growl | A very low, harsh, continuous sound of deep hostility. |
+| Aggressive Snarl | A sharp, breathy sound with bared teeth, warning of attack. |
+| Frustrated Groan | A drawn-out, descending vocalization of pure annoyance. |
+| Enraged Scream | A loud, harsh, distorted roar of pure, uncontrolled anger. |
+| Impatient Tsk / Tongue Click | A sharp suction sound against the teeth expressing disapproval. |
+| Teeth-Grinding Sound | An audible jaw-clenching sound of suppressed rage. |
+| Exasperated Sigh | A heavy, forceful exhalation communicating 'I am done with this.' |
+| Sharp 'Hey!' Burst | A non-lexical bark to instantly stop someone's action. |
+| Huff of Annoyance | A sharp, forceful exhale through the nose or lips. |
+| Dismissive Scoff | A breathy, harsh exhalation expressing 'That is ridiculous.' |
+
+## Surprise, Realization & Cognitive States
+
+| Name | Description |
+|------|-------------|
+| 'Aha!' Realization Burst | A clear, descending vowel sound of sudden understanding. |
+| Mild Surprise 'Oh' | A short, soft vowel sound reacting to something lightly unexpected. |
+| Shocked Inhale | A deep, loud breath drawn in at sudden, dramatic news. |
+| Confused 'Huh?' | A rising-pitch, short vocalization asking for clarification. |
+| Awe-Struck 'Wow' Exhale | A long, breathy exhale indicating being overwhelmed by beauty. |
+| Mind-Blown Exhale | A lip-fluttering 'phew' indicating overwhelming new information. |
+| Dropped-Jaw Breath | An audible, slow inhalation of astonishment. |
+| Glottal Stop (Oops) | A sharp cutting off of airflow realizing a mistake. |
+| 'Duh' Exhalation | A flat, unenthusiastic vocalization reacting to the extremely obvious. |
+| Skeptical 'Hmm' | A modulated, closed-mouth hum indicating doubt or active thinking. |
+
+## Disgust & Aversion
+
+| Name | Description |
+|------|-------------|
+| Retching | Deep, harsh, involuntary throat spasms preceding vomiting. |
+| Gagging | A sharp, choking sound caused by extreme biological aversion. |
+| 'Blech' Vocalization | An open-mouthed, tongue-protruding sound of disgust. |
+| 'Ew' Shrinking Sound | A high-pitched, nasal sound of social or physical revulsion. |
+| Nose-Wrinkling Snort | A sharp exhalation through the nose to clear a bad smell. |
+| Shuddering 'Brrr' | A trembling, lip-vibrating sound of feeling thoroughly creeped out. |
+| Disgust Throat-Clear | A harsh, raspy sound trying to remove a phantom bad taste. |
+| Sputtering/Spitting | Rapid, explosive exhalations through the lips. |
+| Nauseous Swallow | An audible, thick gulp when feeling motion sick or disgusted. |
+| Cringing Hiss | Sharp intake of breath when seeing someone else experience pain or embarrassment. |
+
+## Pleasure, Relief & Satisfaction
+
+| Name | Description |
+|------|-------------|
+| Sensual Moan | A soft, breathy, undulating sound of physical pleasure. |
+| Contented Sigh | A smooth, gentle outward breath of comfort. |
+| Savoring 'Mmm' | A deep, rich hum with closed lips appreciating good food. |
+| Tension-Releasing Whoosh | A forceful but relaxed 'phew' after a stressful event ends. |
+| Satisfying Stretch Grunt | A low-pitched, vibrating sound made while stretching muscles. |
+| Relaxing Exhale | A slow, even breath out when sinking into a hot bath or bed. |
+| Triumphant Cheer | A loud, high-energy, open-voweled shout of victory. |
+| Aesthetic Coo | A high-pitched, soft 'aww' when seeing something cute or beautiful. |
+| Warm Hum of Agreement | A gentle, rising-and-falling 'mm-hm' showing empathy. |
+| Post-Thirst Gulp | The audible, satisfied swallow after drinking deeply. |
+
+## Physiological, Autonomic & Reflexive
+
+| Name | Description |
+|------|-------------|
+| Genuine Yawn | A deep, involuntary inhalation often accompanied by a stretching vocalization. |
+| Polite Covered Yawn | A stifled, high-pitched squeak attempting to hide a yawn. |
+| Loud Somatic Sneeze | An uninhibited, explosive, vocalized sneeze. |
+| Stifled Sneeze | A sharply cut-off, high-pressure nasal burst. |
+| Hiccup | A sharp, involuntary spasm of the diaphragm causing a sudden 'hic' sound. |
+| Burp / Belch | A guttural, resonant expulsion of air from the stomach. |
+| Throat Clear (Mucus) | A practical, harsh, scraping sound to clear the airway. |
+| Shivering Teeth-Chatter | The rapid, clicking sound of teeth hitting together from severe cold. |
+| Sleep Talking/Mumbling | Incoherent, soft, slurred vocalizations during REM sleep. |
+| Snoring | The harsh, vibrating, rhythmic breathing during sleep. |
+
+## Social, Conversational & Regulatory Signals
+
+| Name | Description |
+|------|-------------|
+| Conversational 'Mhm' (Yes) | A two-beat, rising-pitch hum indicating agreement/listening. |
+| Conversational 'Uh-uh' (No) | A two-beat, falling-pitch, glottal-stopped hum indicating disagreement. |
+| Filler 'Um/Uh' | A sustained, neutral-pitch vowel used to hold the floor while thinking. |
+| Attention-Grabbing 'Psst' | A sharp, hissing burst used to discreetly call someone. |
+| Social Throat Clear | A quiet, brief 'Ahem' used purely to get attention or fill an awkward silence. |
+
+## Kissing, Affection & Lip Sounds
+
+| Name | Description |
+|------|-------------|
+| Air Kiss / Smack | A sharp, quick suction sound made with the lips. |
+| Exaggerated Smooch | A prolonged, loud, and wet-sounding kiss. |
+| Anticipatory Lip Smack | Opening the lips with a sticky sound before eating or speaking. |
+| Blowing Raspberries | Forcefully blowing air through closed, vibrating lips. |
+| Pursed-Lip 'Phew' | Blowing air through tightly pursed lips. |
+
+## Whistling & Airflow Signals
+
+| Name | Description |
+|------|-------------|
+| Wolf-Whistle | A loud, two-note sweeping whistle. |
+| Attention-Grabbing Whistle | A short, piercing, high-volume whistle. |
+| Melodic/Bored Whistle | A quiet, aimless whistling of a tune. |
+| 'Shush' / Hushing | A prolonged, breathy 'Shhh' sound. |
+| Investigative Sniff | A short, deliberate intake of air through the nose. |
+| Nose Blow | A forceful, vibrating expulsion of air and mucus into a tissue. |
+
+## Ingestive Sounds
+
+| Name | Description |
+|------|-------------|
+| Slurp | A loud, wet sound made by drawing liquid or noodles into the mouth with air. |
+| Chomp / Smack | The rhythmic, open-mouthed sound of loud chewing. |
+| Stress Gulp | A loud, exaggerated swallowing sound. |
+| Brain-Freeze Gasp | A sharp intake of air followed by a tense hum. |
+
+## Playful, Mimicry & Miscellaneous
+
+| Name | Description |
+|------|-------------|
+| Tongue Trill / Roll | A continuous rolling of the 'R' sound or flapping of the tongue. |
+| Alveolar Click | A double, hollow tongue click against the roof of the mouth. |
+| Startle 'Boo' | A sudden, plosive vocalization meant to intentionally frighten someone. |
+| Mind-Blown 'Pshhh' | An airy, hissing explosion sound made with the lips. |
+| Vocal Fry / Creak | A sustained, rattling, extremely low-pitch crackling of the vocal cords. |

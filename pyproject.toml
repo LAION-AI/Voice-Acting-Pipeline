@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dramabox-pipeline"
+version = "0.2.0"
+description = "End-to-end voice prompt generation and audio synthesis using the DramaBox TTS model and structured voice taxonomy sampling."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "Apache-2.0"}
+
+dependencies = [
+    "transformers>=4.45.0",
+    "torch>=2.4.0",
+    "torchaudio>=2.4.0",
+    "nltk>=3.8",
+    "sentencepiece>=0.1.99",
+    "soundfile>=0.12.0",
+]
+
+[project.optional-dependencies]
+tts = [
+    "accelerate>=0.25.0",
+    "bitsandbytes>=0.45.0",
+    "einops>=0.7.0",
+    "safetensors>=0.4.0",
+    "peft>=0.7.0",
+    "huggingface_hub>=0.20.0",
+    "av>=12.0.0",
+]
+refinement = [
+    "resemble-enhance>=0.0.1",
+    "chatterbox-tts>=0.1.0",
+]
+scoring = [
+    "nemo_toolkit[asr]>=2.0.0",
+]
+all = [
+    "dramabox-pipeline[tts,refinement,scoring]",
+]
+
+[project.scripts]
+dramabox = "dramabox.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["dramabox*"]
+
+[tool.setuptools.package-data]
+"*" = ["*.json", "*.html", "*.txt"]
