@@ -126,7 +126,7 @@ Settings for DramaBox TTS audio synthesis. Requires the [DramaBox](https://huggi
 
 ## `reference_audio`
 
-Settings for Path C: reference audio pipeline.
+Settings for Path D: reference audio pipeline.
 
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
@@ -136,7 +136,7 @@ Settings for Path C: reference audio pipeline.
 
 ### Identity vs Situation-Dependent Dimensions
 
-Path C excludes **identity-related** VoiceNet dimensions from sampling (they're captured by the timbre whisper caption):
+Path D excludes **identity-related** VoiceNet dimensions from sampling (they're captured by the timbre whisper caption):
 - Speaker characteristics: `GEND` (Gender), `AGEV` (Age)
 - Timbral qualities: `BRGT`, `ROUG`, `HARM`, `FULL`, `WARM`, `METL`, `ESTH`
 - Resonance placement: `R_CHST`, `R_THRT`, `R_ORAL`, `R_MASK`, `R_NASL`, `R_HEAD`, `R_MIXD`
@@ -193,26 +193,6 @@ reward = (1 - min(WER, 1.0)) * content_enjoyment
 
 ---
 
-## `moss_audio`
-
-Settings for Path D: MOSS Audio Thinking pipeline.
-
-| Field | Type | Default | Description |
-|-------|------|---------|-------------|
-| `model_path` | string | `"MOSS-Audio-4B-Thinking"` | Model path or HuggingFace ID for MOSS-Audio. |
-| `moss_dir` | string | `""` | Path to MOSS-Audio source directory (for local imports). |
-| `max_new_tokens_analysis` | int | `1024` | Max tokens for speaker analysis mode. |
-| `max_new_tokens_dramabox` | int | `2048` | Max tokens for DramaBox prompt generation mode. |
-
-### How Path D Works
-
-1. Reference audio is fed to MOSS-Audio-4B-Thinking
-2. The model uses chain-of-thought reasoning to analyze the speaker's voice
-3. It generates a complete DramaBox prompt based on what it hears
-4. Both the reasoning trace and final prompt are saved to JSON
-
----
-
 ## `demo`
 
 Settings for demo grid generation.
@@ -228,16 +208,16 @@ Settings for demo grid generation.
 ### Demo Configuration Variants
 
 The demo generates 10 variants per reference:
-1. `path_c_default` — Default Path C settings
-2. `path_c_high_tempo` — Biased toward fast speech
-3. `path_c_low_tempo` — Biased toward slow speech
-4. `path_c_high_emotion` — 3 emotions at once
-5. `path_c_scattered_flow` — Choppy, fragmented delivery
-6. `path_c_flowing` — Long, continuous speech blocks
-7. `path_c_german` — German dialogue
-8. `path_c_french` — French dialogue
-9. `path_c_spanish` — Spanish dialogue
-10. `path_c_multi_emotion` — 2–3 emotions
+1. `path_d_default` — Default Path C settings
+2. `path_d_high_tempo` — Biased toward fast speech
+3. `path_d_low_tempo` — Biased toward slow speech
+4. `path_d_high_emotion` — 3 emotions at once
+5. `path_d_scattered_flow` — Choppy, fragmented delivery
+6. `path_d_flowing` — Long, continuous speech blocks
+7. `path_d_german` — German dialogue
+8. `path_d_french` — French dialogue
+9. `path_d_spanish` — Spanish dialogue
+10. `path_d_multi_emotion` — 2–3 emotions
 
 ---
 

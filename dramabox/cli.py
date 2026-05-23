@@ -56,10 +56,10 @@ def main():
     p3.add_argument("--output-dir", type=str,
                     help="Override output directory")
 
-    # ── Mode 4: reference pipeline (Path C) ──────────────────────────────
+    # ── Mode 4: reference pipeline (Path D) ──────────────────────────────
     p4 = subparsers.add_parser(
         "reference",
-        help="Path C: Generate prompts + audio using reference audio with timbre annotations.",
+        help="Path D: Generate prompts + audio using reference audio with timbre annotations.",
     )
     p4.add_argument("--config", default="config.json",
                     help="Path to config.json")
@@ -72,23 +72,7 @@ def main():
     p4.add_argument("--output-dir", type=str,
                     help="Override output directory")
 
-    # ── Mode 5: MOSS Audio thinking (Path D) ─────────────────────────────
-    p5 = subparsers.add_parser(
-        "moss",
-        help="Path D: Generate DramaBox prompts from audio using MOSS Audio Thinking.",
-    )
-    p5.add_argument("--config", default="config.json",
-                    help="Path to config.json")
-    p5.add_argument("--ref-dir", type=str, required=True,
-                    help="Directory containing reference audio files")
-    p5.add_argument("--total", type=int, default=10,
-                    help="Number of samples to generate")
-    p5.add_argument("--gpus", type=str,
-                    help="Override GPU list (comma-separated)")
-    p5.add_argument("--output-dir", type=str,
-                    help="Override output directory")
-
-    # ── Mode 6: demo grid ────────────────────────────────────────────────
+    # ── Mode 5: demo grid ──────────────────────────────────────────────
     p6 = subparsers.add_parser(
         "demo",
         help="Generate demo grid: 5 Emolia references x N configs with HTML output.",
@@ -99,6 +83,16 @@ def main():
                     help="Override GPU list (comma-separated)")
     p6.add_argument("--output-dir", type=str,
                     help="Override demo output directory")
+    p6.add_argument("--n-prompts", type=int,
+                    help="Number of prompts per path (default: 10)")
+    p6.add_argument("--best-of-n", type=int,
+                    help="Best-of-N candidates (default: 3)")
+    p6.add_argument("--serve", action="store_true",
+                    help="After generation, serve HTML via HTTP + Cloudflare tunnel")
+    p6.add_argument("--port", type=int, default=8080,
+                    help="HTTP server port (default: 8080)")
+    p6.add_argument("--full", action="store_true",
+                    help="Run full 4-path demo (A+B+C+D)")
 
     # ── Score an existing audio file ─────────────────────────────────────
     p7 = subparsers.add_parser(
@@ -139,13 +133,86 @@ def main():
         from .pipeline import run_reference_pipeline
         run_reference_pipeline(config, args.ref_dir, args.total)
 
-    elif args.command == "moss":
-        from .pipeline import run_moss_pipeline
-        run_moss_pipeline(config, args.ref_dir, args.total)
-
     elif args.command == "demo":
-        from .pipeline import run_demo_pipeline
-        run_demo_pipeline(config)
+        # Apply demo-specific CLI overrides
+        if hasattr(args, 'n_prompts') and args.n_prompts:
+            config.setdefault("demo", {})["n_prompts_per_path"] = args.n_prompts
+        if hasattr(args, 'best_of_n') and args.best_of_n:
+            config.setdefault("demo", {})["best_of_n"] = args.best_of_n
+
+        if hasattr(args, 'full') and args.full:
+            from .pipeline import run_full_demo
+            outdir = run_full_demo(config)
+        else:
+            from .pipeline import run_demo_pipeline
+            outdir = run_demo_pipeline(config)
+
+        if hasattr(args, 'serve') and args.serve:
+            port = getattr(args, 'port', 8080) or 8080
+            _serve_demo(outdir, port)
+
+
+def _serve_demo(outdir, port: int = 8080):
+    """Serve demo HTML via HTTP server + Cloudflare tunnel."""
+    import http.server
+    import subprocess
+    import threading
+    from pathlib import Path
+
+    outdir = Path(outdir)
+
+    # Find HTML file to serve
+    html_files = list(outdir.glob("*.html"))
+    if not html_files:
+        print(f"No HTML files found in {outdir}")
+        return
+
+    print(f"\nServing demo from {outdir} on port {port}...")
+
+    # Start HTTP server in background
+    class Handler(http.server.SimpleHTTPRequestHandler):
+        def __init__(self, *a, **kw):
+            super().__init__(*a, directory=str(outdir), **kw)
+
+    server = http.server.HTTPServer(("0.0.0.0", port), Handler)
+    server_thread = threading.Thread(target=server.serve_forever, daemon=True)
+    server_thread.start()
+    print(f"  HTTP server: http://localhost:{port}/")
+
+    # Try to start Cloudflare tunnel
+    try:
+        cf_proc = subprocess.Popen(
+            ["cloudflared", "tunnel", "--url", f"http://localhost:{port}"],
+            stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+            text=True,
+        )
+        print("  Starting Cloudflare tunnel...")
+        # Read output to find the tunnel URL
+        for line in cf_proc.stdout:
+            line = line.strip()
+            if "trycloudflare.com" in line or ".cloudflare" in line:
+                # Extract URL
+                import re
+                urls = re.findall(r'https?://[^\s]+', line)
+                if urls:
+                    print(f"  Cloudflare URL: {urls[0]}")
+            if "Registered tunnel" in line or "connector" in line.lower():
+                print(f"  {line}")
+
+        print("\n  Press Ctrl+C to stop serving.")
+        cf_proc.wait()
+    except FileNotFoundError:
+        print("  cloudflared not found — serving locally only.")
+        print(f"  Open http://localhost:{port}/{html_files[0].name}")
+        print("\n  Press Ctrl+C to stop serving.")
+        try:
+            server_thread.join()
+        except KeyboardInterrupt:
+            pass
+    except KeyboardInterrupt:
+        pass
+    finally:
+        server.shutdown()
 
 
 def _run_score(args):

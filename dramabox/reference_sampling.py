@@ -1,4 +1,4 @@
-"""Path C: Reference audio pipeline with timbre whisper annotations.
+"""Path D: Reference audio pipeline with timbre whisper annotations.
 
 Samples situation-dependent VoiceNet dimensions (excluding identity-related
 attributes like age, gender, timbre, resonance) and combines them with
@@ -58,7 +58,7 @@ Recording environment assumption:
 
 IMPORTANT: You will be given a TIMBRE DESCRIPTION of the speaker's voice. Your speaker description MUST be consistent with this timbre — same gender, similar age range, matching vocal qualities. Do NOT contradict the timbre information.
 
-The content should be DRAMATICALLY INTERESTING — with a sense of story, situation, or emotional arc.
+The content should be DRAMATICALLY INTERESTING and SENSIBLE — the dialogue must form coherent, meaningful sentences that tell a story fragment, reveal character, or capture a vivid emotional moment. Even short prompts must contain at least 10 words of dialogue and convey a complete thought.
 
 You must produce EXACTLY ONE complete DramaBox prompt string. Nothing else — no markdown, no commentary, no labels.
 """
@@ -112,7 +112,7 @@ def sample_reference_path(
     reference_audio_path: str = "",
     reference_metadata: dict | None = None,
 ) -> dict:
-    """Sample attributes for Path C (reference audio pipeline).
+    """Sample attributes for Path D (reference audio pipeline).
 
     Args:
         timbre_caption: Timbre whisper caption describing the speaker's voice.
@@ -217,7 +217,7 @@ def sample_reference_path(
 
 
 def build_reference_prompt(sample: dict) -> str:
-    """Build the LLM user prompt for Path C (reference audio pipeline)."""
+    """Build the LLM user prompt for Path D (reference audio pipeline)."""
     lang = sample["language"]
     accent = sample["accent"]
     accent_line = f"ACCENT / DIALECT: {accent}" if accent else ""
@@ -253,6 +253,6 @@ Structure:
 
 
 def build_reference_full_prompt(sample: dict) -> str:
-    """Build complete Path C prompt with suffixes."""
+    """Build complete Path D prompt with suffixes."""
     from .prompts import SUFFIX_GENUINE, SUFFIX_SPONTANEOUS, SUFFIX_QUALITY
     return build_reference_prompt(sample) + SUFFIX_GENUINE + SUFFIX_SPONTANEOUS + SUFFIX_QUALITY

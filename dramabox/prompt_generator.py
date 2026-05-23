@@ -398,3 +398,111 @@ def generate_all_prompts(config: dict) -> Path:
     print("=" * 72, flush=True)
 
     return outdir
+
+
+# ─── In-process single-prompt LLM functions ──────────────────────────────────
+
+_llm_cache: dict = {}
+
+
+def load_llm(config: dict, device: str = "cuda"):
+    """Load Gemma LLM + tokenizer in the current process, cached by device.
+
+    Args:
+        config: Full configuration dict (uses 'prompt_generation' section).
+        device: CUDA device string (e.g. "cuda", "cuda:6").
+
+    Returns:
+        (model, tokenizer) tuple.
+    """
+    if device in _llm_cache:
+        return _llm_cache[device]
+
+    import torch
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+
+    pg = config.get("prompt_generation", {})
+    model_name = pg.get("llm_model", "google/gemma-4-E4B-it")
+    dtype_str = pg.get("llm_dtype", "bfloat16")
+    torch_dtype = torch.bfloat16 if dtype_str == "bfloat16" else torch.float16
+
+    print(f"[load_llm] Loading {model_name} on {device}...", flush=True)
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+
+    model = AutoModelForCausalLM.from_pretrained(
+        model_name, dtype=torch_dtype, device_map=device,
+    )
+    model.eval()
+
+    _llm_cache[device] = (model, tokenizer)
+    print(f"[load_llm] {model_name} loaded on {device}", flush=True)
+    return model, tokenizer
+
+
+def generate_single_prompt(
+    system_prompt: str,
+    user_prompt: str,
+    config: dict,
+    device: str = "cuda",
+) -> str:
+    """Generate one DramaBox script using a pre-loaded LLM.
+
+    Args:
+        system_prompt: System instruction for the LLM.
+        user_prompt: User prompt with sampling constraints.
+        config: Full configuration dict (uses 'prompt_generation' section).
+        device: CUDA device string matching the loaded model.
+
+    Returns:
+        Generated DramaBox prompt text.
+    """
+    import torch
+
+    model, tokenizer = load_llm(config, device)
+    pg = config.get("prompt_generation", {})
+
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_prompt},
+    ]
+    text = tokenizer.apply_chat_template(
+        messages, tokenize=False, add_generation_prompt=True,
+    )
+
+    inputs = tokenizer(
+        text, return_tensors="pt", truncation=True, max_length=8192,
+    ).to(model.device)
+
+    with torch.no_grad():
+        outputs = model.generate(
+            **inputs,
+            max_new_tokens=pg.get("max_tokens", 1024),
+            do_sample=True,
+            temperature=pg.get("temperature", 1.0),
+            top_p=pg.get("top_p", 0.95),
+        )
+
+    input_len = inputs["input_ids"].shape[1]
+    new_tokens = outputs[0][input_len:]
+    if len(new_tokens) > 0 and new_tokens[-1] == tokenizer.eos_token_id:
+        new_tokens = new_tokens[:-1]
+
+    return tokenizer.decode(new_tokens, skip_special_tokens=True)
+
+
+def unload_llm(device: str | None = None):
+    """Free LLM from GPU memory.
+
+    Args:
+        device: Specific device to unload, or None for all.
+    """
+    import torch
+
+    global _llm_cache
+    if device is not None:
+        _llm_cache.pop(device, None)
+    else:
+        _llm_cache.clear()
+    torch.cuda.empty_cache()

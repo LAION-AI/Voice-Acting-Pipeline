@@ -108,7 +108,7 @@
   "sampling": {
     "_comment": "Controls how prompt attributes are sampled.",
     "archetype_ratio": 0.20,
-    "word_count_min": 5,
+    "word_count_min": 10,
     "word_count_max": 60,
     "mandatory_dims": ["TEMP", "GEND", "AGEV"],
     "random_dims_count": 5,
@@ -148,7 +148,7 @@
     "cfg_scale": 2.0,
     "stg_scale": 1.5,
     "duration_multiplier": 1.1,
-    "compile": true,
+    "compile": false,
     "compile_mode": "default",
     "compile_dynamic": true,
     "steps": 30,
@@ -160,11 +160,11 @@
     "watermark": false,
     "output_format": "wav",
     "stagger_start_seconds": 2,
-    "dramabox_dir": ""
+    "dramabox_dir": "/home/deployer/laion/DramaBox"
   },
 
   "reference_audio": {
-    "_comment": "Path C: Reference audio pipeline settings.",
+    "_comment": "Path D: Reference audio pipeline settings.",
     "situation_dims_count": 5,
     "timbre_whisper_model": "laion/timbre-whisper",
     "timbre_whisper_max_tokens": 440
@@ -187,19 +187,15 @@
     "enjoyment_model": "laion/Empathic-Insight-Voice-Plus"
   },
 
-  "moss_audio": {
-    "_comment": "Path D: MOSS Audio Thinking pipeline settings.",
-    "model_path": "OpenMOSS-Team/MOSS-Audio-8B-Thinking",
-    "moss_dir": "/home/deployer/laion/MOSS-Audio",
-    "max_new_tokens_analysis": 1024,
-    "max_new_tokens_dramabox": 2048
-  },
-
   "demo": {
     "_comment": "Demo grid generation settings.",
     "emolia_dir": "/run/user/1001/speaker_encoder_dataset/emolia_references/cluster_best",
     "n_references": 5,
     "n_configs_per_ref": 10,
+    "n_prompts_per_path": 10,
+    "best_of_n": 3,
+    "embed_base64": true,
+    "serve_port": 8080,
     "output_dir": "/tmp/dramabox_demo",
     "gpus": [6, 7]
   },

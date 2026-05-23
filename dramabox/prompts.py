@@ -16,7 +16,9 @@ DramaBox format rules:
 Recording environment assumption:
 - The output prompt MUST include, as part of the opening speaker description, a statement that this is a high-quality studio voice recording with no background noise — as if captured in a professional voice acting / audio studio environment.
 
-The content of what the speaker says should be DRAMATICALLY INTERESTING — it should have a sense of story, situation, or emotional arc. It does not need to be over-the-top; it can be quiet, whispered, intimate, or subtle — but the words and the performance should feel like they belong to a compelling scene.
+The content of what the speaker says should be DRAMATICALLY INTERESTING and SENSIBLE — it must form coherent, meaningful sentences that tell a story fragment, reveal character, or capture a vivid emotional moment. The dialogue should make logical sense as something a real person would actually say in a specific situation. Avoid gibberish, isolated words, or fragmentary phrases that lack context. Even short prompts should convey a complete thought or scene. It does not need to be over-the-top; it can be quiet, whispered, intimate, or subtle — but the words and the performance should feel like they belong to a compelling scene.
+
+MINIMUM DIALOGUE: The spoken dialogue (inside quotes) must contain at least 10 words total. Even if a low word count is specified, ensure the dialogue is substantial enough to be meaningful.
 
 You must produce EXACTLY ONE complete DramaBox prompt string. Nothing else — no markdown, no commentary, no labels.
 """

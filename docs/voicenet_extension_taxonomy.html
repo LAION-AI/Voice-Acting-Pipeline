@@ -1,0 +1,2497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VoiceNet-Extension &mdash; Situation Taxonomy</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg-card: #161b22;
+    --bg-card-hover: #1c2333;
+    --bg-entry: #1c2128;
+    --bg-entry-hover: #242d3a;
+    --text: #e6edf3;
+    --text-dim: #8b949e;
+    --text-bright: #f0f6fc;
+    --border: #30363d;
+    --border-light: #484f58;
+    --accent: #58a6ff;
+    --accent-dim: #1f6feb33;
+    --code-bg: #0d1117;
+    --tag-bg: #21262d;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    position: relative;
+    padding: 80px 40px 60px;
+    text-align: center;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 50% 0%, #58a6ff11 0%, transparent 60%),
+                radial-gradient(ellipse at 20% 100%, #7b2d8e11 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 100%, #2e86ab11 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .hero h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--text-bright);
+    margin-bottom: 8px;
+    position: relative;
+  }
+  .hero h1 span {
+    background: linear-gradient(135deg, #58a6ff, #bc8cff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero .subtitle {
+    font-size: 1.2rem;
+    color: var(--text-dim);
+    max-width: 740px;
+    margin: 0 auto 30px;
+    position: relative;
+  }
+
+  /* ── Stats bar ── */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+    position: relative;
+  }
+  .stat-item {
+    text-align: center;
+  }
+  .stat-item .num {
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: var(--accent);
+  }
+  .stat-item .label {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* ── Container ── */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ── Overview Section ── */
+  .overview {
+    padding: 60px 0 40px;
+  }
+  .overview h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 12px;
+  }
+  .overview p {
+    color: var(--text-dim);
+    max-width: 800px;
+    margin-bottom: 30px;
+    font-size: 1.05rem;
+  }
+
+  /* ── Dimension cards grid ── */
+  .dim-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+    margin-bottom: 60px;
+  }
+  .dim-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .dim-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px #00000044;
+  }
+  .dim-card .card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .dim-card .card-icon {
+    font-size: 1.6rem;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    flex-shrink: 0;
+  }
+  .dim-card .card-code {
+    font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: var(--tag-bg);
+    color: var(--text-dim);
+  }
+  .dim-card .card-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text-bright);
+  }
+  .dim-card .card-concept {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    margin-bottom: 14px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .dim-card .card-stats {
+    display: flex;
+    gap: 16px;
+    font-size: 0.82rem;
+    color: var(--text-dim);
+  }
+  .dim-card .card-stats strong {
+    color: var(--text);
+  }
+
+  /* ── Dimension Detail Sections ── */
+  .dim-section {
+    padding: 60px 0 40px;
+    border-top: 1px solid var(--border);
+  }
+  .dim-header {
+    margin-bottom: 40px;
+    padding: 32px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .dim-header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+  }
+  .dim-header .dim-title-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .dim-header .dim-icon {
+    font-size: 2.2rem;
+  }
+  .dim-header .dim-code {
+    font-family: 'SF Mono', SFMono-Regular, Consolas, monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 8px;
+    color: white;
+  }
+  .dim-header .dim-name {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-bright);
+  }
+  .dim-header .dim-concept {
+    font-size: 1.05rem;
+    color: var(--text);
+    margin-bottom: 12px;
+    max-width: 850px;
+  }
+  .dim-header .dim-annotation {
+    font-size: 0.92rem;
+    color: var(--text-dim);
+    padding: 12px 16px;
+    background: var(--code-bg);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    font-style: italic;
+  }
+  .dim-header .dim-counts {
+    display: flex;
+    gap: 20px;
+    margin-top: 16px;
+    font-size: 0.88rem;
+    color: var(--text-dim);
+  }
+  .dim-header .dim-counts strong {
+    color: var(--text);
+  }
+
+  /* ── Group headers ── */
+  .group-section {
+    margin-bottom: 32px;
+  }
+  .group-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text-bright);
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .group-title .group-count {
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: var(--tag-bg);
+    color: var(--text-dim);
+  }
+
+  /* ── Entry cards ── */
+  .entries-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 14px;
+  }
+  .entry-card {
+    background: var(--bg-entry);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    transition: all 0.15s ease;
+  }
+  .entry-card:hover {
+    background: var(--bg-entry-hover);
+    border-color: var(--border-light);
+  }
+  .entry-card .entry-name {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-bright);
+    margin-bottom: 4px;
+  }
+  .entry-card .entry-key {
+    font-family: 'SF Mono', SFMono-Regular, Consolas, monospace;
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    background: var(--code-bg);
+    padding: 2px 7px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 10px;
+    border: 1px solid var(--border);
+  }
+  .entry-card .entry-sig {
+    font-size: 0.92rem;
+    color: var(--text);
+    line-height: 1.55;
+  }
+
+  /* ── Back to top ── */
+  .back-top {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: var(--accent);
+    text-decoration: none;
+    margin-top: 20px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    transition: all 0.15s;
+  }
+  .back-top:hover {
+    background: var(--accent-dim);
+    border-color: var(--accent);
+  }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center;
+    padding: 40px 24px;
+    border-top: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 0.85rem;
+  }
+
+  /* ── TOC sidebar (sticky on scroll) ── */
+  .toc-float {
+    position: fixed;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .toc-dot {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-decoration: none;
+    color: #fff;
+    opacity: 0.5;
+    transition: all 0.2s;
+    font-family: 'SF Mono', SFMono-Regular, Consolas, monospace;
+  }
+  .toc-dot:hover {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+
+  @media (max-width: 1400px) {
+    .toc-float { display: none; }
+  }
+  @media (max-width: 768px) {
+    .hero { padding: 50px 20px 40px; }
+    .hero h1 { font-size: 2rem; }
+    .stats-bar { gap: 24px; }
+    .stat-item .num { font-size: 1.8rem; }
+    .dim-grid { grid-template-columns: 1fr; }
+    .entries-grid { grid-template-columns: 1fr; }
+    .dim-header { padding: 20px; }
+    .dim-header .dim-name { font-size: 1.3rem; }
+  }
+</style>
+</head>
+<body>
+
+
+<div class="hero" id="top">
+  <h1>VoiceNet-<span>Extension</span></h1>
+  <p class="subtitle">
+    A comprehensive taxonomy of physical, environmental, and social situations
+    that influence human voice quality, vocal bursts, and speech production.
+  </p>
+  <div class="stats-bar">
+    <div class="stat-item"><div class="num">11</div><div class="label">Dimensions</div></div>
+    <div class="stat-item"><div class="num">289</div><div class="label">Situations</div></div>
+    <div class="stat-item"><div class="num">53</div><div class="label">Groups</div></div>
+  </div>
+</div>
+
+<nav class="toc-float">
+  <a class="toc-dot" href="#dim-POSE" style="background:#6C5B7B;" title="Body Posture & Gravitational Alignment">POSE</a>
+  <a class="toc-dot" href="#dim-ACTV" style="background:#2E86AB;" title="Physical Activity & Dynamic Load">ACTV</a>
+  <a class="toc-dot" href="#dim-TRGT" style="background:#F18F01;" title="Speaking Target & Projection">TRGT</a>
+  <a class="toc-dot" href="#dim-SOCT" style="background:#3C1642;" title="Social Situation & Context">SOCT</a>
+  <a class="toc-dot" href="#dim-ENVI" style="background:#1B4332;" title="Environment & Acoustic Space">ENVI</a>
+  <a class="toc-dot" href="#dim-HLTH" style="background:#9B2226;" title="Health & Physiological Condition">HLTH</a>
+  <a class="toc-dot" href="#dim-GEAR" style="background:#495057;" title="Face & Head Obstructions">GEAR</a>
+  <a class="toc-dot" href="#dim-CLMT" style="background:#005F73;" title="Climate & Atmospheric Conditions">CLMT</a>
+  <a class="toc-dot" href="#dim-SUBST" style="background:#7B2D8E;" title="Substance & Chemical Influence">SUBST</a>
+  <a class="toc-dot" href="#dim-FATG" style="background:#B5651D;" title="Fatigue, Sleep & Energy State">FATG</a>
+  <a class="toc-dot" href="#dim-PAIN" style="background:#8B0000;" title="Pain & Physical Distress">PAIN</a>
+</nav>
+<div class="container">
+<section class="overview">
+<h2>Dimension Overview</h2>
+<p>Each dimension captures a distinct axis of influence on voice production. Click any card to jump to its detailed entries. Dimensions are designed to be orthogonal: a speaker can be annotated on all dimensions simultaneously.</p>
+<div class="dim-grid">
+  <a class="dim-card" href="#dim-POSE">
+    <div class="card-header">
+      <div class="card-icon" style="background:#6C5B7B22;color:#6C5B7B;">&#x1F9CD;</div>
+      <div>
+        <span class="card-code">POSE</span>
+        <div class="card-title">Body Posture &amp; Gravitational Alignment</div>
+      </div>
+    </div>
+    <div class="card-concept">Static physical configuration of the speaker. How gravity, skeletal alignment, and thoracic compression alter the vocal tract and diaphragm.</div>
+    <div class="card-stats">
+      <span><strong>32</strong> entries</span>
+      <span><strong>6</strong> groups</span>
+    </div>
+  </a>
+  <a class="dim-card" href="#dim-ACTV">
+    <div class="card-header">
+      <div class="card-icon" style="background:#2E86AB22;color:#2E86AB;">&#x1F3C3;</div>
+      <div>
+        <span class="card-code">ACTV</span>
+        <div class="card-title">Physical Activity &amp; Dynamic Load</div>
+      </div>
+    </div>
+    <div class="card-concept">How metabolic demand, physical movement, and interaction with objects compete with the speech signal.</div>
+    <div class="card-stats">
+      <span><strong>69</strong> entries</span>
+      <span><strong>9</strong> groups</span>
+    </div>
+  </a>
+  <a class="dim-card" href="#dim-TRGT">
+    <div class="card-header">
+      <div class="card-icon" style="background:#F18F0122;color:#F18F01;">&#x1F399;</div>
+      <div>
+        <span class="card-code">TRGT</span>
+        <div class="card-title">Speaking Target &amp; Projection</div>
+      </div>
+    </div>
+    <div class="card-concept">Who or what the speaker is addressing. Determines the throw of voice, register, and feedback loop.</div>
+    <div class="card-stats">
+      <span><strong>25</strong> entries</span>
+      <span><strong>5</strong> groups</span>
+    </div>
+  </a>
+  <a class="dim-card" href="#dim-SOCT">
+    <div class="card-header">
+      <div class="card-icon" style="background:#3C164222;color:#3C1642;">&#x1F465;</div>
+      <div>
+        <span class="card-code">SOCT</span>
+        <div class="card-title">Social Situation &amp; Context</div>
+      </div>
+    </div>
+    <div class="card-concept">The social game being played. Captures psychological intent, power dynamics, register, and emotional masking.</div>
+    <div class="card-stats">
+      <span><strong>56</strong> entries</span>
+      <span><strong>8</strong> groups</span>
+    </div>
+  </a>
+  <a class="dim-card" href="#dim-ENVI">
+    <div class="card-header">
+      <div class="card-icon" style="background:#1B433222;color:#1B4332;">&#x1F3D4;</div>
+      <div>
+        <span class="card-code">ENVI</span>
+        <div class="card-title">Environment &amp; Acoustic Space</div>
+      </div>
+    </div>
+    <div class="card-concept">The physical space surrounding the speaker. Determines reverb characteristics, ambient noise floor, and acoustic reflections that color the voice.</div>
+    <div class="card-stats">
+      <span><strong>22</strong> entries</span>
+      <span><strong>4</strong> groups</span>
+    </div>
+  </a>
+  <a class="dim-card" href="#dim-HLTH">
+    <div class="card-header">
+      <div class="card-icon" style="background:#9B222622;color:#9B2226;">&#x1FA7A;</div>
+      <div>
+        <span class="card-code">HLTH</span>
+        <div class="card-title">Health &amp; Physiological Condition</div>
+      </div>
+    </div>
+    <div class="card-concept">Medical, biological, or physiological conditions of the speaker that alter voice production at the source. These are states of the body itself, not external forces.</div>
+    <div class="card-stats">
+      <span><strong>18</strong> entries</span>
+      <span><strong>4</strong> groups</span>
+    </div>
+  </a>
+  <a class="dim-card" href="#dim-GEAR">
+    <div class="card-header">
+      <div class="card-icon" style="background:#49505722;color:#495057;">&#x1FA96;</div>
+      <div>
+        <span class="card-code">GEAR</span>
+        <div class="card-title">Face &amp; Head Obstructions</div>
+      </div>
+    </div>
+    <div class="card-concept">Physical barriers, coverings, or equipment on or near the speaker&#x27;s face and head that mechanically filter, muffle, or distort the voice before it reaches the listener.</div>
+    <div class="card-stats">
+      <span><strong>14</strong> entries</span>
+      <span><strong>4</strong> groups</span>
+    </div>
+  </a>
+  <a class="dim-card" href="#dim-CLMT">
+    <div class="card-header">
+      <div class="card-icon" style="background:#005F7322;color:#005F73;">&#x1F32A;</div>
+      <div>
+        <span class="card-code">CLMT</span>
+        <div class="card-title">Climate &amp; Atmospheric Conditions</div>
+      </div>
+    </div>
+    <div class="card-concept">Weather, temperature, and atmospheric conditions that the speaker is physically enduring. These affect muscle tension, breathing patterns, and airway moisture.</div>
+    <div class="card-stats">
+      <span><strong>10</strong> entries</span>
+      <span><strong>3</strong> groups</span>
+    </div>
+  </a>
+  <a class="dim-card" href="#dim-SUBST">
+    <div class="card-header">
+      <div class="card-icon" style="background:#7B2D8E22;color:#7B2D8E;">&#x1F9EA;</div>
+      <div>
+        <span class="card-code">SUBST</span>
+        <div class="card-title">Substance &amp; Chemical Influence</div>
+      </div>
+    </div>
+    <div class="card-concept">Ingested, inhaled, or injected substances that alter neuromuscular control, cognitive function, or arousal state, thereby changing voice production.</div>
+    <div class="card-stats">
+      <span><strong>12</strong> entries</span>
+      <span><strong>3</strong> groups</span>
+    </div>
+  </a>
+  <a class="dim-card" href="#dim-FATG">
+    <div class="card-header">
+      <div class="card-icon" style="background:#B5651D22;color:#B5651D;">&#x1F634;</div>
+      <div>
+        <span class="card-code">FATG</span>
+        <div class="card-title">Fatigue, Sleep &amp; Energy State</div>
+      </div>
+    </div>
+    <div class="card-concept">The speaker&#x27;s current energy level, sleep status, and recovery state. These determine the baseline &quot;fuel&quot; available for voice production.</div>
+    <div class="card-stats">
+      <span><strong>19</strong> entries</span>
+      <span><strong>4</strong> groups</span>
+    </div>
+  </a>
+  <a class="dim-card" href="#dim-PAIN">
+    <div class="card-header">
+      <div class="card-icon" style="background:#8B000022;color:#8B0000;">&#x26A1;</div>
+      <div>
+        <span class="card-code">PAIN</span>
+        <div class="card-title">Pain &amp; Physical Distress</div>
+      </div>
+    </div>
+    <div class="card-concept">The type, intensity, and location of pain the speaker is currently experiencing. Pain hijacks the voice by triggering involuntary protective responses.</div>
+    <div class="card-stats">
+      <span><strong>12</strong> entries</span>
+      <span><strong>3</strong> groups</span>
+    </div>
+  </a>
+</div>
+</section>
+<section class="dim-section" id="dim-POSE">
+  <div class="dim-header" style="background: linear-gradient(135deg, #6C5B7B11, #C06C8411);">
+    <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#6C5B7B,#C06C84);"></div>
+    <div class="dim-title-row">
+      <span class="dim-icon">&#x1F9CD;</span>
+      <span class="dim-code" style="background:#6C5B7B;">POSE</span>
+      <span class="dim-name">Body Posture &amp; Gravitational Alignment</span>
+    </div>
+    <p class="dim-concept"><strong>Concept:</strong> Static physical configuration of the speaker. How gravity, skeletal alignment, and thoracic compression alter the vocal tract and diaphragm.</p>
+    <div class="dim-annotation"><strong>Annotation Instruction:</strong> Focus only on acoustic evidence of where the body is relative to gravity.</div>
+    <div class="dim-counts">
+      <span><strong>32</strong> entries</span>
+      <span><strong>6</strong> groups</span>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Horizontal Spectrum <span class="group-count">5</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Lying Flat on Back (Supine)</div>
+        <span class="entry-key">supine_flat</span>
+        <p class="entry-sig">The &quot;puddled&quot; voice. Fluid redistribution causes mild nasal congestion. The tongue falls back, slightly dampening high frequencies. Energy is low; projection is poor because the diaphragm fights gravity to lift the viscera.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Lying on Stomach (Prone)</div>
+        <span class="entry-key">prone_stomach</span>
+        <p class="entry-sig">The &quot;pressed&quot; voice. The physical weight of the body crushes the rib cage against the floor. Inhalations are shorter and slightly labored. The voice sounds closer to the ground, with less chest resonance.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Curled on Side (Fetal Position)</div>
+        <span class="entry-key">side_lying_fetal</span>
+        <p class="entry-sig">The &quot;cozy&quot; voice. One lung is restricted by the floor, the other is open. Breath is quiet and intimate. Soft, low-volume, with minimal dynamic range.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Supine with Head Hanging (Hyperextended)</div>
+        <span class="entry-key">supine_head_hang</span>
+        <p class="entry-sig">The &quot;stretched&quot; voice. The neck is arched backward over an edge. The skin of the throat is tight, raising the pitch slightly and thinning the tone. Swallowing is audible and difficult.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Lying Prone Propped on Elbows</div>
+        <span class="entry-key">propped_elbows</span>
+        <p class="entry-sig">Similar to prone, but the upper chest is open. Abdominal compression (stomach pressed into floor) but clearer projection than being fully flat.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Sedentary Spectrum <span class="group-count">6</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Deep Recline / Slouching</div>
+        <span class="entry-key">sitting_slouched</span>
+        <p class="entry-sig">The &quot;mushy&quot; voice. The spine is C-shaped, collapsing the diaphragm. Articulation is lazy; the jaw barely moves. The voice lacks drive or attack.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Upright Chair (Office/Table)</div>
+        <span class="entry-key">sitting_neutral</span>
+        <p class="entry-sig">The &quot;standard&quot; voice. Balanced resonance. Breath support is stable but lacks the full power of standing. Neutral acoustic baseline.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Perched on Edge/Stool</div>
+        <span class="entry-key">sitting_perched</span>
+        <p class="entry-sig">The &quot;alert&quot; sitter. Core muscles engaged to maintain balance. Voice slightly more energized and tighter than neutral sitting.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Floor Sitting (Lotus/Cross-legged)</div>
+        <span class="entry-key">sitting_cross_legged</span>
+        <p class="entry-sig">The &quot;grounded&quot; voice. Spine usually straight, hips tight. Slight bracing in the voice, resonance implies mouth closer to reflective surfaces.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Elbows on Knees (The Brooder)</div>
+        <span class="entry-key">sitting_lean_forward</span>
+        <p class="entry-sig">The &quot;compressed&quot; voice. Chest cavity physically made smaller. Voice often directed downward, sounding darker and more introspective. Breath is shallow.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Driver&#x27;s Seat (Reclined + Arms Forward)</div>
+        <span class="entry-key">driving_recline</span>
+        <p class="entry-sig">Blend of relaxed torso with arm tension from holding wheel. Often louder projection to overcome cabin noise, but with sitting breath capacity.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Vertical Spectrum <span class="group-count">5</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Standing Neutral</div>
+        <span class="entry-key">standing_neutral</span>
+        <p class="entry-sig">The &quot;open&quot; voice. Maximum lung capacity. Clear, resonant, and effortless. Reference point for zero acoustic impedance.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Rigid Attention (Military)</div>
+        <span class="entry-key">standing_military</span>
+        <p class="entry-sig">The &quot;hard&quot; voice. Chest puffed out; neck muscles tense. Tension transfers to larynx, making voice metallic, barked, or overly projected.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Leaning Against Wall</div>
+        <span class="entry-key">standing_lean_wall</span>
+        <p class="entry-sig">The &quot;cool&quot; voice. Slight phase cancellation or bass boost from wall reflection behind head. Vertical but relaxed/asymmetrical.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Shifted Weight (Hip Cocked)</div>
+        <span class="entry-key">standing_one_leg</span>
+        <p class="entry-sig">Asymmetrical stance. Often correlates with casual or sassy tone. Vertical but lacks rigid drive of neutral stance.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Power Pose (Hands on Hips)</div>
+        <span class="entry-key">standing_hands_hips</span>
+        <p class="entry-sig">The &quot;dominant&quot; voice. Elbows out, mechanically locking rib cage expanded. Voice naturally louder and more commanding.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Head &amp; Neck Geometry <span class="group-count">4</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Looking Up (Chin High)</div>
+        <span class="entry-key">head_chin_up</span>
+        <p class="entry-sig">The &quot;thinned&quot; voice. Trachea stretched. Larynx pulled upward, shortening the vocal tract. Voice sounds lighter, tighter, higher-pitched.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Looking Down (Chin to Chest)</div>
+        <span class="entry-key">head_chin_down</span>
+        <p class="entry-sig">The &quot;gravel&quot; voice. Larynx compressed; double chin effect dampens sound. Voice becomes creaky, bass-heavy, and mumbled.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Twisted Neck (Looking over Shoulder)</div>
+        <span class="entry-key">head_turned_side</span>
+        <p class="entry-sig">Torsion in neck muscles restricts larynx on one side. Phonation sounds slightly strained or squeezed.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Head Resting on Hand</div>
+        <span class="entry-key">head_rest_hand</span>
+        <p class="entry-sig">The &quot;smushed&quot; face. Palm pushes one cheek up, distorting mouth shape. Bilabial sounds are clumsy. Voice sounds bored or tired.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Compromised &amp; Contorted <span class="group-count">8</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Crouching / Huddled Ball</div>
+        <span class="entry-key">crouching_hiding</span>
+        <p class="entry-sig">The &quot;small&quot; voice. Knees against chest; maximum compression. Breathing rapid and shallow. Voice hushed, anxious, acoustically boxed in.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Bent Over (Touching Toes)</div>
+        <span class="entry-key">bending_waist</span>
+        <p class="entry-sig">The &quot;rush&quot; voice. Blood rushes to head; diaphragm crushed. Voice sounds congested, thick, and strained.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Deep Squat</div>
+        <span class="entry-key">squatting_deep</span>
+        <p class="entry-sig">The &quot;valsalva&quot; voice. High abdominal pressure for core stability. Grunting glottal closure and strained, pushed tone.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Kneeling (Prayer/Begging)</div>
+        <span class="entry-key">kneeling_upright</span>
+        <p class="entry-sig">Similar to standing but less grounding. Acoustically open in chest. Often correlates with submissive or pleading tone.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Inverted (Handstand/Hanging)</div>
+        <span class="entry-key">inverted_upside_down</span>
+        <p class="entry-sig">The &quot;gargle.&quot; Gravity reverses blood flow. Vocal folds engorge, making voice extremely thick, wet, and difficult to control.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Confined Space (Crawling/Box)</div>
+        <span class="entry-key">squeezed_tight_space</span>
+        <p class="entry-sig">The &quot;claustrophobic&quot; voice. Shoulders hunched to ears, shortening neck. Tight, tense sound. Very short acoustic reflections.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Arms Reaching Up</div>
+        <span class="entry-key">arms_overhead</span>
+        <p class="entry-sig">The &quot;pulled&quot; voice. Rib cage stretched to limit. Difficult to inhale deeply. Voice thin, lacking lower resonance.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Torso Twist (Yoga/Reaching Back)</div>
+        <span class="entry-key">twisted_torso</span>
+        <p class="entry-sig">Uneven lung expansion. Breath control erratic/wobbly. Effort of twist audible in vowel stability.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Failed Posture <span class="group-count">4</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Post-Exertion Collapse</div>
+        <span class="entry-key">slumped_exhausted</span>
+        <p class="entry-sig">The &quot;breathless&quot; slump. Heavy uncontrolled breathing overpowers speech. Body limp, voice has zero tension.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Semi-Conscious / Fainting</div>
+        <span class="entry-key">limp_faint</span>
+        <p class="entry-sig">The &quot;fade.&quot; Vocal cord closure weak (breathy/whispery). Volume trails off at end of sentences.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Physically Restrained / Choked</div>
+        <span class="entry-key">choked_restrained</span>
+        <p class="entry-sig">The &quot;strangled&quot; voice. External pressure on neck or chest. Airflow turbulent and raspy. Pitch erratic.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Pinned Under Weight</div>
+        <span class="entry-key">crushed_weight</span>
+        <p class="entry-sig">The &quot;forced&quot; exhale. Cannot inhale freely. Short panicked syllables squeezed out against resistance.</p>
+      </div>
+    </div>
+  </div>
+  <a href="#top" class="back-top">&uarr; Back to top</a>
+</section>
+<section class="dim-section" id="dim-ACTV">
+  <div class="dim-header" style="background: linear-gradient(135deg, #2E86AB11, #A23B7211);">
+    <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#2E86AB,#A23B72);"></div>
+    <div class="dim-title-row">
+      <span class="dim-icon">&#x1F3C3;</span>
+      <span class="dim-code" style="background:#2E86AB;">ACTV</span>
+      <span class="dim-name">Physical Activity &amp; Dynamic Load</span>
+    </div>
+    <p class="dim-concept"><strong>Concept:</strong> How metabolic demand, physical movement, and interaction with objects compete with the speech signal.</p>
+    <div class="dim-annotation"><strong>Annotation Instruction:</strong> Based on acoustic evidence only - specific breath patterns, rhythmic interference, or handling noise.</div>
+    <div class="dim-counts">
+      <span><strong>69</strong> entries</span>
+      <span><strong>9</strong> groups</span>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Oral Interference <span class="group-count">6</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Eating (Crunchy/Hard)</div>
+        <span class="entry-key">eating_crunchy</span>
+        <p class="entry-sig">Sharp high-frequency transients (snaps, crunches) &gt;2kHz. Irregular pauses for swallowing. Tempo slows to mitigate choking risk.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Eating (Soft/Bolus)</div>
+        <span class="entry-key">eating_soft</span>
+        <p class="entry-sig">The &quot;full mouth&quot; resonance. Tongue occupied with food bolus, causing wet smacking and dampened lingual consonants. Vowels sound wider.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Drinking / Gulping</div>
+        <span class="entry-key">drinking_gulping</span>
+        <p class="entry-sig">The &quot;Fluid Sequence&quot;: speech stops, liquid slosh, heavy wet glottal closure gulp, wet release exhalation, speech resumes.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Dental Hygiene (Brushing)</div>
+        <span class="entry-key">brushing_teeth</span>
+        <p class="entry-sig">Extreme articulation distortion. Jaw held open, destroying labial consonants. Constant background scrubbing noise and foaming saliva.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Smoking / Vaping</div>
+        <span class="entry-key">smoking_vaping</span>
+        <p class="entry-sig">The &quot;Drag Cycle&quot;: audible inhalation with crackle, silence for breath hold, speech during exhalation creating turbulent friction under the voice.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Yawning</div>
+        <span class="entry-key">yawning_stretching</span>
+        <p class="entry-sig">The &quot;Pharyngeal Slide.&quot; Pharynx expands to maximum, voice pitch slides dramatically downward. Articulation becomes hollow and rounded.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Sedentary Handling <span class="group-count">13</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Typing (Standard/Office)</div>
+        <span class="entry-key">typing_keyboard</span>
+        <p class="entry-sig">Fast rhythmic rain of plastic clicks. &quot;Cognitive Load Pacing&quot;: as typing speed increases, speech rate slows or fragments.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Gaming (Controller/Mouse)</div>
+        <span class="entry-key">gaming_intense</span>
+        <p class="entry-sig">Louder, more mechanical bursty clicks. Chair squeaks, sudden volume shifts, rapid-fire adrenaline-fueled speech patterns.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Writing / Drawing</div>
+        <span class="entry-key">writing_manual</span>
+        <p class="entry-sig">Quiet continuous scritch-scratch friction. Head often angled down causing slight muffling. Pacing slow and synchronized with hand movement.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Phone Use / Scrolling</div>
+        <span class="entry-key">scrolling_phone</span>
+        <p class="entry-sig">&quot;Acoustic Shadow.&quot; Voice directed downward. Quiet thumb-taps. High frequency of distracted fillers while visual attention is occupied.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Cleaning / Scrubbing</div>
+        <span class="entry-key">cleaning_scrubbing</span>
+        <p class="entry-sig">Rhythmic repetitive friction sounds. Breath often synchronizes with arm movement.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Cooking / Kitchen Work</div>
+        <span class="entry-key">cooking_active</span>
+        <p class="entry-sig">Complex soundscape of sizzling, chopping, clattering. Lombard Effect: speaker projects louder to compete with kitchen noise.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Dishwashing / Water Handling</div>
+        <span class="entry-key">dishwashing</span>
+        <p class="entry-sig">Constant white noise floor of running water. Sharp clinks of glass and ceramics. Voice loud but distant.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Rummaging / Searching</div>
+        <span class="entry-key">rummaging_bag</span>
+        <p class="entry-sig">Heavy fabric rustling, zipper zips, plastic crinkles. Speech shifts to object-search mode with mumbling and distracted tempo.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Sorting Papers</div>
+        <span class="entry-key">handling_paper</span>
+        <p class="entry-sig">Dry sliding shuffling and sharp paper snaps. Voice often drops to whisper or mumble while reading.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Knitting / Needlework</div>
+        <span class="entry-key">knitting_sewing</span>
+        <p class="entry-sig">Very quiet rhythmic metallic click-click. Breathing usually very calm and steady, meditative state.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Using Tools (Hammer/Wrench)</div>
+        <span class="entry-key">tool_use_manual</span>
+        <p class="entry-sig">Heavy rhythmic impacts or metallic ratcheting. Effort grunts at moment of torque or impact interrupt speech.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Dressing</div>
+        <span class="entry-key">dressing_undressing</span>
+        <p class="entry-sig">Heavy fabric swooshing that may cover mouth temporarily. Compression grunts from bending over for shoes/pants.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Holding / Rocking Infant</div>
+        <span class="entry-key">holding_baby</span>
+        <p class="entry-sig">Rhythmic physical bounce in voice from rocking. Tone hushed. One side of chest often compressed.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Locomotion <span class="group-count">5</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Slow Walk (Strolling)</div>
+        <span class="entry-key">strolling_leisure</span>
+        <p class="entry-sig">Gentle relaxed lilt or bobbing in voice pitch (~1Hz). Footsteps barely audible. Breathing slightly deeper than sitting but controlled.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Power Walking</div>
+        <span class="entry-key">walking_power</span>
+        <p class="entry-sig">The &quot;Pump.&quot; Physical impact of heel-strike creates micro-tremor in voice. Inhalations become audible and rhythmic every 4-6 words.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Walking on Noisy Surface</div>
+        <span class="entry-key">walking_gravel</span>
+        <p class="entry-sig">Loud crunching footsteps compete with speech. Speaker raises volume and articulates more clearly.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Climbing Stairs</div>
+        <span class="entry-key">climbing_stairs</span>
+        <p class="entry-sig">The &quot;Ascension.&quot; Progressive breathlessness. Pitch tends to rise with effort. Sentences chopped into 2-3 word chunks.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Hiking (Steep Incline)</div>
+        <span class="entry-key">hiking_uphill</span>
+        <p class="entry-sig">The &quot;Labor.&quot; Heavy deep full-lung breathing. Long pauses between short phrases. Voice has puffed quality.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">High Exertion <span class="group-count">4</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Jogging / Running</div>
+        <span class="entry-key">jogging_steady</span>
+        <p class="entry-sig">The &quot;Jogger&#x27;s Tremolo.&quot; Voice shakes in sync with step cadence. Breathing machine-like and rhythmic, cannot be interrupted for speech.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Sprinting / Fleeing</div>
+        <span class="entry-key">sprinting_max</span>
+        <p class="entry-sig">Communication Breakdown. Only single syllables or short shouts between violent loud gasps. Voice raw, panicked, unmodulated.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Heavy Lifting (Static Load)</div>
+        <span class="entry-key">lifting_heavy</span>
+        <p class="entry-sig">The &quot;Valsalva Maneuver.&quot; Breath held to brace core, then strangled vocalization under pressure, ending with explosive breath release.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Fighting / Physical Struggle</div>
+        <span class="entry-key">fighting_struggle</span>
+        <p class="entry-sig">The &quot;Chaos.&quot; Sharp sudden impacts. Grunts of pain or exertion. Breath erratic and jagged. Voice aggressive, barking, or screaming.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Physiological &amp; Passive <span class="group-count">9</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Swimming (Head Out)</div>
+        <span class="entry-key">swimming_surface</span>
+        <p class="entry-sig">Distinct wet acoustic environment. Speaker gulps air quickly. Speech accompanied by hollow shimmering reverb of water surface.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Shivering / Freezing</div>
+        <span class="entry-key">shivering_cold</span>
+        <p class="entry-sig">The &quot;Chatter.&quot; Involuntary vocal tremolo (~8-10Hz) from core muscle spasms. Jaw tense/locked. Speaker hisses through clenched teeth.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Crying / Sobbing</div>
+        <span class="entry-key">crying_sobbing</span>
+        <p class="entry-sig">The &quot;Inspiratory Spasm.&quot; Inhalation jerky like reverse hiccup. Pharynx wet/mucousy. Pitch cracks frequently. Vowels wavering.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Laughing Fit</div>
+        <span class="entry-key">laughing_fit</span>
+        <p class="entry-sig">The &quot;Wheeze.&quot; Total inability to articulate due to rapid exhalation spasms. High-pitched squeaks or silence where speaker runs out of air.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Stifling (Holding Back)</div>
+        <span class="entry-key">stifling_hold</span>
+        <p class="entry-sig">The &quot;Leak.&quot; Glottis clamped shut, voice high-pitched, squeaky, leaking out under extreme pressure.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Whispering</div>
+        <span class="entry-key">whispering_quiet</span>
+        <p class="entry-sig">Aphonation. No vocal cord vibration. Speech shaped entirely by air turbulence. High frequencies emphasized; low frequencies absent.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Kissing / Intimacy</div>
+        <span class="entry-key">kissing_intimate</span>
+        <p class="entry-sig">Smacking wet lip sounds. Extremely close proximity (bass boost). Breath soft, slow, interspersed with soft moans.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Gagging / Nausea</div>
+        <span class="entry-key">vomiting_gagging</span>
+        <p class="entry-sig">The &quot;Heave.&quot; Retching sounds. Speech garbled, watery, interrupted by involuntary stomach contraction. Voice thick with mucus.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Sexual Climax</div>
+        <span class="entry-key">orgasm_sexual</span>
+        <p class="entry-sig">Involuntary vocalization. Rhythmic breathing becomes spasmodic. Pitch rises sharply. Loss of articulation control, replaced by moans and gasps.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Biological Glitches <span class="group-count">4</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Coughing</div>
+        <span class="entry-key">coughing_fit</span>
+        <p class="entry-sig">Explosive percussive blasts of air. Voice immediately following is raspy or wet until cords clear.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Sneezing</div>
+        <span class="entry-key">sneezing_recovery</span>
+        <p class="entry-sig">Build-up (sharp intake), explosion, recovery (nasal congested speech due to mucosal swelling).</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Hiccuping</div>
+        <span class="entry-key">hiccuping_spasm</span>
+        <p class="entry-sig">Sharp high-pitched intake from diaphragm spasm cuts words in half.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Burping</div>
+        <span class="entry-key">burping_belching</span>
+        <p class="entry-sig">Deep guttural vibration from esophagus. Voice momentarily drops into ultra-low monster vocal fry.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Machines &amp; Passive Motion <span class="group-count">3</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Driving (Active Traffic)</div>
+        <span class="entry-key">driving_active</span>
+        <p class="entry-sig">Background engine hum and turn signal clicks. Focus pauses when navigating, head-turn voice drops.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Vehicle Turbulence / Bumpy Road</div>
+        <span class="entry-key">riding_turbulence</span>
+        <p class="entry-sig">The &quot;Shimmer.&quot; Voice wavers or vibrates rapidly from vehicle shaking. Like artificial vibrato the speaker cannot control.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Shaving (Electric Razor)</div>
+        <span class="entry-key">shaving_electric</span>
+        <p class="entry-sig">Constant mechanical buzz. Speaker distorts cheek/lip to flatten skin, changing vowel shapes.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Sustained Exertion <span class="group-count">12</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Intense Cycling / Spinning</div>
+        <span class="entry-key">cycling_intense</span>
+        <p class="entry-sig">The &quot;pedal pulse.&quot; Breathing is deep, rhythmic, and locked to the cadence of the legs. Unlike running, there is no vertical impact bounce in the voice — instead a steady, pressured airstream. The saddle compresses the pelvis, slightly tightening the lower abdomen. Speech comes in short bursts timed to exhalation phases. At high intensity, the voice becomes a forced whisper between gasps.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Rowing / Pulling Heavy Resistance</div>
+        <span class="entry-key">rowing_pulling</span>
+        <p class="entry-sig">The &quot;drive-and-recover.&quot; A binary rhythm: explosive grunt on the pull stroke (glottis slams shut for core bracing), then a rushed, breathy phrase during the recovery slide. The body rocks forward and backward, creating a Doppler-like pitch wobble. Sweat and grip strain add tension to the jaw.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Rock Climbing / Rope Climbing</div>
+        <span class="entry-key">climbing_rope_rock</span>
+        <p class="entry-sig">The &quot;cling.&quot; Arms overhead and weight on fingertips. The rib cage is stretched and exposed, but the core is locked tight for stability. Speech is whispered or staccato — the speaker cannot waste a single breath on projection. Fear of falling adds a tremor. Head is often tilted upward (chin-up vocal tract geometry).</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Vigorous Dancing / Rave</div>
+        <span class="entry-key">dancing_vigorous</span>
+        <p class="entry-sig">The &quot;bounce.&quot; Full-body rhythmic movement creates a fast, regular tremolo in the voice synced to the beat. Breathing is elevated but often masked by adrenaline and music. The speaker shouts to be heard over the music (extreme Lombard effect). Laughter and exclamations punctuate the gaps between dance moves.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Swimming Laps (Endurance)</div>
+        <span class="entry-key">swimming_laps</span>
+        <p class="entry-sig">The &quot;gasp window.&quot; Speech is only possible during the brief head-turn to breathe. Words are expelled in 1-2 syllable bursts between strokes. Water in the mouth and nose creates gurgling and sputtering. The voice is urgent, clipped, and has a wet, hollow quality from the pool acoustic environment.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Carrying Heavy Load / Forced March</div>
+        <span class="entry-key">carrying_load_march</span>
+        <p class="entry-sig">The &quot;grind.&quot; A constant low-grade Valsalva — the core is braced to support the weight, restricting the diaphragm. Breathing is shallow and rapid. Speech has a strained, pushed quality. Footsteps are heavy and thudding. Over time, the voice progressively weakens as fatigue accumulates. Grunting on every step at extreme loads.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Digging / Shoveling Earth</div>
+        <span class="entry-key">digging_shoveling</span>
+        <p class="entry-sig">The &quot;heave-ho.&quot; Rhythmic, percussive effort grunts synced to the shovel strike. The torso bends and straightens cyclically, alternately compressing and expanding the chest. Dirt and gravel sounds punctuate the background. Speech is choppy, timed to the brief upright recovery between digs.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Chopping Wood / Axe Work</div>
+        <span class="entry-key">chopping_wood</span>
+        <p class="entry-sig">The &quot;split.&quot; A sharp, explosive grunt at the moment of impact, followed by the crack of splitting wood. Speech only occurs during the wind-up or between swings. Arms-overhead position stretches the rib cage. The voice has a raw, outdoorsy, unmasked quality — zero social filtering.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Jumping / Plyometric Exercise</div>
+        <span class="entry-key">jumping_plyometric</span>
+        <p class="entry-sig">The &quot;launch.&quot; A sharp exhalation or &quot;hup!&quot; on every takeoff, followed by a thud on landing. The voice jolts violently on each impact. Speaking during jump sequences is nearly impossible — words are fragmented into single syllables launched mid-air and cut off on landing.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Martial Arts / Contact Sparring</div>
+        <span class="entry-key">martial_arts_sparring</span>
+        <p class="entry-sig">The &quot;kiai.&quot; Sharp, explosive shouts timed to strikes — these are functional (bracing the core) not decorative. Between exchanges, breathing is controlled and predatory. The voice switches between feral intensity during engagement and calm, measured breathing during circling. Impact sounds of body hits and mat slaps.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Power Yoga / Intense Hold Poses</div>
+        <span class="entry-key">yoga_power_hold</span>
+        <p class="entry-sig">The &quot;tremor hold.&quot; Muscles shaking under isometric load creates a visible vibrato in the voice. Breathing is deliberately controlled (ujjayi breath — audible oceanic friction in the throat). Speech is slow, strained, and often directed inward. The instructor&#x27;s cue to &quot;breathe&quot; is ironic — the speaker can barely manage it.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Treading Water / Staying Afloat</div>
+        <span class="entry-key">treading_water</span>
+        <p class="entry-sig">The &quot;bob.&quot; The mouth intermittently dips below the waterline, creating a rhythmic alternation between clear speech and gurgling. Breathing is panicked and gulping if fatigued. Splashing water noise competes with the voice. Arms are occupied, so the speaker cannot gesture — all expression is purely vocal.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Sexual &amp; Intimate Activity <span class="group-count">13</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Foreplay / Arousal Building</div>
+        <span class="entry-key">foreplay_arousal</span>
+        <p class="entry-sig">The &quot;slow burn.&quot; Breathing gradually deepens and slows. The voice drops in pitch and becomes increasingly breathy and soft. Whispered words alternate with sighs and soft moans. Wet mouth sounds (kissing, licking) punctuate the speech. Articulation loosens as cognitive focus shifts from language to sensation.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Active Sexual Intercourse (Exerting Partner)</div>
+        <span class="entry-key">intercourse_active</span>
+        <p class="entry-sig">The &quot;thrust rhythm.&quot; Breathing becomes heavy, rhythmic, and locked to physical movement. Speech fragments into single words or short commands. Effort grunts sync with exertion. The voice oscillates between breathy whispers (intimate) and involuntary vocalizations (primal). Bed springs, skin contact, and movement noise in background.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Receptive Sexual Intercourse (Receiving Partner)</div>
+        <span class="entry-key">intercourse_receptive</span>
+        <p class="entry-sig">The &quot;wave.&quot; Vocalizations are primarily reactive — moans, gasps, and cries that rise and fall with stimulation intensity. Breathing is irregular and punctuated by held breath at peaks of pleasure. The voice may crack into higher registers involuntarily. Speech, when attempted, is fragmentary and loses syntactic structure.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Giving Oral Sex (Mouth Occupied)</div>
+        <span class="entry-key">oral_sex_giving</span>
+        <p class="entry-sig">The &quot;hum.&quot; The mouth is physically occupied, making articulation impossible. Vocalizations are limited to nasal moans, humming, and throat sounds. Breathing is restricted to nasal passages. If the speaker attempts words, they are extremely muffled and distorted. Wet, slurping sounds are prominent.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Receiving Oral Sex</div>
+        <span class="entry-key">oral_sex_receiving</span>
+        <p class="entry-sig">The &quot;unravel.&quot; The mouth is free but the brain is overwhelmed by sensation. Speech degrades from coherent sentences to fragments to pure vocalization. Breathing is irregular with sharp intakes. The pitch rises progressively. Moans have a melodic, sustained quality. The speaker may grip surfaces, creating incidental sounds.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Sustained Pleasure Vocalization / Moaning</div>
+        <span class="entry-key">moaning_sustained</span>
+        <p class="entry-sig">The &quot;aria.&quot; Extended, semi-musical vocalizations on open vowels (&quot;ah,&quot; &quot;oh&quot;). Pitch contours rise and fall with pleasure waves. The glottis alternates between full phonation (moans) and breathy phonation (sighs). Volume builds with intensity. These are partially involuntary — the speaker cannot fully suppress them.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Physical Restraint / Bondage (Consensual)</div>
+        <span class="entry-key">bondage_restrained_consensual</span>
+        <p class="entry-sig">The &quot;strain.&quot; Movement is restricted, creating frustrated physical tension that transfers to the voice. Breathing is elevated from arousal and mild panic. Speech may be muffled by a gag (if present) or strained against bindings. The voice sounds vulnerable, exposed, and stripped of physical agency. Rope creak or chain clink in background.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Impact Play / Spanking (Receiving)</div>
+        <span class="entry-key">impact_play_receiving</span>
+        <p class="entry-sig">The &quot;sting.&quot; Sharp, involuntary yelps or gasps at the moment of impact, followed by a recovery moan that transitions from pain to pleasure. Breathing is anticipatory — held breath before the strike, explosive release after. The voice pitch spikes on impact then settles. Counting or verbal acknowledgment may be required by the dynamic.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Breath Play / Choking (Consensual)</div>
+        <span class="entry-key">breath_play</span>
+        <p class="entry-sig">The &quot;squeeze.&quot; Progressively restricted airflow. The voice thins, rises in pitch, and becomes raspy as pressure increases on the throat. Phonation becomes turbulent — a wet, crackling quality. On release, a loud gasp followed by euphoric, dizzy-sounding speech. Extremely dangerous — the acoustic signature is unmistakable.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Edging / Orgasm Denial</div>
+        <span class="entry-key">edging_orgasm_denial</span>
+        <p class="entry-sig">The &quot;cliff.&quot; Vocalizations build toward a crescendo (increasing pitch, volume, and tempo) then are abruptly forced back down. The speaker makes frustrated, whimpering sounds during denial. Breathing is jagged and unsatisfied. Multiple build-and-stop cycles create increasingly desperate, pleading vocal quality. Speech dissolves into begging.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Solo Masturbation</div>
+        <span class="entry-key">masturbation_solo</span>
+        <p class="entry-sig">The &quot;private.&quot; Vocalizations are typically suppressed or minimal — soft breathing, quiet moans, occasional whispered fantasy narration. The speaker may hold their breath during peaks. If vocalizing freely, the sounds are unselfconscious and raw. No audience awareness — purely involuntary vocal responses to self-stimulation.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Post-Coital Afterglow</div>
+        <span class="entry-key">post_coital_afterglow</span>
+        <p class="entry-sig">The &quot;dissolve.&quot; Extreme vocal fry and minimal effort. Breathing is slowly returning to baseline but still elevated. The voice is warm, intimate, and completely unguarded. Endorphins create a dreamy, languid quality. Speech is slow, content, and punctuated by satisfied sighs. Muscle relaxation removes all tension from the throat.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Multiple / Successive Orgasms</div>
+        <span class="entry-key">multiple_orgasm</span>
+        <p class="entry-sig">The &quot;cascade.&quot; Each climax produces a peak vocalization (scream, moan, or silent apnea), followed by a brief recovery of shaky, overwhelmed breathing, before the next wave hits. The voice becomes progressively more destroyed — hoarse, cracking, and uncontrolled. By the third or fourth, speech is completely impossible.</p>
+      </div>
+    </div>
+  </div>
+  <a href="#top" class="back-top">&uarr; Back to top</a>
+</section>
+<section class="dim-section" id="dim-TRGT">
+  <div class="dim-header" style="background: linear-gradient(135deg, #F18F0111, #C73E1D11);">
+    <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#F18F01,#C73E1D);"></div>
+    <div class="dim-title-row">
+      <span class="dim-icon">&#x1F399;</span>
+      <span class="dim-code" style="background:#F18F01;">TRGT</span>
+      <span class="dim-name">Speaking Target &amp; Projection</span>
+    </div>
+    <p class="dim-concept"><strong>Concept:</strong> Who or what the speaker is addressing. Determines the throw of voice, register, and feedback loop.</p>
+    <div class="dim-annotation"><strong>Annotation Instruction:</strong> Based on distance cues, intonation patterns, and articulation effort.</div>
+    <div class="dim-counts">
+      <span><strong>25</strong> entries</span>
+      <span><strong>5</strong> groups</span>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Self &amp; Abstract <span class="group-count">4</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Soliloquy / Self-Talk</div>
+        <span class="entry-key">target_self_mumble</span>
+        <p class="entry-sig">Low volume, lazy articulation, swallowed consonants. Narrow pitch range. Sentences trail off without finishing.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Internal Monologue (Thinking Aloud)</div>
+        <span class="entry-key">target_internal_monologue</span>
+        <p class="entry-sig">The &quot;Processing&quot; tone. Slow pacing with irregular pauses. Searching quality with elongated vowels, lacks projection.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Screaming into the Void</div>
+        <span class="entry-key">target_void_scream</span>
+        <p class="entry-sig">Maximum volume but no communicative intent. Raw, often lacking distinct words. Pure cathartic release.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Prayer / Divine</div>
+        <span class="entry-key">target_divine_prayer</span>
+        <p class="entry-sig">Hushed, reverent, or chanting quality. Highly regular or melodic rhythm. Lacks conversational fluctuations.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Dyadic <span class="group-count">5</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Intimate / Lover</div>
+        <span class="entry-key">target_intimate_lover</span>
+        <p class="entry-sig">Proximity Effect dominant: extremely close, boosting bass. Phonation breathy or creaky. Soft consonants. Implies exclusivity.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Confidential / Conspirator</div>
+        <span class="entry-key">target_confidential_secret</span>
+        <p class="entry-sig">The &quot;Side-Mouth.&quot; Hushed but hyper-precise articulation for clarity without being overheard. Monotonous pitch.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Conversational (Peer/Friend)</div>
+        <span class="entry-key">target_conversational_peer</span>
+        <p class="entry-sig">Neutral baseline. Moderate volume, relaxed turn-taking. Contractions used. Rising intonation for turn signals.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Confrontational (In-Your-Face)</div>
+        <span class="entry-key">target_confrontational_face</span>
+        <p class="entry-sig">High intensity, hard glottal attacks. Loud but dry (little reverb), implying very close physical proximity.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Telephonic / Remote Human</div>
+        <span class="entry-key">target_telephonic_remote</span>
+        <p class="entry-sig">&quot;Distance Compensation.&quot; Slightly louder than natural. Checking intonation (upward inflection) to verify connection. Clearer enunciation.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Group Unamplified <span class="group-count">5</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Small Group (Dinner Table)</div>
+        <span class="entry-key">target_small_group</span>
+        <p class="entry-sig">Slight projection (2-3m radius). Phase shifts as speaker&#x27;s head turns to address different people.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Lecture / Classroom</div>
+        <span class="entry-key">target_classroom_lecture</span>
+        <p class="entry-sig">The &quot;Teacher Voice.&quot; Projected from diaphragm. Pace deliberately slowed. Key terms heavily stressed.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Drill Sergeant (Platoon)</div>
+        <span class="entry-key">target_drill_sergeant</span>
+        <p class="entry-sig">Maximum unamplified volume. Percussive staccato rhythm. Vowels shouted, consonants hard/spat.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Soapbox / Street Orator</div>
+        <span class="entry-key">target_street_orator</span>
+        <p class="entry-sig">Strained projection cutting through ambient noise. Repetitive looping cadences. Elevated pitch.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Town Crier / Shouting Distance</div>
+        <span class="entry-key">target_town_crier</span>
+        <p class="entry-sig">Vowels heavily elongated to carry over distance. Consonants dropped. Significant delay between phrases.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Group Amplified <span class="group-count">4</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Public Speaker (PA System)</div>
+        <span class="entry-key">target_public_pa</span>
+        <p class="entry-sig">The &quot;Politician.&quot; High energy but controlled volume. Large dynamic range. Dramatic pauses.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">News Anchor / Broadcaster</div>
+        <span class="entry-key">target_broadcaster</span>
+        <p class="entry-sig">The &quot;News Prosody.&quot; Artificial, polished pitch contours. Non-regional accent. No waiting for response.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Podcaster / Radio Host</div>
+        <span class="entry-key">target_podcaster</span>
+        <p class="entry-sig">&quot;False Intimacy.&quot; Close-mic technique (warm, dry, bass-heavy) but performative/projected energy.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Stage Actor (Theatrics)</div>
+        <span class="entry-key">target_stage_actor</span>
+        <p class="entry-sig">The &quot;Stage Whisper.&quot; A whisper loud enough for the back row. Over-articulation of final consonants.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Specialized Targets <span class="group-count">7</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Infant-Directed (Parentese)</div>
+        <span class="entry-key">target_infant</span>
+        <p class="entry-sig">High pitch baseline. Exaggerated swooping pitch contours. Simplified vocabulary. Slow, repetitive tempo.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Animal-Directed (Pet Voice)</div>
+        <span class="entry-key">target_animal</span>
+        <p class="entry-sig">Similar to parentese but includes clicks, kissy-noises, whistles, short command bursts. Tone swings between affection and command.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Voice Assistant (Siri/Alexa)</div>
+        <span class="entry-key">target_machine_voice</span>
+        <p class="entry-sig">The &quot;Robot Talk.&quot; Hyper-correct pronunciation. Unnatural pauses between words. Flat intonation. Emotion removed.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Dictation (Recording for Transcribing)</div>
+        <span class="entry-key">target_dictation</span>
+        <p class="entry-sig">The &quot;Typewriter&quot; voice. Fast, steady, monotone. Punctuation spoken aloud. Zero emotional affect.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">To Deaf / Hard of Hearing</div>
+        <span class="entry-key">target_hard_of_hearing</span>
+        <p class="entry-sig">The &quot;Loud &amp; Slow.&quot; Volume consistently high. Tempo dragged. Articulation exaggerated for lip-reading.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">To Non-Native Speaker</div>
+        <span class="entry-key">target_non_native</span>
+        <p class="entry-sig">The &quot;Simplifier.&quot; Grammar stripped down. Words separated by distinct gaps. Volume unnecessarily loud.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">The Interrupter</div>
+        <span class="entry-key">target_interrupter</span>
+        <p class="entry-sig">The &quot;Cut-In.&quot; Higher pitch and faster tempo to steal the floor. Voice urgent, pushing against the other person&#x27;s rhythm.</p>
+      </div>
+    </div>
+  </div>
+  <a href="#top" class="back-top">&uarr; Back to top</a>
+</section>
+<section class="dim-section" id="dim-SOCT">
+  <div class="dim-header" style="background: linear-gradient(135deg, #3C164211, #08637511);">
+    <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#3C1642,#086375);"></div>
+    <div class="dim-title-row">
+      <span class="dim-icon">&#x1F465;</span>
+      <span class="dim-code" style="background:#3C1642;">SOCT</span>
+      <span class="dim-name">Social Situation &amp; Context</span>
+    </div>
+    <p class="dim-concept"><strong>Concept:</strong> The social game being played. Captures psychological intent, power dynamics, register, and emotional masking.</p>
+    <div class="dim-annotation"><strong>Annotation Instruction:</strong> Based on prosodic and register cues. Listen for masking, status, and stakes.</div>
+    <div class="dim-counts">
+      <span><strong>56</strong> entries</span>
+      <span><strong>8</strong> groups</span>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Professional &amp; Transactional <span class="group-count">5</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Boardroom / Business Negotiation</div>
+        <span class="entry-key">social_boardroom_negotiation</span>
+        <p class="entry-sig">The &quot;Alpha Shield.&quot; Guarded, low-pitched, steady. Deliberate lack of emotional leakage. Competitive but polite turn-taking.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Customer Service (The Mask)</div>
+        <span class="entry-key">social_customer_service_mask</span>
+        <p class="entry-sig">The &quot;Smile-Voice.&quot; Pitch artificially raised. High uptalk usage. Articulation clear but emotion detached or plastic.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Legal / Bureaucratic</div>
+        <span class="entry-key">social_legal_bureaucratic</span>
+        <p class="entry-sig">The &quot;Fine Print.&quot; Rapid-fire monotone delivery. Emphasis on qualifying words. Zero melody; goal is accuracy.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Medical / Clinical Assessment</div>
+        <span class="entry-key">social_medical_clinical</span>
+        <p class="entry-sig">The &quot;Detach.&quot; Gentle but investigative. Soft to soothe, clinically distant for authority. Falling intonation for questions.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Job Interview (The Applicant)</div>
+        <span class="entry-key">social_job_interview</span>
+        <p class="entry-sig">The &quot;Anxious Professional.&quot; High energy masked by careful grammar. Agreement noises. Over-enunciation. Shallow breath from nerves.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Conflict &amp; High Stakes <span class="group-count">8</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Domestic Argument (Cyclical)</div>
+        <span class="entry-key">social_argument_domestic</span>
+        <p class="entry-sig">The &quot;Nag/Whine.&quot; Overlapping speech. Nasal or high-pitched complaining. Cyclical repetition with increasing frustration.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Interrogation / Police Interaction</div>
+        <span class="entry-key">social_interrogation_police</span>
+        <p class="entry-sig">The &quot;Power Imbalance.&quot; One voice stern using silence as weapon; other voice shaky with hedging language.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Pleading / Begging</div>
+        <span class="entry-key">social_plea_desperate</span>
+        <p class="entry-sig">The &quot;Submission.&quot; High pitch, shaky breath, creaky onset. Speaker talks quickly before being cut off. Submissive tone.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Emergency / Crisis (911)</div>
+        <span class="entry-key">social_emergency_panic</span>
+        <p class="entry-sig">The &quot;Suppression.&quot; Hyperventilating but forcing steady voice. Rapid rate, high pitch, staccato delivery.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Bullying / Intimidation</div>
+        <span class="entry-key">social_bullying_intimidation</span>
+        <p class="entry-sig">The &quot;Growl.&quot; Pitch drops to bottom of range. Tempo slows to invade acoustic space. Lazy but threatening articulation.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Passive-Aggressive</div>
+        <span class="entry-key">social_passive_aggressive</span>
+        <p class="entry-sig">The &quot;Sugar-Coated Knife.&quot; Sweet polite tone but stress falls on wrong words. Frequent heavy sighing implying judgment.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Cold Revenge / Calculated Payback</div>
+        <span class="entry-key">social_revenge_cold</span>
+        <p class="entry-sig">The &quot;ice.&quot; The voice is eerily calm and measured — the opposite of hot anger. Pitch is low, tempo is slow, and every word lands with deliberate weight. There is a satisfaction audible in the control — the speaker has rehearsed this. Smiling while threatening. The lack of emotional leakage is itself terrifying. &quot;I&#x27;ve been waiting to tell you this.&quot;</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Discovering Betrayal / Trust Shattered</div>
+        <span class="entry-key">social_betrayal_discovery</span>
+        <p class="entry-sig">The &quot;break.&quot; A stunned, breathless quality. The speaker repeats what they&#x27;ve learned in disbelief (&quot;You... you did what?&quot;). The voice is quiet — shock suppresses volume. Then comes the wave: pitch rises, volume explodes, and the voice cracks. The transition from numb to volcanic happens in seconds. Accusations become fragmented, circling back to the central wound.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Intimacy &amp; Vulnerability <span class="group-count">10</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Pillow Talk / Post-Coital</div>
+        <span class="entry-key">social_pillow_talk</span>
+        <p class="entry-sig">The &quot;Melt.&quot; Extreme vocal fry. Very slow tempo. Minimal articulation. Long comfortable silences. Voice unprojected.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Flirting / Attraction</div>
+        <span class="entry-key">social_flirt_attraction</span>
+        <p class="entry-sig">The &quot;Play.&quot; Breathy voice. Frequent soft laughter. Men drop pitch; women raise pitch or use head voice. Teasing rhythm.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Gossip / Sharing Secrets</div>
+        <span class="entry-key">social_gossip_conspiracy</span>
+        <p class="entry-sig">The &quot;Huddle.&quot; Rapid-fire pacing, hushed volume, sudden pitch spikes. Intonation invites listener into exclusive circle.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Comforting / Consoling</div>
+        <span class="entry-key">social_comforting_soothe</span>
+        <p class="entry-sig">The &quot;Blanket.&quot; Steady, rhythmic, low-frequency hum. Downward inflections on every sentence. Speaker matches distressed person&#x27;s breathing.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Confession / Admitting Guilt</div>
+        <span class="entry-key">social_confession_guilt</span>
+        <p class="entry-sig">The &quot;Drop.&quot; Volume drops at moment of truth. Hesitation markers increase. Speaker avoids assertive downward intonation.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Sincere Apology / Making Amends</div>
+        <span class="entry-key">social_apology_sincere</span>
+        <p class="entry-sig">The &quot;kneel.&quot; The voice drops in volume and pitch — the speaker makes themselves acoustically smaller. Sentences are carefully constructed, then often restarted (&quot;What I mean is...&quot;). The tone is heavy with genuine remorse. Pauses are frequent as the speaker monitors the listener&#x27;s reaction. The voice may crack if the apology touches deep guilt.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Permanent Goodbye / Final Farewell</div>
+        <span class="entry-key">social_goodbye_permanent</span>
+        <p class="entry-sig">The &quot;last page.&quot; Every word is weighed because there won&#x27;t be more. The voice is thick with suppressed emotion — trembling but controlled. Speaking rate slows to an almost ceremonial pace. The speaker memorizes the moment — sensory descriptions increase. Silences are full, not empty. The voice may break on the very last word.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Surprise Reunion / Seeing a Loved One</div>
+        <span class="entry-key">social_reunion_surprise</span>
+        <p class="entry-sig">The &quot;shockwave.&quot; An involuntary gasp or scream at recognition. The voice immediately jumps to maximum pitch and volume — then collapses into sobbing or laughter. Speech is incoherent fragments (&quot;Oh my God! You&#x27;re—how—I can&#x27;t—&quot;). The speaker physically moves toward the person, creating Doppler shifts and rustling. Pure, unfiltered emotion.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Therapy Session / Emotional Unpacking</div>
+        <span class="entry-key">social_therapy_session</span>
+        <p class="entry-sig">The &quot;excavation.&quot; Starts with guarded, careful speech (intellectualizing). Gradually, the voice softens and cracks as defenses lower. Long pauses where the speaker stares into the middle distance. The therapist&#x27;s prompts are gentle with upward inflection. Breakthrough moments sound like the voice &quot;giving way&quot; — a sudden shift from controlled to raw, followed by tears or silence.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Admitting Vulnerability / &quot;I&#x27;m Not Okay&quot;</div>
+        <span class="entry-key">social_vulnerable_admission</span>
+        <p class="entry-sig">The &quot;crack.&quot; The speaker has been performing strength, and the mask slips. The transition is audible — the voice abruptly drops from confident to small. Breath becomes shaky. The speaker often laughs nervously immediately after the admission to re-armor. Pitch wavers. Volume falls to barely audible. The hardest sentences in the human repertoire.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Casual &amp; Group Dynamics <span class="group-count">4</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Bro-Talk / Locker Room</div>
+        <span class="entry-key">social_brotalk_locker</span>
+        <p class="entry-sig">The &quot;Posturing.&quot; Loud volume, heavy slang. Boisterous percussive laughter. Frequent friendly interruptions.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Awkwardness / Strangers</div>
+        <span class="entry-key">social_awkward_stranger</span>
+        <p class="entry-sig">The &quot;Gap.&quot; Frequent uncomfortable silences. Excessive filler laughs. Topics shift rapidly.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Party / Cocktail Hour</div>
+        <span class="entry-key">social_party_mingle</span>
+        <p class="entry-sig">The &quot;Lombard Shift.&quot; Projecting over background noise while trying to sound casual. Elevated pitch, short punchy sentences.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Online Gaming (Co-op)</div>
+        <span class="entry-key">social_gaming_team</span>
+        <p class="entry-sig">The &quot;Tactical.&quot; Mix of high-stress callouts and casual banter. Instant code-switching between focus mode and social mode.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Performance &amp; Ritual <span class="group-count">4</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Storytelling / Campfire</div>
+        <span class="entry-key">social_storytelling_camp</span>
+        <p class="entry-sig">The &quot;Theater.&quot; Wide dynamic range. Character voices. Hypnotic rhythm.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Wedding Toast / Eulogy</div>
+        <span class="entry-key">social_toast_speech</span>
+        <p class="entry-sig">The &quot;Nervous Formal.&quot; Poor projection with public speaking tremor mixed with sentimental language. Overly long pauses.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Preaching / Religious Service</div>
+        <span class="entry-key">social_sermon_preach</span>
+        <p class="entry-sig">The &quot;Cadence.&quot; Musical rhythmic delivery. Huge dynamic swells. Call-and-response gaps.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Military / Drill Command</div>
+        <span class="entry-key">social_military_command</span>
+        <p class="entry-sig">The &quot;Bark.&quot; Zero emotion. Maximum volume. Words clipped short for distance carry without echoing.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Negative &amp; Deceptive <span class="group-count">5</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Lying / Deception</div>
+        <span class="entry-key">social_deceptive_lying</span>
+        <p class="entry-sig">The &quot;Cognitive Load.&quot; Subtle pitch increase. Over-explanation. Inconsistency between word confidence and voice shakiness.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Chronic Complaining</div>
+        <span class="entry-key">social_complaining_whine</span>
+        <p class="entry-sig">The &quot;Drone.&quot; Nasal resonance. Repetitive sing-song pitch contour. Elongated vowels to emphasize suffering.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Intoxicated / Drunk</div>
+        <span class="entry-key">social_drunk_intoxicated</span>
+        <p class="entry-sig">The &quot;Slur.&quot; Loss of tongue motor control. Volume control fails. Emotional volatility.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Scolding / Disciplining</div>
+        <span class="entry-key">social_scolding_discipline</span>
+        <p class="entry-sig">The &quot;Teacher Tone.&quot; Low pitch, slow tempo. Distinct word separation. Heavy final intonation drop.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Mockery / Sarcasm</div>
+        <span class="entry-key">social_mockery_sarcasm</span>
+        <p class="entry-sig">The &quot;Caricature.&quot; Nasal exaggerated tone mimicking someone. Extreme pitch contours.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Emotional Extremes &amp; Crises <span class="group-count">12</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Grief / Active Mourning</div>
+        <span class="entry-key">social_grief_mourning</span>
+        <p class="entry-sig">The &quot;hollow.&quot; A voice emptied of its normal energy. Long, vacant pauses. The pitch is low and monotone, punctuated by sudden cracks into crying. Sentences start with intention but collapse midway. Swallowing is frequent and audible as the speaker fights the lump in the throat. A quality of disbelief — &quot;this can&#x27;t be real&quot; — pervades the tone.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Heartbreak / Romantic Devastation</div>
+        <span class="entry-key">social_heartbreak</span>
+        <p class="entry-sig">The &quot;shatter.&quot; The voice wavers between numb flatness and sudden sobbing outbursts. Sentences are obsessively repetitive (&quot;I can&#x27;t believe...&quot;, &quot;How could...&quot;). The pitch is unstable — the speaker cannot find their normal register. Breath hitches (mini-sobs) interrupt even calm sentences. A raw, exposed vulnerability makes every word sound like it physically hurts.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Ecstatic Joy / Overwhelming Happiness</div>
+        <span class="entry-key">social_ecstatic_joy</span>
+        <p class="entry-sig">The &quot;burst.&quot; Volume spikes uncontrollably. Pitch jumps to the top of the speaker&#x27;s range. Speech rate accelerates until words tumble over each other. Laughter and crying become indistinguishable (tears of joy). The speaker may scream, jump, or hyperventilate. Sentences are fragmentary — the emotion overflows faster than language can contain it.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Jealousy / Corrosive Envy</div>
+        <span class="entry-key">social_jealousy_envy</span>
+        <p class="entry-sig">The &quot;acid.&quot; A controlled but bitter tone. The voice is tight, clipped, and slightly higher than baseline from tension. Fake congratulations sound hollow — the smile doesn&#x27;t reach the voice. Sarcastic undertones bleed through despite effort. The speaker often falls silent when the object of envy is discussed, then re-enters with forced casualness.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Panic Attack / Anxiety Spiral</div>
+        <span class="entry-key">social_panic_attack</span>
+        <p class="entry-sig">The &quot;spiral.&quot; Hyperventilation dominates — rapid, shallow, audible gasping that the speaker cannot control. Speech is fragmented, repetitive, and catastrophic (&quot;I&#x27;m dying,&quot; &quot;I can&#x27;t breathe&quot;). The voice is high-pitched and quavering. Physical symptoms (tingling, chest pain) make the speaker sound genuinely medically distressed. Attempts to speak trigger more hyperventilation.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Public Humiliation / Crushing Shame</div>
+        <span class="entry-key">social_shame_humiliation</span>
+        <p class="entry-sig">The &quot;shrink.&quot; The voice physically retracts — volume drops to near-inaudible. The speaker wishes to disappear. Sentences trail off into nothing. The pitch is flat and defeated. If forced to speak, the voice cracks. Swallowing and throat-clearing increase as the body physically tightens. The speaker avoids eye contact, and the voice follows — directed at the floor.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Nostalgia / Deep Longing / Homesickness</div>
+        <span class="entry-key">social_nostalgia_longing</span>
+        <p class="entry-sig">The &quot;ache.&quot; A warm but sorrowful tone. The voice softens and slows as the speaker enters the memory. Pitch descends gently. Sentences lengthen and become poetic or descriptive. Sighing is frequent. A bittersweet smile is audible — the voice is simultaneously fond and pained. Long pauses as the speaker lingers in the feeling.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Religious Ecstasy / Spiritual Rapture</div>
+        <span class="entry-key">social_religious_ecstasy</span>
+        <p class="entry-sig">The &quot;transcendence.&quot; The voice breaks free of normal conversational patterns into something chant-like, glossolalic, or sing-song. Pitch soars. The tempo becomes rhythmic and almost musical. The speaker may cry, laugh, or fall into ecstatic repetition. Rationality and self-monitoring are abandoned — the voice sounds possessed or channeling.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Dissociation / Emotional Numbness / Derealization</div>
+        <span class="entry-key">social_dissociation</span>
+        <p class="entry-sig">The &quot;glass wall.&quot; Flat, robotic affect. The speaker sounds like they are narrating someone else&#x27;s life. Zero pitch variation. Responses are delayed as if traveling through fog. The voice has an eerie calm that is more disturbing than screaming. Words are technically coherent but emotionally vacant. No filler words — just empty, precise statements.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Manic Episode / Hypomania</div>
+        <span class="entry-key">social_manic_episode</span>
+        <p class="entry-sig">The &quot;rocket.&quot; Extremely fast, pressured speech — the speaker cannot stop talking. Ideas cascade and jump tangentially (flight of ideas). Volume is too loud. Grandiosity inflates the tone — everything sounds like a TED talk. Laughter is frequent and unearned. The speaker interrupts themselves before finishing sentences to start new ones. Energy feels limitless but brittle.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Blind Fury / Uncontrolled Rage</div>
+        <span class="entry-key">social_fury_rage</span>
+        <p class="entry-sig">The &quot;eruption.&quot; Maximum volume delivered from the gut. Vocal cords are slammed together — the voice is rough, distorted, and may crack from sheer force. Sentences become short, percussive attacks. Profanity increases. Pitch drops to the basement or jumps to screaming. Breathing is heavy and snorting. Objects may be thrown or struck — crashes and impacts in background.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Profound Relief / Cathartic Release</div>
+        <span class="entry-key">social_relief_catharsis</span>
+        <p class="entry-sig">The &quot;exhale.&quot; A long, shuddering outbreath that carries the weight of sustained tension. The voice trembles but is rising — pitch lifts with hope. Laughter and tears mix freely. The speaker may collapse physically (audible body drop or slump). Sentences often begin with &quot;Oh my God&quot; or &quot;Thank God.&quot; The tone transitions from shaky to warm over seconds.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Sexual &amp; Romantic Dynamics <span class="group-count">8</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Phone Sex / Audio Erotica</div>
+        <span class="entry-key">social_phone_sex</span>
+        <p class="entry-sig">The &quot;performance.&quot; Breathy, low-pitched, deliberately seductive vocal quality. The speaker narrates actions and sensations in real-time — slow, descriptive, and hypnotic. Moans and sighs are semi-performative (louder and more shaped than genuine arousal). Close-mic proximity effect makes the voice warm and bass-heavy. Pauses are filled with audible breathing.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Dirty Talk / Verbal Domination</div>
+        <span class="entry-key">social_dirty_talk</span>
+        <p class="entry-sig">The &quot;command.&quot; Low pitch, authoritative delivery. Words are chosen for shock value and spoken with deliberate, hard articulation. The tone oscillates between growling dominance and breathy seduction. Profanity is weaponized — delivered with relish. Volume modulates between whispered threats in the ear and firm, projected commands.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Dom/Sub Power Exchange</div>
+        <span class="entry-key">social_dom_sub_dynamic</span>
+        <p class="entry-sig">The &quot;polarity.&quot; Two distinct vocal registers in one interaction: the Dominant voice is steady, low, slow, and uses clipped commands with falling intonation (&quot;Kneel.&quot; &quot;Look at me.&quot;). The Submissive voice is high, breathy, compliant, and uses rising intonation seeking approval (&quot;Yes, Sir?&quot; &quot;Like this?&quot;). The power asymmetry is entirely audible.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Calculated Seduction / The Approach</div>
+        <span class="entry-key">social_seduction_calculated</span>
+        <p class="entry-sig">The &quot;velvet.&quot; Every vocal parameter is consciously optimized. Pitch is lowered. Tempo is slowed. Pauses are loaded with intention. The speaker mirrors the target&#x27;s speech patterns (rapport building). Compliments are delivered with a slight breathiness. Laughter is strategically placed. The voice sounds effortlessly charming — which requires enormous effort.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Sexual Rejection / Turning Someone Down</div>
+        <span class="entry-key">social_sexual_rejection</span>
+        <p class="entry-sig">The &quot;wall.&quot; Abrupt shift from warm to firm. The pitch flattens. Volume drops but clarity increases — every word is deliberate to leave no ambiguity. &quot;No&quot; is said with a downward inflection and a period, not a question mark. Awkwardness creates audible discomfort: throat clearing, shifted posture, and a desire to exit the conversation quickly.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Casual Hookup / One-Night Stand Negotiation</div>
+        <span class="entry-key">social_hookup_casual</span>
+        <p class="entry-sig">The &quot;shortcut.&quot; Fast-forwarded intimacy — the voice is warmer and more familiar than the actual relationship warrants. Both speakers use a lot of nervous laughter to mask vulnerability. Volume is conspiratorially low (don&#x27;t want friends/roommates to hear). Sentences are short and logistical (&quot;Your place or mine?&quot;) masked in casual affect.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">BDSM Aftercare / Post-Scene Recovery</div>
+        <span class="entry-key">social_bdsm_aftercare</span>
+        <p class="entry-sig">The &quot;landing.&quot; The Dominant voice shifts from commanding to extremely tender — soft, low, reassuring. The Submissive voice is small, shaky, and child-like (subdrop). Both voices are exhausted and intimate. Blanket rustling, water sipping, and soft physical contact sounds. The rhythm is slow and repetitive — &quot;You did so well,&quot; &quot;I&#x27;ve got you&quot; — like soothing an infant.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Sexual Consent Negotiation / Boundary Setting</div>
+        <span class="entry-key">social_consent_negotiation</span>
+        <p class="entry-sig">The &quot;checkpoint.&quot; A deliberate shift from aroused/playful to serious/clear. The voice becomes notably more sober, slower, and articulate. Rising intonation for genuine questions (&quot;Is this okay?&quot;). The listener&#x27;s response is carefully attended to — silence triggers a full stop. If boundaries are stated, the voice is firm but not hostile. An audible gear-shift back to arousal follows a clear &quot;yes.&quot;</p>
+      </div>
+    </div>
+  </div>
+  <a href="#top" class="back-top">&uarr; Back to top</a>
+</section>
+<section class="dim-section" id="dim-ENVI">
+  <div class="dim-header" style="background: linear-gradient(135deg, #1B433211, #2D6A4F11);">
+    <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#1B4332,#2D6A4F);"></div>
+    <div class="dim-title-row">
+      <span class="dim-icon">&#x1F3D4;</span>
+      <span class="dim-code" style="background:#1B4332;">ENVI</span>
+      <span class="dim-name">Environment &amp; Acoustic Space</span>
+    </div>
+    <p class="dim-concept"><strong>Concept:</strong> The physical space surrounding the speaker. Determines reverb characteristics, ambient noise floor, and acoustic reflections that color the voice.</p>
+    <div class="dim-annotation"><strong>Annotation Instruction:</strong> Listen for reverb tail length, early reflections, ambient noise type, and proximity effects caused by the environment.</div>
+    <div class="dim-counts">
+      <span><strong>22</strong> entries</span>
+      <span><strong>4</strong> groups</span>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Indoor Intimate <span class="group-count">6</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Tiled Bathroom / Shower</div>
+        <span class="entry-key">env_bathroom_tiled</span>
+        <p class="entry-sig">Bright, harsh reverb with strong early reflections off hard parallel surfaces. Flutter echo on sharp consonants. The &quot;singing in the shower&quot; resonance amplifies the voice, making it sound larger than it is.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Walk-in Closet / Padded Room</div>
+        <span class="entry-key">env_closet_padded</span>
+        <p class="entry-sig">Acoustically &quot;dead.&quot; Fabric absorbs all reflections. The voice sounds dry, flat, and unusually close. No sense of space. Often used as improvised vocal booths.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Carpeted Bedroom</div>
+        <span class="entry-key">env_bedroom_carpeted</span>
+        <p class="entry-sig">Warm, moderate absorption. Soft surfaces dampen high frequencies. The voice sounds intimate and natural. Slight low-frequency reinforcement from bed/furniture.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Elevator / Metal Box</div>
+        <span class="entry-key">env_elevator_metal</span>
+        <p class="entry-sig">Metallic flutter echo in a tiny space. The voice bounces between parallel steel walls creating a harsh, ringing quality. Mechanical hum and cable noise in background.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Concrete Stairwell</div>
+        <span class="entry-key">env_stairwell_concrete</span>
+        <p class="entry-sig">Long, bright reverb spiraling upward. Hard surfaces create strong reflections. Footstep echoes compete with speech. Voice sounds grandiose but harsh.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Long Hallway / Corridor</div>
+        <span class="entry-key">env_corridor_hallway</span>
+        <p class="entry-sig">Distinctive &quot;tunnel&quot; reverb. Sound travels linearly with long decay. Footsteps echo rhythmically. Voice gains an eerie, elongated quality.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Indoor Large <span class="group-count">5</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Cathedral / Stone Church</div>
+        <span class="entry-key">env_cathedral_stone</span>
+        <p class="entry-sig">Massive reverb tail (3-6 seconds). Stone walls create warm, enveloping reflections. Speech intelligibility drops; only slow, deliberate speech cuts through. Organ-like low-frequency resonance.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Empty Gymnasium / Sports Hall</div>
+        <span class="entry-key">env_gymnasium_empty</span>
+        <p class="entry-sig">Harsh, metallic flutter echo off polished floors and high ceilings. The voice sounds thin and echoey. Sneaker squeaks and ball bounces in the background.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Theater / Auditorium Stage</div>
+        <span class="entry-key">env_auditorium_stage</span>
+        <p class="entry-sig">Designed acoustics with controlled reverb. The voice projects clearly into the space. Stage monitors may create slight delay. The speaker hears their own voice returning from the back wall.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Warehouse / Factory Floor</div>
+        <span class="entry-key">env_warehouse_industrial</span>
+        <p class="entry-sig">Industrial echo with machinery hum. High ceilings create long reverb but hard surfaces make it harsh. Safety alarms, forklifts, and ventilation compete with speech.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Open Plan Office</div>
+        <span class="entry-key">env_office_open</span>
+        <p class="entry-sig">Moderate reverb dampened by cubicle partitions. HVAC white noise floor. Background murmur of other conversations. The speaker unconsciously lowers volume for privacy.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Outdoor <span class="group-count">6</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Open Field / Plain</div>
+        <span class="entry-key">env_open_field</span>
+        <p class="entry-sig">Zero reflections. The voice sounds small and unsupported, quickly absorbed by open air. Wind is the primary interference. No bass reinforcement.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Dense Forest / Jungle</div>
+        <span class="entry-key">env_forest_dense</span>
+        <p class="entry-sig">Scattered absorption from trees and foliage. The voice sounds dampened and &quot;swallowed&quot; by the environment. Bird calls, insects, and rustling leaves in background.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">City Street</div>
+        <span class="entry-key">env_urban_street</span>
+        <p class="entry-sig">Complex reflection pattern off buildings. Traffic noise (60-80dB) triggers strong Lombard effect. Emergency sirens, construction, and crowd noise compete for attention.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Mountain Summit / Cliff Edge</div>
+        <span class="entry-key">env_mountain_peak</span>
+        <p class="entry-sig">Thin air reduces projection power. Wind is fierce and constant. Dramatic echoes off cliff faces with long delay. The speaker must shout but has less breath to do it.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Beach / Shoreline</div>
+        <span class="entry-key">env_beach_shore</span>
+        <p class="entry-sig">Rhythmic wave crash provides constant low-frequency background. Open space with sand absorption. Wind exposure. Voice sounds clear but unanchored.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">In Heavy Rain / Thunderstorm</div>
+        <span class="entry-key">env_rain_heavy</span>
+        <p class="entry-sig">Continuous broadband noise from rain hitting surfaces. Thunder interrupts. The speaker raises volume significantly. Water on face may affect articulation.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Extreme &amp; Specialized <span class="group-count">5</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Partially Submerged / Water Surface</div>
+        <span class="entry-key">env_underwater_partial</span>
+        <p class="entry-sig">Gurgling, splashing interference. Voice alternates between clear (above water) and completely muffled (submerged). Gasping for air between phrases.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Inside Sealed Helmet / Space Suit</div>
+        <span class="entry-key">env_sealed_helmet</span>
+        <p class="entry-sig">Voice reverberates inside the helmet cavity. Breathing is amplified and claustrophobic. Radio crackle on transmission. The voice sounds tinny and confined.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Cave / Underground Tunnel</div>
+        <span class="entry-key">env_cave_underground</span>
+        <p class="entry-sig">Deep, booming reverb with irregular reflections. Dripping water provides rhythmic background. The voice has a primordial, resonant quality. Low frequencies amplified.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Inside Moving Vehicle (Car/Bus)</div>
+        <span class="entry-key">env_moving_vehicle_interior</span>
+        <p class="entry-sig">Engine drone provides constant low-frequency bed. Road noise (tire hiss) adds white noise. Vibration affects voice stability. Lombard effect engaged.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Aircraft Cabin (Pressurized)</div>
+        <span class="entry-key">env_aircraft_cabin</span>
+        <p class="entry-sig">Intense broadband engine noise (75-85dB). Pressurized air dries the throat. The speaker must lean close and project. Ear pressure affects self-monitoring of volume.</p>
+      </div>
+    </div>
+  </div>
+  <a href="#top" class="back-top">&uarr; Back to top</a>
+</section>
+<section class="dim-section" id="dim-HLTH">
+  <div class="dim-header" style="background: linear-gradient(135deg, #9B222611, #AE201211);">
+    <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#9B2226,#AE2012);"></div>
+    <div class="dim-title-row">
+      <span class="dim-icon">&#x1FA7A;</span>
+      <span class="dim-code" style="background:#9B2226;">HLTH</span>
+      <span class="dim-name">Health &amp; Physiological Condition</span>
+    </div>
+    <p class="dim-concept"><strong>Concept:</strong> Medical, biological, or physiological conditions of the speaker that alter voice production at the source. These are states of the body itself, not external forces.</p>
+    <div class="dim-annotation"><strong>Annotation Instruction:</strong> Listen for pathological voice qualities - hoarseness, breathiness, nasality, reduced range, tremor, or unusual effort in phonation.</div>
+    <div class="dim-counts">
+      <span><strong>18</strong> entries</span>
+      <span><strong>4</strong> groups</span>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Respiratory Illness <span class="group-count">4</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Head Cold / Nasal Congestion</div>
+        <span class="entry-key">hlth_common_cold</span>
+        <p class="entry-sig">The &quot;stuffed&quot; voice. Nasal consonants (M, N, NG) become oral (M-&gt;B, N-&gt;D). Resonance shifts away from nasal cavity. Frequent sniffling, throat clearing, and nose blowing interrupt speech.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Sore Throat / Laryngitis</div>
+        <span class="entry-key">hlth_sore_throat</span>
+        <p class="entry-sig">The &quot;sandpaper&quot; voice. Hoarse, raspy phonation with reduced pitch range. The speaker winces audibly on swallowing. Volume is limited because pushing air past inflamed folds is painful.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Asthma / Restricted Airway</div>
+        <span class="entry-key">hlth_asthma_attack</span>
+        <p class="entry-sig">Audible wheeze on both inhalation and exhalation. Sentences are extremely short (3-5 words max). The voice sounds &quot;squeezed&quot; through a narrowed passage. Inhaler clicks may be present.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Seasonal Allergies</div>
+        <span class="entry-key">hlth_allergies_seasonal</span>
+        <p class="entry-sig">Watery, itchy quality. Frequent sneezing fits. Eyes watering affects facial tension. Nasal drip creates a perpetual &quot;post-nasal&quot; thickness. Antihistamine dryness may also be present.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Systemic Conditions <span class="group-count">5</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">High Fever / Delirium</div>
+        <span class="entry-key">hlth_fever_high</span>
+        <p class="entry-sig">The &quot;wavering&quot; voice. Temperature dysregulation causes shivering and sweating. Speech may become confused or hallucinatory. Pitch is unstable. Dry, cracked lips affect bilabials.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Severe Dehydration</div>
+        <span class="entry-key">hlth_dehydration_severe</span>
+        <p class="entry-sig">The &quot;cracked&quot; voice. Mouth is parched--audible sticky lip sounds and tongue clicks. Saliva is insufficient, causing harsh frictional noise on sibilants. Voice fatigues rapidly.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Low Blood Sugar / Hypoglycemia</div>
+        <span class="entry-key">hlth_low_blood_sugar</span>
+        <p class="entry-sig">The &quot;fading&quot; voice. Hands trembling affects jaw stability. Speech becomes slurred and confused, similar to intoxication. Volume drops. Concentration breaks mid-sentence.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Late Pregnancy (Third Trimester)</div>
+        <span class="entry-key">hlth_pregnancy_late</span>
+        <p class="entry-sig">Compressed diaphragm from enlarged uterus. Breathlessness even at rest. Voice sounds effortful. Frequent sighing. Posture-related discomfort audible in shifting and adjusting.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Altitude Sickness</div>
+        <span class="entry-key">hlth_altitude_sickness</span>
+        <p class="entry-sig">Gasping for adequate oxygen. Speech is slow with frequent deep breaths. Headache pain audible as wincing. Confusion may cause word-finding difficulty.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Injury &amp; Post-Medical <span class="group-count">5</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Post-Dental Work (Numbed)</div>
+        <span class="entry-key">hlth_dental_numbed</span>
+        <p class="entry-sig">The &quot;novocaine&quot; voice. Half the face is paralyzed. Bilabials (B, P, M) are sloppy. Drooling may occur. The speaker compensates by over-articulating the working side.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Jaw Injury / Wired Shut</div>
+        <span class="entry-key">hlth_jaw_wired</span>
+        <p class="entry-sig">Severe articulation restriction. All speech passes through clenched teeth. Consonants requiring jaw movement (wide vowels, bilabials) are almost impossible. Voice sounds muffled and strained.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Concussion / Head Injury</div>
+        <span class="entry-key">hlth_concussion</span>
+        <p class="entry-sig">The &quot;fog&quot; voice. Slow processing speed. Long pauses searching for words. Monotone delivery. Volume may be inappropriately loud (difficulty self-monitoring).</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Vocal Nodules / Cord Damage</div>
+        <span class="entry-key">hlth_vocal_nodules</span>
+        <p class="entry-sig">Chronic hoarseness. The voice &quot;breaks&quot; unpredictably between registers. Breathy quality with air escaping through incomplete cord closure. Limited pitch range.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Speaker Has Hearing Loss</div>
+        <span class="entry-key">hlth_hearing_loss_speaker</span>
+        <p class="entry-sig">The &quot;uncalibrated&quot; voice. Volume is inappropriately loud (cannot self-monitor). Pitch may drift. Articulation is either overly precise (trained) or degraded (untrained). Sibilants are poorly controlled.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Neurological &amp; Chronic <span class="group-count">4</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Parkinson&#x27;s / Neurological Tremor</div>
+        <span class="entry-key">hlth_parkinsons_tremor</span>
+        <p class="entry-sig">The &quot;diminishing&quot; voice. Progressive reduction in volume (hypophonia). Monotone pitch. Tremor creates a rhythmic wobble. Articulation becomes increasingly mumbled.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Post-Stroke / Aphasia</div>
+        <span class="entry-key">hlth_stroke_aphasia</span>
+        <p class="entry-sig">The &quot;searching&quot; voice. Long, frustrated pauses. Words come out wrong or garbled. The speaker knows what they want to say but the motor pathway is disrupted. Often accompanied by emotional frustration.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Chronic Stutter / Disfluency</div>
+        <span class="entry-key">hlth_stuttering_chronic</span>
+        <p class="entry-sig">Repetitions, prolongations, and blocks. Silent blocks where the speaker is physically unable to initiate phonation. Tension visible in pitch spikes at moment of release. Secondary behaviors (eye blinks, head nods) may be audible.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Vocal Tics / Tourette&#x27;s</div>
+        <span class="entry-key">hlth_tourettes_vocal</span>
+        <p class="entry-sig">Involuntary vocal intrusions: sudden shouts, words, or sounds that interrupt the flow of normal speech. The speaker often continues immediately after the tic as if nothing happened.</p>
+      </div>
+    </div>
+  </div>
+  <a href="#top" class="back-top">&uarr; Back to top</a>
+</section>
+<section class="dim-section" id="dim-GEAR">
+  <div class="dim-header" style="background: linear-gradient(135deg, #49505711, #6C757D11);">
+    <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#495057,#6C757D);"></div>
+    <div class="dim-title-row">
+      <span class="dim-icon">&#x1FA96;</span>
+      <span class="dim-code" style="background:#495057;">GEAR</span>
+      <span class="dim-name">Face &amp; Head Obstructions</span>
+    </div>
+    <p class="dim-concept"><strong>Concept:</strong> Physical barriers, coverings, or equipment on or near the speaker&#x27;s face and head that mechanically filter, muffle, or distort the voice before it reaches the listener.</p>
+    <div class="dim-annotation"><strong>Annotation Instruction:</strong> Listen for high-frequency damping, resonant cavity effects, breathing restriction, and mechanical noise from the equipment itself.</div>
+    <div class="dim-counts">
+      <span><strong>14</strong> entries</span>
+      <span><strong>4</strong> groups</span>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Medical &amp; Safety Masks <span class="group-count">4</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Surgical / Cloth Face Mask</div>
+        <span class="entry-key">gear_surgical_mask</span>
+        <p class="entry-sig">High frequencies above 4kHz are attenuated by 3-12dB. Sibilants (S, SH, F) become muddy. Plosives (P, T, K) lose their burst. The speaker unconsciously raises volume 2-3dB to compensate. Breath sounds are amplified inside the mask.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">N95 / Industrial Respirator</div>
+        <span class="entry-key">gear_respirator_n95</span>
+        <p class="entry-sig">Heavy filtering effect. The voice sounds &quot;behind a wall.&quot; Breathing is audibly restricted with a distinct valve-click on exhalation. Speech effort increases dramatically. Very poor intelligibility for quiet speakers.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Full Gas Mask / CBRN</div>
+        <span class="entry-key">gear_gas_mask_full</span>
+        <p class="entry-sig">The &quot;Darth Vader&quot; effect. Voice passes through a chemical filter, creating extreme muffling. Breathing sounds mechanical and menacing. The internal cavity creates a resonant, hollow quality. Communication requires near-shouting.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Oxygen Mask / CPAP</div>
+        <span class="entry-key">gear_oxygen_mask</span>
+        <p class="entry-sig">Plastic cup over nose and mouth dampens mid-frequencies. Constant hissing of oxygen flow. The voice sounds distant and &quot;in a fishbowl.&quot; Speaker must project forcefully.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Helmets &amp; Headgear <span class="group-count">4</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Full-Face Motorcycle Helmet</div>
+        <span class="entry-key">gear_motorcycle_helmet</span>
+        <p class="entry-sig">Voice reverberates inside the padded cavity. Visor creates a narrow acoustic aperture. Wind noise at speed makes speech nearly impossible. At rest, the voice sounds boomy and enclosed.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Space Helmet / Sealed Visor</div>
+        <span class="entry-key">gear_space_helmet</span>
+        <p class="entry-sig">Similar to gas mask but with added radio transmission artifacts--compression, limited bandwidth, static. Breathing is the dominant sound inside the helmet. The voice sounds tinny and robotic.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Medieval Helm / Full Visor</div>
+        <span class="entry-key">gear_medieval_helm</span>
+        <p class="entry-sig">Metal resonance cavity. The voice rings metallically. The narrow eye slit acts as the only acoustic opening, creating a directional, muffled output. Clanking of the visor punctuates speech.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Construction Hard Hat with Visor</div>
+        <span class="entry-key">gear_hardhat_visor</span>
+        <p class="entry-sig">Minimal voice distortion but hard plastic reflects sound downward. Construction site noise in background. Speaker shouts. The hat rim creates a slight &quot;cupping&quot; of the voice.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Fabric &amp; Coverings <span class="group-count">4</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Scarf / Balaclava Over Face</div>
+        <span class="entry-key">gear_scarf_wrapped</span>
+        <p class="entry-sig">Fabric dampens all frequencies proportionally. Breath becomes warm and humid against the face, creating moist mouth sounds. The voice sounds muffled but retains more clarity than hard masks.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Hand Covering Mouth</div>
+        <span class="entry-key">gear_hand_over_mouth</span>
+        <p class="entry-sig">Immediate, dramatic muffling. The hand acts as a low-pass filter. Often associated with shock or trying to stay quiet. Consonants that require lip visibility (labials) are severely impacted.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Face Buried in Pillow / Cushion</div>
+        <span class="entry-key">gear_pillow_face</span>
+        <p class="entry-sig">Extreme muffling--the voice is almost entirely absorbed. Only the loudest, lowest frequencies escape. Used when crying, screaming into a pillow, or lying face-down in bed.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Fabric Veil / Niqab</div>
+        <span class="entry-key">gear_veil_niqab</span>
+        <p class="entry-sig">Subtle high-frequency damping. Less severe than a surgical mask because the fabric hangs loosely. The voice retains most characteristics but sounds slightly &quot;filtered&quot; to the listener.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Communication Equipment <span class="group-count">2</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Push-to-Talk Radio / Walkie-Talkie</div>
+        <span class="entry-key">gear_radio_ptt</span>
+        <p class="entry-sig">Narrow bandwidth (300-3400Hz) eliminates bass warmth and treble air. Compression squashes dynamics. The &quot;kkhht&quot; of the PTT button bookends every transmission. &quot;Over&quot; protocol structures turn-taking.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Megaphone / Bullhorn</div>
+        <span class="entry-key">gear_megaphone_bullhorn</span>
+        <p class="entry-sig">Extreme compression and distortion. The voice is clipped, harsh, and unnaturally loud. Feedback squeals punctuate pauses. All subtlety and nuance is destroyed in favor of raw volume.</p>
+      </div>
+    </div>
+  </div>
+  <a href="#top" class="back-top">&uarr; Back to top</a>
+</section>
+<section class="dim-section" id="dim-CLMT">
+  <div class="dim-header" style="background: linear-gradient(135deg, #005F7311, #0A939611);">
+    <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#005F73,#0A9396);"></div>
+    <div class="dim-title-row">
+      <span class="dim-icon">&#x1F32A;</span>
+      <span class="dim-code" style="background:#005F73;">CLMT</span>
+      <span class="dim-name">Climate &amp; Atmospheric Conditions</span>
+    </div>
+    <p class="dim-concept"><strong>Concept:</strong> Weather, temperature, and atmospheric conditions that the speaker is physically enduring. These affect muscle tension, breathing patterns, and airway moisture.</p>
+    <div class="dim-annotation"><strong>Annotation Instruction:</strong> Listen for involuntary muscle tension (shivering, panting), changes in breath moisture, and environmental noise signatures.</div>
+    <div class="dim-counts">
+      <span><strong>10</strong> entries</span>
+      <span><strong>3</strong> groups</span>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Temperature Extremes <span class="group-count">3</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Bitter Cold / Sub-Zero</div>
+        <span class="entry-key">clmt_freezing_bitter</span>
+        <p class="entry-sig">The &quot;lockjaw.&quot; Facial muscles are numb and rigid. Jaw barely opens. Vowels are centralized (&quot;uh&quot; quality) because the tongue is sluggish. Visible breath vapor may cause slight acoustic distortion close to the mouth.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Extreme Heat / Heatstroke</div>
+        <span class="entry-key">clmt_extreme_heat</span>
+        <p class="entry-sig">The &quot;wilted&quot; voice. Dehydration dries the vocal folds. Panting replaces normal breathing. Speech is lethargic, slow, and broken by heavy exhalations. Sweat drips may be audible.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Humid Tropical / Sauna</div>
+        <span class="entry-key">clmt_humid_tropical</span>
+        <p class="entry-sig">Airway is saturated with moisture. The voice sounds &quot;wet&quot; and heavy. Breathing is deep but unsatisfying. Sweat and moisture create &quot;slippery&quot; mouth sounds.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Wind &amp; Precipitation <span class="group-count">3</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Strong Wind / Gale</div>
+        <span class="entry-key">clmt_strong_wind</span>
+        <p class="entry-sig">Wind buffets the microphone and face. The speaker turns away from the wind to breathe, creating directional shifts. Volume is raised to compete. Words are &quot;torn away&quot; before they reach the listener.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Blizzard / Snow Storm</div>
+        <span class="entry-key">clmt_blizzard_whiteout</span>
+        <p class="entry-sig">Combines freezing cold (lockjaw) with wind noise and disorientation. The speaker shouts into the void. Snow dampens reflections, making the voice sound swallowed by the environment.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Sandstorm / Dust Storm</div>
+        <span class="entry-key">clmt_sandstorm_dust</span>
+        <p class="entry-sig">Speaker breathes through fabric or hand to filter particles. Coughing interrupts. The voice sounds muffled and desperate. Grit in the teeth affects sibilants.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Atmospheric <span class="group-count">4</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">High Altitude / Thin Air</div>
+        <span class="entry-key">clmt_high_altitude_thin</span>
+        <p class="entry-sig">Reduced oxygen makes every sentence an effort. Deep gasping breaths between short phrases. The voice lacks its usual power and projection. Light-headedness may cause slurring.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Smoke-Filled Room / Fire</div>
+        <span class="entry-key">clmt_smoke_filled_room</span>
+        <p class="entry-sig">The &quot;char.&quot; Irritated airways cause raspy, coughing speech. Eyes watering and burning affects facial tension. Urgency in voice as survival instinct kicks in. Carbon monoxide may cause confusion.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Torrential Rain (Exposed)</div>
+        <span class="entry-key">clmt_underwater_rain</span>
+        <p class="entry-sig">Water streaming down the face enters the mouth. The speaker sputters. Voice competes with the roar of heavy rainfall. Sentences are shouted in gaps between thunder.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Dense Fog / Mist</div>
+        <span class="entry-key">clmt_fog_dense</span>
+        <p class="entry-sig">Psychologically oppressive silence. Sound travels strangely--absorbed in some directions, amplified in others. The speaker often speaks louder than necessary, uncertain if they are being heard.</p>
+      </div>
+    </div>
+  </div>
+  <a href="#top" class="back-top">&uarr; Back to top</a>
+</section>
+<section class="dim-section" id="dim-SUBST">
+  <div class="dim-header" style="background: linear-gradient(135deg, #7B2D8E11, #9B59B611);">
+    <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#7B2D8E,#9B59B6);"></div>
+    <div class="dim-title-row">
+      <span class="dim-icon">&#x1F9EA;</span>
+      <span class="dim-code" style="background:#7B2D8E;">SUBST</span>
+      <span class="dim-name">Substance &amp; Chemical Influence</span>
+    </div>
+    <p class="dim-concept"><strong>Concept:</strong> Ingested, inhaled, or injected substances that alter neuromuscular control, cognitive function, or arousal state, thereby changing voice production.</p>
+    <div class="dim-annotation"><strong>Annotation Instruction:</strong> Listen for motor control degradation, tempo changes, volume dysregulation, and emotional volatility not explained by context.</div>
+    <div class="dim-counts">
+      <span><strong>12</strong> entries</span>
+      <span><strong>3</strong> groups</span>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Stimulants <span class="group-count">4</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">High Caffeine Intake</div>
+        <span class="entry-key">subst_caffeine_high</span>
+        <p class="entry-sig">The &quot;wired&quot; voice. Speech rate increases 15-25%. Pitch baseline rises slightly. Articulation is sharp but jittery. The speaker may talk over others or fail to pause. Restless energy audible in rapid breathing.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Stimulant (Amphetamine/MDMA)</div>
+        <span class="entry-key">subst_amphetamine_stimulant</span>
+        <p class="entry-sig">The &quot;machine gun.&quot; Extremely rapid, pressured speech. Jaw clenching (bruxism) distorts consonants. Dry mouth creates sticky articulation sounds. Emotional intensity is disproportionate to content.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Cocaine / Strong Stimulant Rush</div>
+        <span class="entry-key">subst_cocaine_rush</span>
+        <p class="entry-sig">Nasal damage creates audible sniffing and congestion. Speech is grandiose, confident, and fast. Volume is too loud. The speaker interrupts constantly. Numbed throat affects swallowing.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Natural Adrenaline Surge</div>
+        <span class="entry-key">subst_adrenaline_natural</span>
+        <p class="entry-sig">The &quot;survival&quot; voice. Pitch jumps. Time perception warps--speech is fast but feels slow to the speaker. Tunnel-vision focus makes speech extremely direct and stripped of social niceties.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Depressants &amp; Sedatives <span class="group-count">4</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Mildly Intoxicated (1-3 drinks)</div>
+        <span class="entry-key">subst_alcohol_tipsy</span>
+        <p class="entry-sig">The &quot;loosened&quot; voice. Social inhibitions drop. Laughter comes easier. Slight volume increase. Very subtle slurring on complex consonant clusters. Emotional range widens.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Heavily Intoxicated</div>
+        <span class="entry-key">subst_alcohol_heavily_drunk</span>
+        <p class="entry-sig">The &quot;wreck.&quot; Severe slurring--sibilants smear, plosives lose their stop. Volume swings wildly. Emotional volatility (crying to laughing). Balance issues cause the voice to sway with the body.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Opioid / Heavy Sedation</div>
+        <span class="entry-key">subst_opioid_sedated</span>
+        <p class="entry-sig">The &quot;nod.&quot; Extremely slow speech with long pauses. Volume drops to near-whisper. The speaker trails off mid-sentence as consciousness fades. Voice is breathy and lacks any tension or attack.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Benzodiazepine / Tranquilizer</div>
+        <span class="entry-key">subst_benzodiazepine_calm</span>
+        <p class="entry-sig">The &quot;flatline.&quot; Emotional affect is completely blunted. Speech is coherent but robotically calm. No excitement, no fear, no urgency. Muscles are relaxed, creating slightly mushy articulation.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Other Substances <span class="group-count">4</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Cannabis / THC</div>
+        <span class="entry-key">subst_marijuana_high</span>
+        <p class="entry-sig">The &quot;drift.&quot; Slower speech rate with frequent &quot;spacing out&quot; pauses. Dry mouth (cottonmouth) creates sticky lip sounds. Giggly. Thought patterns meander. Volume is usually lower than baseline.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Psychedelic (LSD/Psilocybin)</div>
+        <span class="entry-key">subst_psychedelic_trip</span>
+        <p class="entry-sig">The &quot;wonder.&quot; Speech becomes philosophical and tangential. Long pauses for overwhelming sensory experiences. Pitch range expands dramatically. The speaker may laugh, cry, or fall silent in rapid succession.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Post-Anesthesia / Waking From Sedation</div>
+        <span class="entry-key">subst_anesthesia_waking</span>
+        <p class="entry-sig">The &quot;emergence.&quot; Confused, slurred, childlike speech. Volume and pitch are uncontrolled. The speaker may say things they would normally filter. Motor control returns gradually--early speech is nearly unintelligible.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Chronic Heavy Smoking</div>
+        <span class="entry-key">subst_nicotine_chronic</span>
+        <p class="entry-sig">The &quot;gravel.&quot; Permanent vocal fold thickening from years of irritation. Lowered pitch baseline. Raspy, rough quality. Frequent throat clearing. Reduced pitch range. Morning voice is especially damaged.</p>
+      </div>
+    </div>
+  </div>
+  <a href="#top" class="back-top">&uarr; Back to top</a>
+</section>
+<section class="dim-section" id="dim-FATG">
+  <div class="dim-header" style="background: linear-gradient(135deg, #B5651D11, #CA670211);">
+    <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#B5651D,#CA6702);"></div>
+    <div class="dim-title-row">
+      <span class="dim-icon">&#x1F634;</span>
+      <span class="dim-code" style="background:#B5651D;">FATG</span>
+      <span class="dim-name">Fatigue, Sleep &amp; Energy State</span>
+    </div>
+    <p class="dim-concept"><strong>Concept:</strong> The speaker&#x27;s current energy level, sleep status, and recovery state. These determine the baseline &quot;fuel&quot; available for voice production.</p>
+    <div class="dim-annotation"><strong>Annotation Instruction:</strong> Listen for reduced volume, slower tempo, pitch dropping, vocal fry increase, trailing sentences, and overall &quot;dimming&quot; of the voice.</div>
+    <div class="dim-counts">
+      <span><strong>19</strong> entries</span>
+      <span><strong>4</strong> groups</span>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Sleep-Related <span class="group-count">5</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Just Woken Up (Morning Voice)</div>
+        <span class="entry-key">fatg_just_woken</span>
+        <p class="entry-sig">The &quot;gravel bed.&quot; Vocal folds are swollen from overnight fluid redistribution. Pitch is at its lowest point of the day. Extreme vocal fry. Articulation is sluggish. The voice &quot;warms up&quot; over 15-30 minutes.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">24+ Hours Without Sleep</div>
+        <span class="entry-key">fatg_sleep_deprived_24h</span>
+        <p class="entry-sig">The &quot;zombie.&quot; Microsleep pauses where the speaker blanks out mid-word. Slurred articulation resembling mild intoxication. Flat affect. The voice sounds hollow and lifeless. Yawning interrupts frequently.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Drifting Off / Nodding Off</div>
+        <span class="entry-key">fatg_falling_asleep</span>
+        <p class="entry-sig">The &quot;descent.&quot; Sentences start at normal pace but slow dramatically, trailing into mumbles. Volume decreases progressively. Words merge together. The speaker may jerk awake and restart mid-thought.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Post-Nap Grogginess (Sleep Inertia)</div>
+        <span class="entry-key">fatg_post_nap_groggy</span>
+        <p class="entry-sig">The &quot;fog.&quot; Confused, disoriented quality. The speaker doesn&#x27;t know what time it is. Voice is thick and heavy. Responses are delayed. Cognitive function is worse than pre-nap for 10-20 minutes.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Chronic Insomnia / Long-Term Sleep Debt</div>
+        <span class="entry-key">fatg_insomnia_chronic</span>
+        <p class="entry-sig">The &quot;hollow.&quot; Perpetual low energy. No vocal &quot;peaks&quot;--the dynamic range is compressed. The voice has an anxious, tense quality underlying the exhaustion. Dark circles audible in the tone.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Physical Energy <span class="group-count">3</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Post-Exercise Endorphin High</div>
+        <span class="entry-key">fatg_post_exercise_high</span>
+        <p class="entry-sig">The &quot;glow.&quot; Voice is energized, open, and clear. Breathing is still elevated but controlled. Confidence and positivity leak into tone. Articulation is crisp.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Complete Physical Exhaustion</div>
+        <span class="entry-key">fatg_complete_exhaustion</span>
+        <p class="entry-sig">The &quot;empty tank.&quot; Cannot project. Every word costs effort. Long recovery breaths between phrases. The voice sounds like it is being squeezed from a nearly empty tube.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Second Wind (Late Night Energy)</div>
+        <span class="entry-key">fatg_second_wind</span>
+        <p class="entry-sig">The &quot;manic.&quot; An artificial, slightly delirious energy spike. Speech becomes fast and giggly. The voice has a &quot;punchy&quot; quality that feels unsustainable. Laughter comes too easily.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Relaxation States <span class="group-count">4</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Deep Meditation / Trance</div>
+        <span class="entry-key">fatg_deep_meditation</span>
+        <p class="entry-sig">The &quot;center.&quot; Extremely slow, deliberate speech. Perfect breath control. Voice is soft but clear. Zero tension in the throat. Each word feels intentionally placed.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Deep Relaxation (Post-Massage/Bath)</div>
+        <span class="entry-key">fatg_post_massage_relaxed</span>
+        <p class="entry-sig">The &quot;melt.&quot; Languid, unhurried speech. Muscles are so relaxed that articulation is loose. The voice sounds warm and satisfied. No urgency whatsoever.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Jet Lag / Circadian Disruption</div>
+        <span class="entry-key">fatg_jet_lagged</span>
+        <p class="entry-sig">The &quot;disconnect.&quot; The voice is at odds with the environment--exhausted at noon, wired at midnight. Cognitive fog causes word-finding difficulty. Yawning at inappropriate times.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Caffeine / Sugar Crash</div>
+        <span class="entry-key">fatg_caffeine_crash</span>
+        <p class="entry-sig">The &quot;wall.&quot; Abrupt energy drop after stimulant wears off. Speech slows noticeably. Irritability enters the tone. The speaker sounds deflated and resentful.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Physical Exhaustion <span class="group-count">7</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Hitting the Wall (Endurance Collapse)</div>
+        <span class="entry-key">fatg_hitting_wall</span>
+        <p class="entry-sig">The &quot;bonk.&quot; A sudden, cliff-edge energy drop during sustained exertion (marathon mile 20, hour 3 of a hike). The voice was functional moments ago and now sounds hollow, slurred, and confused — resembling hypoglycemia. Speech becomes monosyllabic. The speaker may become emotionally volatile (crying for no reason). Breathing is inefficient and labored.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Post-Sprint Oxygen Debt</div>
+        <span class="entry-key">fatg_oxygen_debt</span>
+        <p class="entry-sig">The &quot;payback.&quot; Immediately after max-effort exertion. Breathing is violent, gasping, and completely involuntary — it hijacks the vocal system. The speaker bends over (compressed chest), hands on knees. Speech is impossible for 30-60 seconds. First words come out as breathy, shaky whispers between heaving breaths. Nausea may be audible (gagging, spitting).</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Heat Exhaustion / Overheating</div>
+        <span class="entry-key">fatg_heat_exhaustion</span>
+        <p class="entry-sig">The &quot;wilt.&quot; Dehydration dries the vocal folds. Panting replaces normal breathing. The voice is weak, confused, and may slur (mimicking intoxication). Core temperature elevation causes dizziness — the speaker sounds disoriented. Volume drops because the body prioritizes cooling over communication. Speech rate slows to a crawl.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Muscle Failure / Shaking Exhaustion</div>
+        <span class="entry-key">fatg_muscle_failure</span>
+        <p class="entry-sig">The &quot;quake.&quot; The body&#x27;s muscles are in visible tremor — this transmits directly to the voice as a fast, involuntary vibrato. Jaw and neck muscles shake, destabilizing articulation. The speaker sounds like they&#x27;re standing on a vibrating platform. Every exhale carries a tiny, involuntary whimper. Core instability makes the voice sound fundamentally unreliable.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Post-Adrenaline Crash</div>
+        <span class="entry-key">fatg_adrenaline_crash</span>
+        <p class="entry-sig">The &quot;comedown.&quot; After a fight, accident, or emergency. Adrenaline withdrawal causes trembling, nausea, and emotional flooding. The voice is shaky and tearful even if the speaker isn&#x27;t sad. Hands are shaking (audible if holding objects). Speech is rapid and repetitive as the brain replays the event. Sudden emotional outbursts (laughing, crying) without warning.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Multi-Day Sleep Deprivation (48h+)</div>
+        <span class="entry-key">fatg_multi_day_deprivation</span>
+        <p class="entry-sig">The &quot;unraveling.&quot; Beyond mere tiredness — the voice enters a hallucinatory, detached quality. Sentences begin rationally and derail into nonsense. The speaker may argue with things that aren&#x27;t there. Micro-sleeps create sudden silences. Emotional regulation is destroyed — inappropriate laughter, sudden rage, paranoia. The voice sounds like a system failing.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Post-Crying Exhaustion / Cried Out</div>
+        <span class="entry-key">fatg_post_crying_exhaustion</span>
+        <p class="entry-sig">The &quot;aftermath.&quot; The speaker has exhausted their tears. The voice is hoarse and raw from prolonged crying. Nasal congestion is severe, turning all nasal consonants oral. The eyes are swollen, affecting facial resonance. A fragile, emptied-out quality — the speaker is calm not because they feel better but because they have nothing left to expel.</p>
+      </div>
+    </div>
+  </div>
+  <a href="#top" class="back-top">&uarr; Back to top</a>
+</section>
+<section class="dim-section" id="dim-PAIN">
+  <div class="dim-header" style="background: linear-gradient(135deg, #8B000011, #A4133C11);">
+    <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#8B0000,#A4133C);"></div>
+    <div class="dim-title-row">
+      <span class="dim-icon">&#x26A1;</span>
+      <span class="dim-code" style="background:#8B0000;">PAIN</span>
+      <span class="dim-name">Pain &amp; Physical Distress</span>
+    </div>
+    <p class="dim-concept"><strong>Concept:</strong> The type, intensity, and location of pain the speaker is currently experiencing. Pain hijacks the voice by triggering involuntary protective responses.</p>
+    <div class="dim-annotation"><strong>Annotation Instruction:</strong> Listen for sudden gasps, guarded breathing, pitch spikes at onset of pain, reduced volume to minimize physical movement, and overall vocal tension.</div>
+    <div class="dim-counts">
+      <span><strong>12</strong> entries</span>
+      <span><strong>3</strong> groups</span>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Acute Pain <span class="group-count">4</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Sharp Sudden Pain (Cut/Stub/Sting)</div>
+        <span class="entry-key">pain_sharp_sudden</span>
+        <p class="entry-sig">The &quot;spike.&quot; An involuntary yelp or sharp intake of breath at the moment of injury. Immediately followed by guarded, tense speech with held breath. Pitch jumps dramatically at onset then settles into a strained baseline.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Burn / Scald / Contact Pain</div>
+        <span class="entry-key">pain_burn_scald</span>
+        <p class="entry-sig">The &quot;hiss.&quot; Immediate sharp inhalation through clenched teeth (&quot;sssss&quot;). The voice becomes urgent and panicked. The speaker instinctively holds the affected area, reducing one arm&#x27;s gestures.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Impact / Blow to Body</div>
+        <span class="entry-key">pain_impact_blow</span>
+        <p class="entry-sig">The &quot;crumple.&quot; A sudden expulsion of air (grunt or &quot;oof&quot;) as the diaphragm is impacted. Speech immediately after is breathless and shaky. If to the head, confusion and slurring follow.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Labor Contractions / Waves of Pain</div>
+        <span class="entry-key">pain_labor_contractions</span>
+        <p class="entry-sig">The &quot;crest.&quot; Pain arrives in predictable waves. Speech is normal between contractions, then rapidly deteriorates into moaning, grunting, or screaming at the peak, then gradually returns to coherence.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Chronic &amp; Persistent <span class="group-count">4</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Chronic Back/Joint Pain</div>
+        <span class="entry-key">pain_chronic_back</span>
+        <p class="entry-sig">The &quot;wince.&quot; A constant low-level tension in the voice. Periodic sharp intakes of breath when the speaker shifts position. Speech is weary and colored by long-suffering. Sighing is frequent.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Migraine / Severe Headache</div>
+        <span class="entry-key">pain_headache_migraine</span>
+        <p class="entry-sig">The &quot;whisper of necessity.&quot; The speaker minimizes all sound because noise exacerbates the pain. Volume is drastically reduced. Light sensitivity causes squinting which tightens the face. The voice sounds fragile.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Dental Pain / Toothache</div>
+        <span class="entry-key">pain_dental_toothache</span>
+        <p class="entry-sig">The &quot;guard.&quot; The speaker avoids opening the mouth fully. One-sided chewing of words. Cold air intake through the mouth causes wincing. Sibilants may be avoided because air flow over the tooth hurts.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Abdominal Cramp / Gut Pain</div>
+        <span class="entry-key">pain_abdominal_cramp</span>
+        <p class="entry-sig">The &quot;curl.&quot; The speaker doubles over, compressing the rib cage. Breathing becomes shallow and guarded. Voice is directed downward. Groaning undertone on sustained vowels.</p>
+      </div>
+    </div>
+  </div>
+  <div class="group-section">
+    <div class="group-title">Severe &amp; Traumatic <span class="group-count">4</span></div>
+    <div class="entries-grid">
+      <div class="entry-card">
+        <div class="entry-name">Broken Bone / Fracture</div>
+        <span class="entry-key">pain_broken_bone</span>
+        <p class="entry-sig">The &quot;shock.&quot; Initial scream followed by controlled, shaky breathing. The speaker becomes very still to avoid movement. Voice trembles. Adrenaline may temporarily mask the worst, creating an eerie calm before the pain fully registers.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Open Wound / Bleeding</div>
+        <span class="entry-key">pain_wound_bleeding</span>
+        <p class="entry-sig">The &quot;fade.&quot; Progressive weakening as blood loss and shock set in. Voice starts panicked and energized, then gradually loses projection and coherence. Cold sweat and pallor audible as shivering onset.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Muscle Spasm / Cramp</div>
+        <span class="entry-key">pain_muscle_cramp_spasm</span>
+        <p class="entry-sig">The &quot;seize.&quot; Sudden involuntary interruption of speech as the muscle locks. A sharp, strangled sound. The speaker may curse reflexively. Speech resumes once the spasm passes but remains tense and guarded.</p>
+      </div>
+      <div class="entry-card">
+        <div class="entry-name">Extreme Pain / Torture</div>
+        <span class="entry-key">pain_torture_extreme</span>
+        <p class="entry-sig">The &quot;break.&quot; Voice cycles between screaming, sobbing, and near-silence (shock). All social masking is destroyed. Raw, primal vocalizations replace language. Between episodes, the voice is destroyed--hoarse, breathy, and broken.</p>
+      </div>
+    </div>
+  </div>
+  <a href="#top" class="back-top">&uarr; Back to top</a>
+</section>
+</div>
+<footer>
+  VoiceNet-Extension &mdash; Situation Taxonomy v1.0 &mdash; 11 Dimensions, 289 Entries<br>
+  Generated for the VoiceNet / DramaBox Pipeline
+</footer>
+</body>
+</html>

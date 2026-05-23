@@ -78,6 +78,30 @@ def load_asr_model(device: str = "cuda"):
     return model
 
 
+def _ensure_mono_wav(audio_path: str | Path) -> str:
+    """Ensure audio is mono WAV at 16kHz for ASR. Returns path to mono file.
+
+    Parakeet ASR expects (batch, time) — stereo audio causes shape mismatch.
+    Converts in-place to a temp file if needed.
+    """
+    import tempfile
+
+    waveform, sr = torchaudio.load(str(audio_path))
+    needs_convert = waveform.shape[0] > 1 or sr != 16000
+
+    if not needs_convert:
+        return str(audio_path)
+
+    if waveform.shape[0] > 1:
+        waveform = waveform.mean(dim=0, keepdim=True)
+    if sr != 16000:
+        waveform = torchaudio.functional.resample(waveform, sr, 16000)
+
+    tmp = tempfile.NamedTemporaryFile(suffix=".wav", delete=False)
+    torchaudio.save(tmp.name, waveform, 16000)
+    return tmp.name
+
+
 def transcribe_audio(audio_path: str | Path, device: str = "cuda") -> str:
     """Transcribe an audio file using Parakeet v3 ASR.
 
@@ -88,12 +112,18 @@ def transcribe_audio(audio_path: str | Path, device: str = "cuda") -> str:
     Returns:
         Transcribed text string.
     """
-    model = load_asr_model(device)
-    results = model.transcribe([str(audio_path)])
-    # Results is a list of transcription strings or hypothesis objects
-    if isinstance(results[0], str):
-        return results[0]
-    return results[0].text if hasattr(results[0], 'text') else str(results[0])
+    mono_path = _ensure_mono_wav(audio_path)
+    try:
+        model = load_asr_model(device)
+        results = model.transcribe([mono_path])
+        # Results is a list of transcription strings or hypothesis objects
+        if isinstance(results[0], str):
+            return results[0]
+        return results[0].text if hasattr(results[0], 'text') else str(results[0])
+    finally:
+        if mono_path != str(audio_path):
+            import os
+            os.unlink(mono_path)
 
 
 def compute_wer(hypothesis: str, reference: str) -> float:

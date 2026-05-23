@@ -53,20 +53,31 @@ Think step by step about what you hear, then provide a final concise speaker \
 description suitable for a voice acting prompt (2-3 sentences)."""
 
 MOSS_DRAMABOX_PROMPT = """\
-Listen to this audio recording carefully. Based on what you hear, create a \
-DramaBox-format voice prompt for a single speaker whose voice matches \
-the recording.
+Listen to this audio recording. Your ONLY task regarding the audio is to analyze \
+the SPEAKER'S VOICE CHARACTERISTICS: age, gender, timbre, pitch, accent, and \
+vocal quality. Completely IGNORE the words and content spoken in the audio — \
+they are irrelevant.
+
+Then, create a DramaBox-format voice prompt with ENTIRELY ORIGINAL dialogue \
+that you invent from scratch. Do NOT transcribe, quote, paraphrase, or \
+reproduce ANY of the words spoken in the recording. The dialogue content must \
+be completely new and unrelated to what is said in the audio.
 
 DramaBox format:
-- Start with a speaker description (age, gender, timbre, voice quality) in English
-- Include that this is a pristine, high-quality studio recording
+- Start with a speaker description (age, gender, timbre, voice quality) in English, \
+matching the voice you heard
+- Include that this is a pristine, high-quality studio recording with no background noise
 - Then alternate between stage directions (English, outside quotes) and \
 spoken dialogue (in {language}, inside double quotes "...")
-- Write approximately {word_count} words of dialogue
-- Make the scene dramatically interesting with emotional depth
+- Write approximately {word_count} words of ORIGINAL dialogue (minimum 10 words)
+- Make the scene dramatically interesting — the words should tell a compelling \
+story fragment, reveal character, or capture a vivid emotional moment
 - The emotions to convey: {emotions}
+- Everything is ONE speaker only. No dialogue partners.
 
-Think step by step about the speaker's voice, then write the complete DramaBox prompt."""
+Think step by step: first describe the speaker's voice characteristics only \
+(ignore what they say), then write the complete DramaBox prompt with brand \
+new creative dialogue that fits the emotions."""
 
 
 def _check_transformers_version():

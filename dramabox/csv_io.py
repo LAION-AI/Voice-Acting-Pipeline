@@ -18,7 +18,7 @@ CSV_FIELDNAMES = [
     "vocal_bursts_enabled",
     "attributes_raw",
     "dramabox_prompt",
-    # Path C/D additional fields
+    # Path D additional fields
     "reference_audio",
     "timbre_caption",
 ]
