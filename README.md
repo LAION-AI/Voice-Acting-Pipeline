@@ -1,5 +1,21 @@
-# Voice Acting Pipeline
-*By <a href="https://scholar.google.com/citations?user=EvrlaSAAAAAJ">Christoph Schuhmann</a>*
+# Vocalino V 0.1: Voice Acting Pipeline
+*By <a href="https://scholar.google.com/citations?user=EvrlaSAAAAAJ">Christoph Schuhmann </a>*
+
+**The first voice acting pipeline with open-weights components and open post training data that combines zero-shot voice cloning with natural language performance direction.** Vocalino allows you to provide a reference voice (or generate one from scratch) and use free-form text instructions to direct *how* the line is performed. It generates speech that maintains strict voice consistency with your reference audio while adhering to your specific emotional and stylistic prompts—giving you total control over the actor and the performance without any model training.
+
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=bOA9e5p1Oy0">
+    <img src="https://img.youtube.com/vi/bOA9e5p1Oy0/maxresdefault.jpg" width="700">
+  </a>
+</p>
+
+<p align="center">
+  ▶ Click to watch demo video
+</p>
+
+---
+
+# DramaBox Voice Acting Data Pipeline
 
 End-to-end voice prompt generation and audio synthesis using the [DramaBox](https://huggingface.co/ResembleAI/Dramabox) TTS model (22B DiT transformer) and structured voice taxonomy sampling. Based on the voice taxonomy research from [Schuhmann et al., 2025](https://arxiv.org/abs/2505.20033).
 
@@ -58,6 +74,21 @@ Listen to generated samples from all paths:
 | **[Character Consistent v1](https://projects.laion.ai/Voice-Acting-Pipeline/demo/cc.html)** | CC-A/B/C: two-scene pairs with Scene 1 + Scene 2 split players |
 | **[Character Consistent v2](https://projects.laion.ai/Voice-Acting-Pipeline/demo/cc2.html)** | CC2-A/B/C: improved prompting with emotional scene setup |
 | **[Acting Challenge](https://projects.laion.ai/Voice-Acting-Pipeline/demo/ac.html)** | AC standalone + ACCC two-scene acting challenges |
+
+### Best-of-N Ranking Analysis (29 Methods)
+
+Interactive grids comparing 29 ranking methods across 10 prompts × 100 candidates. Each grid lets you switch ranking methods via dropdown and see how candidate ordering changes.
+
+| Grid | Description |
+|------|-------------|
+| **[DramaBox + RE-USE](https://projects.laion.ai/Voice-Acting-Pipeline/demo/best_of_n.html)** | RE-USE enhanced DramaBox TTS, 10 prompts × 100+10 candidates |
+| **[DramaBox Raw](https://projects.laion.ai/Voice-Acting-Pipeline/demo/best_of_n_raw.html)** | Raw DramaBox TTS (no enhancement), same prompts |
+| **[DramaBox + RE-USE + ChatterboxVC](https://projects.laion.ai/Voice-Acting-Pipeline/demo/best_of_n_vc.html)** | RE-USE enhanced + self voice conversion via ChatterboxVC |
+| **[Scenema + RE-USE](https://projects.laion.ai/Voice-Acting-Pipeline/demo/scenema_best_of_n.html)** | Scenema TTS with RE-USE enhancement, 10 prompts × 100+10 candidates |
+| **[Scenema Raw](https://projects.laion.ai/Voice-Acting-Pipeline/demo/scenema_best_of_n_raw.html)** | Raw Scenema TTS (no enhancement) |
+| **[Scenema + RE-USE + ChatterboxVC](https://projects.laion.ai/Voice-Acting-Pipeline/demo/scenema_best_of_n_vc.html)** | Scenema RE-USE enhanced + self voice conversion via ChatterboxVC |
+
+**Ranking methods include:** Standard (WER × Enjoyment), VoiceCLAP-Large/Small × Quality/Prompt text, 20 multi-text CLAP variants (natural, authentic, professional, expressive, cinematic, warm — with and without negative prompts), and 4 sanitized-prompt methods (directions-only, no quoted speech content).
 
 ## Taxonomies & Data
 
@@ -221,7 +252,7 @@ Two-scene audio is split using [Qwen3-ASR-1.7B](https://huggingface.co/Qwen/Qwen
 
 ```bash
 git clone https://github.com/LAION-AI/Voice-Acting-Pipeline.git
-cd Vocalino-V0.1-Voice-Acting-Pipeline
+cd Voice-Acting-Pipeline
 pip install -e .
 ```
 
@@ -372,7 +403,101 @@ dramabox-pipeline/
 
 ---
 
+# Vocalino V0.1 — Interactive Voice Design Server
+
+The Vocalino server provides a web UI and API for interactive voice design and zero-shot voice cloning. It is independent of the DramaBox data pipeline above.
+
+## How It Works
+
+### The Concept: "Directing" AI Speech
+
+Standard TTS can generate emotions but with random voices. Standard Voice Conversion (VC) can clone a specific person but requires pre-acted source audio. Vocalino decouples **vocal identity** from **performance style** by chaining advanced stylistic generation with high-fidelity voice conversion.
+
+### Architecture
+
+```
+                     ┌────────────────────┐
+    Text + Style ──> │  Qwen3-TTS 1.7B    │ ──> Raw TTS audio
+                     │  (VoiceDesign)      │     (12 Hz codec tokens → wav)
+                     └────────────────────┘
+                              │
+                              ▼
+                     ┌────────────────────┐
+    Reference WAV ─> │  Seed-VC V2        │ ──> Voice-converted audio
+                     │  (CFM + AR)        │     (matches reference timbre)
+                     └────────────────────┘
+                              │
+                              ▼
+                     ┌────────────────────┐
+                     │  ECAPA-TDNN        │ ──> 2048-dim embedding
+                     │  (Speaker Encoder) │     → cosine similarity vs ref
+                     └────────────────────┘
+```
+
+### Features
+
+- **Web UI** — dark-themed browser interface served at `/ui` for interactive voice design
+- **Batched TTS** — generate K candidates in a single forward pass (~2x faster)
+- **SSE Streaming** — candidates stream to the UI as they complete
+- **Speaker Similarity Ranking** — ECAPA-TDNN embeddings rank candidates by voice consistency
+- **INT8 Quantization** — optional bitsandbytes INT8 reduces TTS VRAM from ~15 GB to ~7 GB
+- **Multi-GPU** — split TTS and VC across GPUs for VRAM isolation
+
+## Server Quick Start
+
+```bash
+# Basic launch (single GPU, bfloat16)
+python server.py
+
+# With INT8 quantization (halves TTS VRAM)
+TTS_QUANTIZE=int8 python server.py
+
+# Multi-GPU (TTS on GPU 0, VC on GPU 1)
+CUDA_VISIBLE_DEVICES=0,1 VC_DEVICE=cuda:1 python server.py
+```
+
+The server starts on `http://0.0.0.0:8000`. Open the web UI at `http://<server-ip>:8000/ui/`.
+
+## Web UI
+<img width="1335" height="853" alt="image" src="https://github.com/user-attachments/assets/6e0ff245-5e45-4dc1-808d-e675a2b92aad" />
+
+### Section 1: Voice Design (Reference Creation)
+- Enter text and a natural-language voice/style description
+- Generate N samples (batched for speed)
+- Listen, download, or select any sample as reference
+
+### Section 2: Full Pipeline (Voice-Consistent Generation)
+- Upload or select a reference audio (target speaker identity)
+- Enter text and emotion/style instruction
+- Generate K candidates — each streamed to the UI as it completes
+- Candidates ranked by speaker embedding similarity (green = best match)
+
+## API Reference
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/tts/generate-voice-design` | POST | Generate speech with style prompt |
+| `/voice-design/batch` | POST | Batched voice design (N samples) |
+| `/vc/convert` | POST | Voice conversion with Seed-VC V2 |
+| `/pipeline/tts-then-vc` | POST | TTS + voice conversion combined |
+| `/pipeline/ranked` | POST | Generate K candidates, rank by similarity |
+| `/pipeline/ranked-stream` | POST (SSE) | Streaming version of ranked pipeline |
+| `/health` | GET | Server status and configuration |
+
+## Server Configuration
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `TTS_DEVICE` | `cuda:0` | GPU for Qwen3-TTS |
+| `VC_DEVICE` | *(same as TTS)* | GPU for Seed-VC |
+| `TTS_QUANTIZE` | `none` | `none` = bfloat16, `int8` = INT8 |
+| `DEFAULT_DIFF_STEPS` | `12` | VC diffusion steps |
+
+---
+
 ## License
 
 - This pipeline code — [Apache 2.0](LICENSE)
 - [DramaBox](https://huggingface.co/ResembleAI/Dramabox) — see model card
+- [Qwen3-TTS](https://github.com/QwenLM/Qwen3-TTS) — Apache 2.0
+- [Seed-VC](https://github.com/Plachtaa/seed-vc) — MIT

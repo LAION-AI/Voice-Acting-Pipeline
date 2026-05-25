@@ -49,6 +49,19 @@ MINOR_PATTERNS = re.compile(
 )
 NSFW_EMOTION_CATS = {"Sexual Lust", "Infatuation"}
 
+# Broad safety filter for combined prompt text
+MINOR_WORDS = {"kid", "teen", "boy", "girl", "child", "toddler", "baby",
+               "infant", "minor", "underage", "youth", "neonatal",
+               "pre-pubescent", "adolescent", "childhood"}
+ADULT_WORDS = {"porn", "sex", "fuck", "lust", "passion", "gore",
+               "erotic", "naked", "nude", "explicit"}
+
+
+def is_prompt_safe(text: str) -> bool:
+    """Return False if text combines minor-indicating AND adult words."""
+    words = set(re.findall(r'[a-z]+(?:-[a-z]+)*', text.lower()))
+    return not (bool(words & MINOR_WORDS) and bool(words & ADULT_WORDS))
+
 
 def _sample_emotions(emotion_categories: list[str], config: dict) -> str:
     """Sample 1-3 emotions with intensity levels."""
@@ -208,8 +221,13 @@ def sample_archetype(archetypes: dict[str, list[str]],
         Dict with all sampled attributes for prompt construction.
     """
     sampling = config.get("sampling", {})
-    genre = random.choice(list(archetypes.keys()))
-    archetype = random.choice(archetypes[genre])
+
+    # Safety-filtered archetype sampling
+    for _attempt in range(50):
+        genre = random.choice(list(archetypes.keys()))
+        archetype = random.choice(archetypes[genre])
+        if is_prompt_safe(f"{genre} {archetype}"):
+            break
 
     language, accent = _sample_language(config)
     emotions_str = _sample_emotions(emotion_categories, config)

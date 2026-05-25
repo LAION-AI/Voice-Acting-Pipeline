@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACCC Best-of-25 — 50 Groups Index</title>
+<style>
+:root {
+  --bg: #0d1117; --card-bg: #161b22; --card-hover: #1c2333;
+  --text: #e6edf3; --dim: #8b949e; --bright: #f0f6fc;
+  --border: #30363d; --accent: #58a6ff; --green: #56d364;
+  --red: #f97583; --yellow: #e3b341;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  background: var(--bg); color: var(--text); line-height:1.6; }
+.container { max-width:1200px; margin:0 auto; padding:20px 24px 60px; }
+h1 { font-size:2rem; font-weight:800; color:var(--bright); margin-bottom:8px; }
+h1 span { color:var(--accent); }
+.subtitle { color:var(--dim); font-size:1rem; margin-bottom:16px; }
+h2 { font-size:1.3rem; color:var(--bright); margin:32px 0 12px; padding-bottom:8px;
+  border-bottom:1px solid var(--border); }
+.ranking-selector {
+  background:var(--card-bg); border:1px solid var(--border); border-radius:10px;
+  padding:16px 20px; margin:16px 0 24px; display:flex; align-items:center; gap:16px;
+  flex-wrap:wrap; position:sticky; top:0; z-index:100;
+}
+.ranking-selector label { color:var(--bright); font-weight:600; font-size:0.95rem; }
+.ranking-selector select {
+  background:#0d1117; color:var(--accent); border:1px solid var(--border);
+  padding:8px 14px; border-radius:6px; font-size:0.9rem; cursor:pointer; min-width:320px;
+}
+.prompt-section { background:var(--card-bg); border:1px solid var(--border); border-radius:12px;
+  padding:24px; margin:24px 0; }
+.prompt-meta { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px; }
+.meta-tag { background:#1c2333; padding:3px 10px; border-radius:6px; font-size:0.8rem; color:var(--dim); }
+.meta-tag strong { color:var(--accent); }
+details { margin:8px 0; }
+summary { cursor:pointer; color:var(--accent); font-size:0.85rem; }
+details pre { background:#0d1117; padding:12px; border-radius:6px; font-size:0.75rem;
+  max-height:200px; overflow-y:auto; white-space:pre-wrap; color:var(--dim); margin-top:8px; }
+.section-label { font-size:0.8rem; color:var(--dim); text-transform:uppercase;
+  letter-spacing:0.05em; margin:12px 0 6px; }
+.cards-row { display:grid; grid-template-columns:repeat(5, 1fr); gap:8px; margin:8px 0; }
+@media (max-width:900px) { .cards-row { grid-template-columns:repeat(2, 1fr); } }
+.card { background:var(--card-bg); border:1px solid var(--border); border-radius:8px;
+  padding:10px; transition:border-color 0.15s; }
+.card:hover { border-color:#484f58; }
+.card.winner { border-color:var(--green); background:rgba(86,211,100,0.05); }
+.card.worst { border-color:var(--red); background:rgba(249,117,131,0.03); }
+.card-header { display:flex; justify-content:space-between; align-items:center;
+  margin-bottom:6px; font-size:0.75rem; flex-wrap:wrap; gap:4px; }
+.rank { font-weight:700; color:var(--bright); }
+.scores { color:var(--dim); font-size:0.7rem; }
+.scores strong { color:var(--accent); }
+.scene-block { margin:4px 0; }
+.scene-header { display:flex; align-items:center; gap:6px; margin-bottom:2px; }
+.scene-lbl { font-size:0.6rem; color:var(--dim); font-weight:600; }
+.vtabs { display:flex; gap:2px; }
+.vtab { font-size:0.6rem; padding:1px 6px; border:1px solid var(--border); border-radius:3px;
+  background:transparent; color:var(--dim); cursor:pointer; line-height:1.4; }
+.vtab:hover { border-color:var(--accent); color:var(--accent); }
+.vtab.active { background:var(--accent); color:var(--bg); border-color:var(--accent); font-weight:700; }
+.vplayer { display:none; }
+.vplayer.active { display:block; }
+.no-audio { color:#30363d; font-size:0.6rem; }
+audio { width:100%; height:28px; }
+.nav { margin:16px 0; font-size:0.85rem; color:var(--dim); }
+.nav a { color:var(--accent); text-decoration:none; margin-right:16px; }
+.nav a:hover { text-decoration:underline; }
+.page-nav { display:flex; flex-wrap:wrap; gap:8px; margin:20px 0; }
+.page-nav a {
+  padding:8px 16px; background:var(--card-bg); border:1px solid var(--border);
+  border-radius:8px; color:var(--accent); text-decoration:none; font-size:0.9rem;
+}
+.page-nav a:hover { border-color:var(--accent); }
+.page-nav a.current { background:var(--accent); color:var(--bg); font-weight:700; border-color:var(--accent); }
+.index-card {
+  background:var(--card-bg); border:1px solid var(--border); border-radius:12px;
+  padding:20px 24px; margin:12px 0;
+}
+.index-card h3 { color:var(--bright); margin-bottom:8px; }
+.index-card p { color:var(--dim); font-size:0.9rem; }
+.index-card .stats { color:var(--accent); font-size:0.85rem; margin-top:8px; }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>ACCC Best-of-25: <span>50 Groups</span></h1>
+<p class="subtitle">50 groups (25 English + 25 German) &times; 25 candidates &times; 3 audio variants (Raw / RE-USE / VC) &mdash; 2 ranking methods &mdash; 1,250 total scored</p>
+<div class="nav">
+  <a href="index.html">Main Grid</a>
+  <a href="best_of_n.html">Best-of-N</a>
+  <a href="cc.html">CC v1</a>
+</div>
+<div class="page-nav"><a href="accc_best_of_n.html">Index</a><a href="accc_best_of_n_p1.html">Groups 0–4</a><a href="accc_best_of_n_p2.html">Groups 5–9</a><a href="accc_best_of_n_p3.html">Groups 10–14</a><a href="accc_best_of_n_p4.html">Groups 15–19</a><a href="accc_best_of_n_p5.html">Groups 20–24</a><a href="accc_best_of_n_p6.html">Groups 25–29</a><a href="accc_best_of_n_p7.html">Groups 30–34</a><a href="accc_best_of_n_p8.html">Groups 35–39</a><a href="accc_best_of_n_p9.html">Groups 40–44</a><a href="accc_best_of_n_p10.html">Groups 45–49</a></div>
+
+
+<div class="index-card">
+<h3>Overall Statistics (1250 scored)</h3>
+<p>WER: mean=0.2307, min=0.0000, max=1.0000</p>
+<p>Content Enjoyment: mean=4.9372</p>
+<p>Standard Reward: mean=3.8398</p>
+<p>v24_snr_S Reward: mean=1.7455</p>
+</div>
+
+<a href="accc_best_of_n_p1.html" style="text-decoration:none;color:inherit;">
+<div class="index-card" style="cursor:pointer;">
+<h3>Page 1: Groups 0–4 (English 0–4)</h3>
+<p>5 groups &mdash; 5 English</p>
+<div class="stats">Avg WER: 0.1529 &middot; Avg Standard: 4.2592</div>
+<div class="prompt-meta" style="margin-top:12px;">
+<span class="meta-tag" style="font-size:0.7rem;">0: Sci-Fi: Time Traveler Meets Th</span>
+<span class="meta-tag" style="font-size:0.7rem;">1: Electrocution Near-Miss</span>
+<span class="meta-tag" style="font-size:0.7rem;">2: Compromised Security</span>
+<span class="meta-tag" style="font-size:0.7rem;">3: Explaining Why You Can&#x27;t Forgi</span>
+<span class="meta-tag" style="font-size:0.7rem;">4: Petting a Soft, Fluffy Cat</span>
+</div>
+</div></a>
+<a href="accc_best_of_n_p2.html" style="text-decoration:none;color:inherit;">
+<div class="index-card" style="cursor:pointer;">
+<h3>Page 2: Groups 5–9 (English 5–9)</h3>
+<p>5 groups &mdash; 5 English</p>
+<div class="stats">Avg WER: 0.1130 &middot; Avg Standard: 4.4225</div>
+<div class="prompt-meta" style="margin-top:12px;">
+<span class="meta-tag" style="font-size:0.7rem;">5: Someone Telling You They Love </span>
+<span class="meta-tag" style="font-size:0.7rem;">6: Conducive Environment</span>
+<span class="meta-tag" style="font-size:0.7rem;">7: Writing Will Legacy</span>
+<span class="meta-tag" style="font-size:0.7rem;">8: Apology Without Defensiveness</span>
+<span class="meta-tag" style="font-size:0.7rem;">9: Coming Down from MDMA: The Ser</span>
+</div>
+</div></a>
+<a href="accc_best_of_n_p3.html" style="text-decoration:none;color:inherit;">
+<div class="index-card" style="cursor:pointer;">
+<h3>Page 3: Groups 10–14 (English 10–14)</h3>
+<p>5 groups &mdash; 5 English</p>
+<div class="stats">Avg WER: 0.0844 &middot; Avg Standard: 4.6320</div>
+<div class="prompt-meta" style="margin-top:12px;">
+<span class="meta-tag" style="font-size:0.7rem;">10: Apology Without Defensiveness</span>
+<span class="meta-tag" style="font-size:0.7rem;">11: The Overplanner</span>
+<span class="meta-tag" style="font-size:0.7rem;">12: Mentor Student Release</span>
+<span class="meta-tag" style="font-size:0.7rem;">13: Being the Third Wheel</span>
+<span class="meta-tag" style="font-size:0.7rem;">14: Diplomat Negotiates Peace Deal</span>
+</div>
+</div></a>
+<a href="accc_best_of_n_p4.html" style="text-decoration:none;color:inherit;">
+<div class="index-card" style="cursor:pointer;">
+<h3>Page 4: Groups 15–19 (English 15–19)</h3>
+<p>5 groups &mdash; 5 English</p>
+<div class="stats">Avg WER: 0.3949 &middot; Avg Standard: 3.0104</div>
+<div class="prompt-meta" style="margin-top:12px;">
+<span class="meta-tag" style="font-size:0.7rem;">15: Sci-Fi: Android Realizes It Ha</span>
+<span class="meta-tag" style="font-size:0.7rem;">16: Realizing Your Coping Mechanis</span>
+<span class="meta-tag" style="font-size:0.7rem;">17: Deaf Person Speaking for the F</span>
+<span class="meta-tag" style="font-size:0.7rem;">18: Talking to Someone While Sever</span>
+<span class="meta-tag" style="font-size:0.7rem;">19: The Indecisive Restaurant Orde</span>
+</div>
+</div></a>
+<a href="accc_best_of_n_p5.html" style="text-decoration:none;color:inherit;">
+<div class="index-card" style="cursor:pointer;">
+<h3>Page 5: Groups 20–24 (English 20–24)</h3>
+<p>5 groups &mdash; 5 English</p>
+<div class="stats">Avg WER: 0.2185 &middot; Avg Standard: 3.9855</div>
+<div class="prompt-meta" style="margin-top:12px;">
+<span class="meta-tag" style="font-size:0.7rem;">20: Being Known</span>
+<span class="meta-tag" style="font-size:0.7rem;">21: Friends Last Conversation</span>
+<span class="meta-tag" style="font-size:0.7rem;">22: Talking to a Baby Who Just Sai</span>
+<span class="meta-tag" style="font-size:0.7rem;">23: Your Child Telling You About T</span>
+<span class="meta-tag" style="font-size:0.7rem;">24: Electrocution Near-Miss</span>
+</div>
+</div></a>
+<a href="accc_best_of_n_p6.html" style="text-decoration:none;color:inherit;">
+<div class="index-card" style="cursor:pointer;">
+<h3>Page 6: Groups 25–29 (German 25–29)</h3>
+<p>5 groups &mdash; 5 German</p>
+<div class="stats">Avg WER: 0.2062 &middot; Avg Standard: 3.9013</div>
+<div class="prompt-meta" style="margin-top:12px;">
+<span class="meta-tag" style="font-size:0.7rem;">25: Witnessing Injustice Without S</span>
+<span class="meta-tag" style="font-size:0.7rem;">26: The Inner Voice of an Introver</span>
+<span class="meta-tag" style="font-size:0.7rem;">27: Falling: The Monologue in Free</span>
+<span class="meta-tag" style="font-size:0.7rem;">28: Strength Conviction</span>
+<span class="meta-tag" style="font-size:0.7rem;">29: Historical: Former Oppressor M</span>
+</div>
+</div></a>
+<a href="accc_best_of_n_p7.html" style="text-decoration:none;color:inherit;">
+<div class="index-card" style="cursor:pointer;">
+<h3>Page 7: Groups 30–34 (German 30–34)</h3>
+<p>5 groups &mdash; 5 German</p>
+<div class="stats">Avg WER: 0.1135 &middot; Avg Standard: 4.4404</div>
+<div class="prompt-meta" style="margin-top:12px;">
+<span class="meta-tag" style="font-size:0.7rem;">30: Discovering Your Parent&#x27;s Secr</span>
+<span class="meta-tag" style="font-size:0.7rem;">31: Building Arousal to Climax: So</span>
+<span class="meta-tag" style="font-size:0.7rem;">32: Professional: Priest Comforts </span>
+<span class="meta-tag" style="font-size:0.7rem;">33: Purpose Discovering</span>
+<span class="meta-tag" style="font-size:0.7rem;">34: The Inner Voice of an Introver</span>
+</div>
+</div></a>
+<a href="accc_best_of_n_p8.html" style="text-decoration:none;color:inherit;">
+<div class="index-card" style="cursor:pointer;">
+<h3>Page 8: Groups 35–39 (German 35–39)</h3>
+<p>5 groups &mdash; 5 German</p>
+<div class="stats">Avg WER: 0.3728 &middot; Avg Standard: 3.0688</div>
+<div class="prompt-meta" style="margin-top:12px;">
+<span class="meta-tag" style="font-size:0.7rem;">35: Taking a Bite of a Juicy Peach</span>
+<span class="meta-tag" style="font-size:0.7rem;">36: Calling in Sick While Actually</span>
+<span class="meta-tag" style="font-size:0.7rem;">37: Telling Someone You&#x27;re Attract</span>
+<span class="meta-tag" style="font-size:0.7rem;">38: Your Abusive Ex Trying to Reco</span>
+<span class="meta-tag" style="font-size:0.7rem;">39: Fantasy: Knight Must Execute t</span>
+</div>
+</div></a>
+<a href="accc_best_of_n_p9.html" style="text-decoration:none;color:inherit;">
+<div class="index-card" style="cursor:pointer;">
+<h3>Page 9: Groups 40–44 (German 40–44)</h3>
+<p>5 groups &mdash; 5 German</p>
+<div class="stats">Avg WER: 0.4902 &middot; Avg Standard: 2.4911</div>
+<div class="prompt-meta" style="margin-top:12px;">
+<span class="meta-tag" style="font-size:0.7rem;">40: Concealing Weapon</span>
+<span class="meta-tag" style="font-size:0.7rem;">41: Discovering a Kink by Accident</span>
+<span class="meta-tag" style="font-size:0.7rem;">42: Joy Explosive</span>
+<span class="meta-tag" style="font-size:0.7rem;">43: Conducting Energy</span>
+<span class="meta-tag" style="font-size:0.7rem;">44: Telling Someone About Abuse fo</span>
+</div>
+</div></a>
+<a href="accc_best_of_n_p10.html" style="text-decoration:none;color:inherit;">
+<div class="index-card" style="cursor:pointer;">
+<h3>Page 10: Groups 45–49 (German 45–49)</h3>
+<p>5 groups &mdash; 5 German</p>
+<div class="stats">Avg WER: 0.1605 &middot; Avg Standard: 4.1866</div>
+<div class="prompt-meta" style="margin-top:12px;">
+<span class="meta-tag" style="font-size:0.7rem;">45: Reporter Tragedy Scene</span>
+<span class="meta-tag" style="font-size:0.7rem;">46: Your Child Telling You About T</span>
+<span class="meta-tag" style="font-size:0.7rem;">47: Blind Rage: The Eruption</span>
+<span class="meta-tag" style="font-size:0.7rem;">48: An Apology to a Future Self</span>
+<span class="meta-tag" style="font-size:0.7rem;">49: Enjoying a Gentle Foot Massage</span>
+</div>
+</div></a>
+<div class="page-nav"><a href="accc_best_of_n.html">Index</a><a href="accc_best_of_n_p1.html">Groups 0–4</a><a href="accc_best_of_n_p2.html">Groups 5–9</a><a href="accc_best_of_n_p3.html">Groups 10–14</a><a href="accc_best_of_n_p4.html">Groups 15–19</a><a href="accc_best_of_n_p5.html">Groups 20–24</a><a href="accc_best_of_n_p6.html">Groups 25–29</a><a href="accc_best_of_n_p7.html">Groups 30–34</a><a href="accc_best_of_n_p8.html">Groups 35–39</a><a href="accc_best_of_n_p9.html">Groups 40–44</a><a href="accc_best_of_n_p10.html">Groups 45–49</a></div>
+</div></body></html>
