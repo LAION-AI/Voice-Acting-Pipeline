@@ -1,23 +1,39 @@
 # Path AC — Acting Challenge
 
-Acting challenge-driven performance generation. Samples from **1,478 structured challenge scenarios** to create audition-style method acting performances. Two variants: standalone (AC) and character consistent (ACCC).
+Acting challenge-driven performance generation. Samples from **12,898 structured challenge scenarios** to create audition-style method acting performances. Two variants: standalone (AC) and character consistent (ACCC).
 
 ## Acting Challenge Database
 
-The challenge database contains 1,478 scenarios from three sources:
+The challenge database contains 12,898 scenarios from five sources:
 
 | Source | Count | Description |
 |--------|-------|-------------|
 | LAION's Got Talent | 278 | Original acting challenges with diverse emotional and situational contexts |
 | Haiku Batch | 1,000 | AI-generated challenges with wide coverage |
 | VoiceNet Extension | 200 | Challenges designed around VoiceNet vocal dimensions |
+| Eric Morris Method-Inspired | 4,030 | Generated from 806 concepts, techniques, exercises, and recommendations extracted from the [Eric Morris method acting system Unified Knowledge Base](https://github.com/christophschuhmann/eric_morris-method-acting-system). Each of the 806 items produced 5 distinct challenges inspired by its underlying emotional and psychological principles, covering deathbed farewells, confrontations, quiet vulnerability, intense sensory experiences, and contradictory emotions. |
+| Existing Challenge Variants | 7,390 | Generated from the original 1,478 challenges. Each challenge produced 5 new variants in different contexts with deeper emotional stakes, interpersonal confrontations, quiet vulnerability, explosive intensity, and contradictory emotions. |
 
-Each challenge has a **title** and **instruction** describing the scenario:
+All 12,898 challenges are shuffled together in the final database. Each challenge has a **title** and **instruction** describing the scenario, plus a **source** tag and an optional **inspired_by** field linking back to the originating concept or challenge.
 
-**Example challenge:**
+**Example challenge (original):**
 > **Title:** The Goodbye That Wasn't Planned
 >
 > **Instruction:** You're at a train station, saying goodbye to someone you didn't expect to see again. The train is already boarding. Express the collision of surprise, relief, and the pain of another imminent separation.
+
+**Example challenge (Eric Morris-inspired):**
+> **Title:** The Last Words You Never Heard
+>
+> **Instruction:** Your father is dying in a hospital bed, and for the first time in your adult life, he's trying to tell you something he's never said before. Begin with your arms crossed, deflecting — you've heard it all before. But as his words land, something cracks open. Let the shift from guarded resentment to helpless, raw gratitude happen without planning it.
+
+**Example challenge (existing challenge variant):**
+> **Title:** The Last Recipe Before the Memory Fades
+>
+> **Instruction:** You're teaching your adult child to make your signature family dish, but you're in the early stages of memory loss. Start with warmth and confidence, but let the moments where you lose the thread become real — the confusion, the flash of fear, the stubborn return to the task. End somewhere between dignity and devastation.
+
+The subset files are also available separately:
+- [`acting_challenges_eric_morris_inspired.json`](https://github.com/LAION-AI/Voice-Acting-Pipeline/blob/main/data/acting_challenges_eric_morris_inspired.json) — 4,030 Eric Morris-inspired challenges
+- [`acting_challenges_existing_inspired.json`](https://github.com/LAION-AI/Voice-Acting-Pipeline/blob/main/data/acting_challenges_existing_inspired.json) — 7,390 existing challenge variants
 
 Browse 100 random samples: [Acting Challenges Preview](https://projects.laion.ai/Voice-Acting-Pipeline/acting_challenges_preview.html)
 
@@ -25,7 +41,7 @@ Browse 100 random samples: [Acting Challenges Preview](https://projects.laion.ai
 
 ### Sampling Strategy
 
-1. **Acting Challenge**: Random selection from 1,478 challenges (title + instruction)
+1. **Acting Challenge**: Random selection from 12,898 challenges (title + instruction)
 2. **Speaker Gender**: Random from VoiceNet GEND dimension (7 levels):
    - 0: Hyper-feminized voice
    - 1: Strongly feminized
