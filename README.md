@@ -83,7 +83,8 @@ The pipeline supports **12 generation paths** organized into three families. Eac
 | **B** (Archetype) | 920 archetypes x 92 genres | Genre/character archetype-based: random archetype + emotions + Tempo/Arousal | [Path B Details](docs/path_b_archetype.md) |
 | **C** (Archetype Named) | Same as B + explicit naming | Archetype with explicit role naming in the DramaBox script (e.g. "a battle-hardened noble knight") | [Path C Details](docs/path_c_archetype_named.md) |
 | **D** (Reference Audio) | Timbre whisper + VoiceNet + Chatterbox VC | Reference audio pipeline: timbre caption guides prompt, DramaBox TTS + voice conversion to match reference speaker | [Path D Details](docs/path_d_reference.md) |
-| **AC** (Acting Challenge) | 1478 acting challenges + VoiceNet gender/age | Audition-style method acting from challenge scenarios — naturalistic, genuine, dynamic emotional arc | [AC Details](docs/path_ac_acting_challenge.md) |
+| **AC** (Acting Challenge) | 12,898 acting challenges + VoiceNet gender/age | Audition-style method acting from challenge scenarios — naturalistic, genuine, dynamic emotional arc | [AC Details](docs/path_ac_acting_challenge.md) |
+| **SIT** (Situation) | 289 situations x EmoNet emotions | Situation-driven acting: actor is physically/socially IN a specific situation from the [Situation Taxonomy](data/situation_taxonomy.json) (body posture, activity, social context, environment, health, climate, fatigue, pain) with sampled emotions | [SIT Details](docs/path_sit_situation.md) |
 
 ### Character Consistent Paths (Two Scenes — "CUT TO:")
 
@@ -98,6 +99,7 @@ All CC paths generate two scenes with the **same speaker** in **contrasting emot
 | **CC2-B** (Archetype v2) | Archetype + contrasting emotions | Enhanced: genuine/spontaneous/authentic delivery emphasis | [CC2 Details](docs/path_cc2_character_consistent_v2.md) |
 | **CC2-C** (Archetype Named v2) | Archetype named + contrasting emotions | Enhanced: visceral emotional contrast, human-sounding | [CC2 Details](docs/path_cc2_character_consistent_v2.md) |
 | **ACCC** (Acting Challenge CC) | Acting challenge + VoiceNet gender/age | Challenge-driven two-scene format — same actor, same challenge, contrasting emotional moments | [ACCC Details](docs/path_ac_acting_challenge.md#accc-character-consistent) |
+| **SIT-CC** (Situation CC) | Situation + EmoNet + contrasting emotions | Two-scene situation-driven format — same actor IN the same situation, two contrasting emotional moments | [SIT-CC Details](docs/path_sit_situation.md#sit-cc-character-consistent) |
 
 ---
 
@@ -165,8 +167,8 @@ The pipeline samples from several structured taxonomies to create diverse, contr
 | **EmoNet** | 40 emotions x 4 intensity levels | JSON | [Taxonomy docs](docs/emonet_taxonomy.md) |
 | **Vocal Bursts** | 120 non-linguistic sounds | JSON | [Taxonomy docs](docs/vocal_bursts_taxonomy.md) |
 | **Character Archetypes** | 920 archetypes x 92 genres | JSON | [Taxonomy docs](docs/archetypes.md) |
-| **Acting Challenges** | 1,478 challenge scenarios | JSON | [Preview (100 samples)](https://projects.laion.ai/Voice-Acting-Pipeline/acting_challenges_preview.html) |
-| **Situation Taxonomy** | Poses, activities, social contexts | JSON | [Data file](data/situation_taxonomy.json) |
+| **Acting Challenges** | 12,898 challenge scenarios | JSON | [Preview (100 samples)](https://projects.laion.ai/Voice-Acting-Pipeline/acting_challenges_preview.html) |
+| **Situation Taxonomy** | 11 dimensions, 289 situations | JSON | [Data file](data/situation_taxonomy.json) — Body posture (32), physical activity (69), speaking target (25), social context (56), environment (22), health (18), face/head gear (14), climate (10), substances (12), fatigue (19), pain (12) |
 
 Paper references:
 - [Schuhmann et al., 2025 — arXiv:2505.20033](https://arxiv.org/abs/2505.20033) (EmoNet-Face, VoiceNet, taxonomies)
@@ -228,7 +230,7 @@ See [docs/path_d_reference.md](docs/path_d_reference.md) for full details.
 
 ### Path AC — Acting Challenge
 
-Audition-style method acting performances driven by acting challenge scenarios. Samples from 1,478 structured challenges covering diverse emotional and situational contexts.
+Audition-style method acting performances driven by acting challenge scenarios. Samples from 12,898 structured challenges covering diverse emotional and situational contexts.
 
 1. Sample a random acting challenge (title + instruction) from the [challenge database](https://projects.laion.ai/Voice-Acting-Pipeline/acting_challenges_preview.html)
 2. Sample speaker gender (VoiceNet GEND dimension, 7 levels) and age (AGEV dimension, 7 levels)
@@ -243,6 +245,20 @@ Key characteristics:
 - **Diverse delivery** — whispered, loud, sensual, ranting, all valid if authentic
 
 See [docs/path_ac_acting_challenge.md](docs/path_ac_acting_challenge.md) for full details.
+
+### Path SIT — Situation
+
+Situation-driven acting challenges where the actor is physically and socially embedded in a specific situation from the [Situation Taxonomy](data/situation_taxonomy.json). The taxonomy covers 11 dimensions with 289 total situations describing how body posture, physical activity, speaking target, social context, environment, health conditions, face/head gear, climate, substances, fatigue, and pain affect the voice.
+
+1. Sample a situation from one of 289 levels across 11 dimensions (e.g. "Lying flat on back", "Eating crunchy food", "Boardroom negotiation", "Freezing cold")
+2. Sample 1-3 emotions from EmoNet with intensity levels
+3. Sample speaker gender (7 levels) and age (6 levels)
+4. DeepSeek V4 Flash generates an acting challenge that places the actor IN this situation — the physical/social context naturally affects the voice and performance
+5. Each challenge has an emotional arc with micro-distractions and organic authenticity
+
+The situation taxonomy is based on the [Extended VoiceNet Taxonomy](data/voicenet_ext_taxonomy.html) ([interactive viewer](https://projects.laion.ai/Voice-Acting-Pipeline/voicenet_extension_taxonomy.html)) which extends the core 57 VoiceNet voice attribute dimensions with situation-dependent dimensions that describe how the speaker's physical state and environment affect their vocal output.
+
+See [docs/path_sit_situation.md](docs/path_sit_situation.md) for full details.
 
 ---
 
@@ -393,7 +409,7 @@ Voice-Acting-Pipeline/
 ├── pyproject.toml                     # Python packaging
 ├── data/
 │   ├── voicenet_ext_taxonomy.html     # VoiceNet (57 dims x 7 levels)
-│   ├── all_acting_challenges.json     # 1,478 acting challenge scenarios
+│   ├── all_acting_challenges.json     # 12,898 acting challenge scenarios
 │   ├── situation_taxonomy.json        # Situation taxonomy (poses, activities, contexts)
 │   ├── emonet_taxonomy.json           # EmoNet (40 emotions x 4 intensity levels)
 │   ├── vocal_bursts_taxonomy.json     # Vocal bursts (120 types)
@@ -431,6 +447,7 @@ Voice-Acting-Pipeline/
 │   ├── path_c_archetype_named.md      # Path C detailed docs
 │   ├── path_d_reference.md            # Path D detailed docs
 │   ├── path_ac_acting_challenge.md    # AC + ACCC detailed docs
+│   ├── path_sit_situation.md          # SIT + SIT-CC situation pathway docs
 │   ├── path_cc_character_consistent.md   # CC v1 detailed docs
 │   ├── path_cc2_character_consistent_v2.md  # CC2 v2 detailed docs
 │   └── demo/                          # HTML demo grids with embedded audio
