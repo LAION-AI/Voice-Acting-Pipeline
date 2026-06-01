@@ -176,6 +176,24 @@ Paper references:
 - [EmoNet-Voice — arXiv:2506.09827](https://arxiv.org/abs/2506.09827) (Empathic Insight Voice Plus)
 - See [docs/paper_reference.md](docs/paper_reference.md) for citation and BibTeX.
 
+### Pre-Generated DramaBox Prompts
+
+79,087 ready-to-use DramaBox two-scene CUT TO: prompts across all pathways and languages:
+
+| File | Pathway | Count | Language | Examples |
+|------|---------|-------|----------|----------|
+| [`dramabox_cca_voicenet.json`](data/dramabox_cca_voicenet.json) | CC-A (VoiceNet) | 19,332 | English | [Examples](docs/dramabox_cca_voicenet_examples.md) |
+| [`dramabox_cc2c_archetype.json`](data/dramabox_cc2c_archetype.json) | CC2-C (Archetype) | 9,999 | English | [Examples](docs/dramabox_cc2c_archetype_examples.md) |
+| [`dramabox_accc_acting_challenge.json`](data/dramabox_accc_acting_challenge.json) | ACCC (Acting Challenge) | 12,893 | English | [Examples](docs/dramabox_accc_acting_challenge_examples.md) |
+| [`dramabox_sit_situation.json`](data/dramabox_sit_situation.json) | SIT (Situation) | 5,749 | en/fr/es/de | [Examples](docs/dramabox_sit_situation_examples.md) |
+| [`dramabox_extreme_physical.json`](data/dramabox_extreme_physical.json) | Extreme Physical | 600 | English | [Examples](docs/dramabox_extreme_physical_examples.md) |
+| [`dramabox_cca_voicenet_de.json`](data/dramabox_cca_voicenet_de.json) | CC-A (VoiceNet) | 9,983 | German | [Examples](docs/dramabox_cca_voicenet_de_examples.md) |
+| [`dramabox_cc2c_archetype_de.json`](data/dramabox_cc2c_archetype_de.json) | CC2-C (Archetype) | 9,983 | German | [Examples](docs/dramabox_cc2c_archetype_de_examples.md) |
+| [`dramabox_accc_acting_challenge_de.json`](data/dramabox_accc_acting_challenge_de.json) | ACCC (Acting Challenge) | 9,948 | German | [Examples](docs/dramabox_accc_acting_challenge_de_examples.md) |
+| [`dramabox_extreme_physical_de.json`](data/dramabox_extreme_physical_de.json) | Extreme Physical | 600 | German | [Examples](docs/dramabox_extreme_physical_de_examples.md) |
+
+German prompts use oe/ae/ue instead of umlauts (ö/ä/ü). Directions and speaker descriptions are in English; only spoken dialogue (in "double quotes") is in the target language.
+
 ---
 
 ## Standalone Paths — Details
@@ -422,6 +440,7 @@ Voice-Acting-Pipeline/
 │   ├── dramabox_cc2c_archetype_de.json # 9,983 German CC2-C DramaBox prompts (no umlauts)
 │   ├── dramabox_accc_acting_challenge_de.json # 9,948 German ACCC DramaBox prompts (no umlauts)
 │   ├── dramabox_extreme_physical.json # 600 extreme physical DramaBox prompts
+│   ├── dramabox_extreme_physical_de.json # 600 German extreme physical DramaBox prompts
 │   ├── acting_challenges_extreme_physical.json # 600 extreme physical challenges
 │   ├── extreme_physical_taxonomy.json # 6 categories x 10 subcategories taxonomy
 │   ├── situation_taxonomy.json        # Situation taxonomy (poses, activities, contexts)
@@ -464,6 +483,15 @@ Voice-Acting-Pipeline/
 │   ├── path_sit_situation.md          # SIT + SIT-CC situation pathway docs
 │   ├── path_cc_character_consistent.md   # CC v1 detailed docs
 │   ├── path_cc2_character_consistent_v2.md  # CC2 v2 detailed docs
+│   ├── dramabox_cca_voicenet_examples.md        # CC-A English examples
+│   ├── dramabox_cc2c_archetype_examples.md      # CC2-C English examples
+│   ├── dramabox_accc_acting_challenge_examples.md # ACCC English examples
+│   ├── dramabox_sit_situation_examples.md       # SIT multilingual examples
+│   ├── dramabox_cca_voicenet_de_examples.md     # CC-A German examples
+│   ├── dramabox_cc2c_archetype_de_examples.md   # CC2-C German examples
+│   ├── dramabox_accc_acting_challenge_de_examples.md # ACCC German examples
+│   ├── dramabox_extreme_physical_examples.md    # Extreme Physical English examples
+│   ├── dramabox_extreme_physical_de_examples.md # Extreme Physical German examples
 │   └── demo/                          # HTML demo grids with embedded audio
 │       ├── accc_lavasr.html           # Index (redirects to page 1)
 │       ├── accc_lavasr_p1.html        # ACCC LavaSR grid pages 1-10
