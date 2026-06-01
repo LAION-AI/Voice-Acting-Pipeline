@@ -99,7 +99,7 @@ All CC paths generate two scenes with the **same speaker** in **contrasting emot
 | **CC2-B** (Archetype v2) | Archetype + contrasting emotions | Enhanced: genuine/spontaneous/authentic delivery emphasis | [CC2 Details](docs/path_cc2_character_consistent_v2.md) |
 | **CC2-C** (Archetype Named v2) | Archetype named + contrasting emotions | Enhanced: visceral emotional contrast, human-sounding | [CC2 Details](docs/path_cc2_character_consistent_v2.md) |
 | **ACCC** (Acting Challenge CC) | Acting challenge + VoiceNet gender/age | Challenge-driven two-scene format — same actor, same challenge, contrasting emotional moments | [ACCC Details](docs/path_ac_acting_challenge.md#accc-character-consistent) |
-| **SIT-CC** (Situation CC) | Situation + EmoNet + contrasting emotions | Two-scene situation-driven format — same actor IN the same situation, two contrasting emotional moments | [SIT-CC Details](docs/path_sit_situation.md#sit-cc-character-consistent) |
+| **SIT-CC** (Situation CC) | Situation + EmoNet + contrasting emotions | Two-scene situation-driven format — same actor IN the same situation, two contrasting emotional moments (5,749 pre-generated prompts in en/fr/es/de) | [SIT-CC Details](docs/path_sit_situation.md#sit-cc-character-consistent) |
 
 ---
 
@@ -167,7 +167,7 @@ The pipeline samples from several structured taxonomies to create diverse, contr
 | **EmoNet** | 40 emotions x 4 intensity levels | JSON | [Taxonomy docs](docs/emonet_taxonomy.md) |
 | **Vocal Bursts** | 120 non-linguistic sounds | JSON | [Taxonomy docs](docs/vocal_bursts_taxonomy.md) |
 | **Character Archetypes** | 920 archetypes x 92 genres | JSON | [Taxonomy docs](docs/archetypes.md) |
-| **Acting Challenges** | 12,898 challenge scenarios | JSON | [Preview (100 samples)](https://projects.laion.ai/Voice-Acting-Pipeline/acting_challenges_preview.html) |
+| **Acting Challenges** | 18,647 challenge scenarios | JSON | [Preview (100 samples)](https://projects.laion.ai/Voice-Acting-Pipeline/acting_challenges_preview.html) |
 | **Situation Taxonomy** | 11 dimensions, 289 situations | JSON | [Data file](data/situation_taxonomy.json) — Body posture (32), physical activity (69), speaking target (25), social context (56), environment (22), health (18), face/head gear (14), climate (10), substances (12), fatigue (19), pain (12) |
 
 Paper references:
@@ -416,6 +416,7 @@ Voice-Acting-Pipeline/
 │   ├── dramabox_cca_voicenet.json     # 19,332 pre-generated CC-A DramaBox prompts
 │   ├── dramabox_cc2c_archetype.json   # 9,999 pre-generated CC2-C DramaBox prompts
 │   ├── dramabox_accc_acting_challenge.json # 12,893 pre-generated ACCC DramaBox prompts
+│   ├── dramabox_sit_situation.json   # 5,749 pre-generated SIT DramaBox prompts (en/fr/es/de)
 │   ├── situation_taxonomy.json        # Situation taxonomy (poses, activities, contexts)
 │   ├── emonet_taxonomy.json           # EmoNet (40 emotions x 4 intensity levels)
 │   ├── vocal_bursts_taxonomy.json     # Vocal bursts (120 types)

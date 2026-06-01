@@ -83,3 +83,23 @@ CUT TO:
 
 [Scene 2: contrasting emotional moment, same physical constraints]
 ```
+
+### Pre-Generated DramaBox Prompts
+
+[`dramabox_sit_situation.json`](../data/dramabox_sit_situation.json) contains **5,749 pre-generated SIT-CC DramaBox prompts** — one per situation-inspired acting challenge, distributed across four languages:
+
+| Language | Count |
+|----------|-------|
+| English | 1,438 |
+| French | 1,437 |
+| Spanish | 1,437 |
+| German | 1,437 |
+
+Directions (in parentheses) and speaker descriptions are in English; spoken dialogue (in double quotes) is in the target language.
+
+### Audio Processing
+
+1. **DramaBox TTS**: Raw audio synthesis (produces one continuous audio file)
+2. **RE-USE Enhancement**: Chunked (15s chunks, 1s overlap) — SIT-CC audio is longer
+3. **Best-of-N Scoring**: 3 candidates, select best
+4. **Audio Splitting**: Qwen3-ASR word-level timestamps find the "CUT TO:" boundary, then the audio is split into Scene 1 and Scene 2 with 100ms fades
