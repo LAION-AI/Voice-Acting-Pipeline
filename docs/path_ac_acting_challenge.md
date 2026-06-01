@@ -1,10 +1,10 @@
 # Path AC — Acting Challenge
 
-Acting challenge-driven performance generation. Samples from **18,647 structured challenge scenarios** to create audition-style method acting performances. Two variants: standalone (AC) and character consistent (ACCC).
+Acting challenge-driven performance generation. Samples from **19,247 structured challenge scenarios** to create audition-style method acting performances. Two variants: standalone (AC) and character consistent (ACCC).
 
 ## Acting Challenge Database
 
-The challenge database contains 18,647 scenarios from six sources:
+The challenge database contains 19,247 scenarios from seven sources:
 
 | Source | Count | Description |
 |--------|-------|-------------|
@@ -14,8 +14,9 @@ The challenge database contains 18,647 scenarios from six sources:
 | Eric Morris Method-Inspired | 4,030 | Generated from 806 concepts, techniques, exercises, and recommendations extracted from the [Eric Morris method acting system Unified Knowledge Base](https://github.com/christophschuhmann/eric_morris-method-acting-system). Each of the 806 items produced 5 distinct challenges inspired by its underlying emotional and psychological principles, covering deathbed farewells, confrontations, quiet vulnerability, intense sensory experiences, and contradictory emotions. |
 | Existing Challenge Variants | 7,390 | Generated from the original 1,478 challenges. Each challenge produced 5 new variants in different contexts with deeper emotional stakes, interpersonal confrontations, quiet vulnerability, explosive intensity, and contradictory emotions. |
 | Situation-Inspired | 5,749 | Generated from 289 situations across 11 dimensions of the [Situation Taxonomy](../data/situation_taxonomy.json) (body posture, physical activity, speaking target, social context, environment, health, gear, climate, substances, fatigue, pain). Each situation produced 20 variants with randomly sampled EmoNet emotions, gender, and age. |
+| Extreme Physical | 600 | Generated from 6 extreme physical condition categories (tension/exertion, breathlessness, pain, temperature shock, taste/oral sensation, surprise/startle) x 10 subcategories x 10 scenarios. Each challenge starts from calm sensuality then erupts with extreme physical intensity via CUT TO: format. |
 
-All 18,647 challenges are shuffled together in the final database. Each challenge has a **title** and **instruction** describing the scenario, plus a **source** tag and an optional **inspired_by** field linking back to the originating concept or challenge.
+All 19,247 challenges are shuffled together in the final database. Each challenge has a **title** and **instruction** describing the scenario, plus a **source** tag and an optional **inspired_by** field linking back to the originating concept or challenge.
 
 **Example challenge (original):**
 > **Title:** The Goodbye That Wasn't Planned
@@ -43,7 +44,7 @@ Browse 100 random samples: [Acting Challenges Preview](https://projects.laion.ai
 
 ### Sampling Strategy
 
-1. **Acting Challenge**: Random selection from 18,647 challenges (title + instruction)
+1. **Acting Challenge**: Random selection from 19,247 challenges (title + instruction)
 2. **Speaker Gender**: Random from VoiceNet GEND dimension (7 levels):
    - 0: Hyper-feminized voice
    - 1: Strongly feminized

@@ -83,7 +83,7 @@ The pipeline supports **12 generation paths** organized into three families. Eac
 | **B** (Archetype) | 920 archetypes x 92 genres | Genre/character archetype-based: random archetype + emotions + Tempo/Arousal | [Path B Details](docs/path_b_archetype.md) |
 | **C** (Archetype Named) | Same as B + explicit naming | Archetype with explicit role naming in the DramaBox script (e.g. "a battle-hardened noble knight") | [Path C Details](docs/path_c_archetype_named.md) |
 | **D** (Reference Audio) | Timbre whisper + VoiceNet + Chatterbox VC | Reference audio pipeline: timbre caption guides prompt, DramaBox TTS + voice conversion to match reference speaker | [Path D Details](docs/path_d_reference.md) |
-| **AC** (Acting Challenge) | 18,647 acting challenges + VoiceNet gender/age | Audition-style method acting from challenge scenarios — naturalistic, genuine, dynamic emotional arc | [AC Details](docs/path_ac_acting_challenge.md) |
+| **AC** (Acting Challenge) | 19,247 acting challenges + VoiceNet gender/age | Audition-style method acting from challenge scenarios — naturalistic, genuine, dynamic emotional arc | [AC Details](docs/path_ac_acting_challenge.md) |
 | **SIT** (Situation) | 289 situations x EmoNet emotions | Situation-driven acting: actor is physically/socially IN a specific situation from the [Situation Taxonomy](data/situation_taxonomy.json) (body posture, activity, social context, environment, health, climate, fatigue, pain) with sampled emotions | [SIT Details](docs/path_sit_situation.md) |
 
 ### Character Consistent Paths (Two Scenes — "CUT TO:")
@@ -167,7 +167,8 @@ The pipeline samples from several structured taxonomies to create diverse, contr
 | **EmoNet** | 40 emotions x 4 intensity levels | JSON | [Taxonomy docs](docs/emonet_taxonomy.md) |
 | **Vocal Bursts** | 120 non-linguistic sounds | JSON | [Taxonomy docs](docs/vocal_bursts_taxonomy.md) |
 | **Character Archetypes** | 920 archetypes x 92 genres | JSON | [Taxonomy docs](docs/archetypes.md) |
-| **Acting Challenges** | 18,647 challenge scenarios | JSON | [Preview (100 samples)](https://projects.laion.ai/Voice-Acting-Pipeline/acting_challenges_preview.html) |
+| **Acting Challenges** | 19,247 challenge scenarios | JSON | [Preview (100 samples)](https://projects.laion.ai/Voice-Acting-Pipeline/acting_challenges_preview.html) |
+| **Extreme Physical** | 6 categories, 60 subcategories, 600 challenges | JSON | Tension (100), Breathlessness (100), Pain (100), Temperature (100), Taste (100), Surprise (100) |
 | **Situation Taxonomy** | 11 dimensions, 289 situations | JSON | [Data file](data/situation_taxonomy.json) — Body posture (32), physical activity (69), speaking target (25), social context (56), environment (22), health (18), face/head gear (14), climate (10), substances (12), fatigue (19), pain (12) |
 
 Paper references:
@@ -230,7 +231,7 @@ See [docs/path_d_reference.md](docs/path_d_reference.md) for full details.
 
 ### Path AC — Acting Challenge
 
-Audition-style method acting performances driven by acting challenge scenarios. Samples from 18,647 structured challenges covering diverse emotional and situational contexts.
+Audition-style method acting performances driven by acting challenge scenarios. Samples from 19,247 structured challenges covering diverse emotional and situational contexts.
 
 1. Sample a random acting challenge (title + instruction) from the [challenge database](https://projects.laion.ai/Voice-Acting-Pipeline/acting_challenges_preview.html)
 2. Sample speaker gender (VoiceNet GEND dimension, 7 levels) and age (AGEV dimension, 7 levels)
@@ -409,7 +410,7 @@ Voice-Acting-Pipeline/
 ├── pyproject.toml                     # Python packaging
 ├── data/
 │   ├── voicenet_ext_taxonomy.html     # VoiceNet (57 dims x 7 levels)
-│   ├── all_acting_challenges.json     # 18,647 acting challenge scenarios
+│   ├── all_acting_challenges.json     # 19,247 acting challenge scenarios
 │   ├── acting_challenges_situation_inspired.json  # 5,749 situation-inspired challenges
 │   ├── acting_challenges_eric_morris_inspired.json # 4,030 Eric Morris-inspired challenges
 │   ├── acting_challenges_existing_inspired.json    # 7,390 existing challenge variants
@@ -417,6 +418,12 @@ Voice-Acting-Pipeline/
 │   ├── dramabox_cc2c_archetype.json   # 9,999 pre-generated CC2-C DramaBox prompts
 │   ├── dramabox_accc_acting_challenge.json # 12,893 pre-generated ACCC DramaBox prompts
 │   ├── dramabox_sit_situation.json   # 5,749 pre-generated SIT DramaBox prompts (en/fr/es/de)
+│   ├── dramabox_cca_voicenet_de.json # 9,983 German CC-A DramaBox prompts (no umlauts)
+│   ├── dramabox_cc2c_archetype_de.json # 9,983 German CC2-C DramaBox prompts (no umlauts)
+│   ├── dramabox_accc_acting_challenge_de.json # 9,948 German ACCC DramaBox prompts (no umlauts)
+│   ├── dramabox_extreme_physical.json # 600 extreme physical DramaBox prompts
+│   ├── acting_challenges_extreme_physical.json # 600 extreme physical challenges
+│   ├── extreme_physical_taxonomy.json # 6 categories x 10 subcategories taxonomy
 │   ├── situation_taxonomy.json        # Situation taxonomy (poses, activities, contexts)
 │   ├── emonet_taxonomy.json           # EmoNet (40 emotions x 4 intensity levels)
 │   ├── vocal_bursts_taxonomy.json     # Vocal bursts (120 types)

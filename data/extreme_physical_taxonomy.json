@@ -1,0 +1,1066 @@
+{
+  "categories": [
+    {
+      "code": "TENS",
+      "name": "Extreme Physical Tension & Exertion",
+      "description": "The actor begins in a state of calm, sensory awareness, or gentle focus — then erupts into full-body muscular strain. Words are squeezed out between clenched teeth, punctuated by grunts and trembling breath, as the body approaches or exceeds its physical limits.",
+      "subcategories": [
+        {
+          "name": "Impossible Lifts",
+          "description": "Lifting objects of catastrophic weight — vehicles, collapsed structures, industrial machinery — usually to save a life or escape danger. The actor must convey the progressive failure of the body under gravitational force.",
+          "count": 10,
+          "example_scenarios": [
+            "Lifting the rear axle of a car off a child's pinned leg in a parking lot",
+            "Hoisting a collapsed ceiling beam off a trapped firefighter",
+            "Deadlifting a refrigerator that fell on a toddler in a kitchen",
+            "Raising a garage door that came down on a neighbor's arm",
+            "Flipping a capsized ATV off a pinned hiking partner",
+            "Pulling a fallen tree trunk off a wounded deer hunter",
+            "Lifting a submerged dock anchor to free a caught fishing line tangled around a friend's ankle",
+            "Raising the hood of a collapsed industrial press off a factory worker",
+            "Hoisting a collapsed barn door off a horse that's still breathing",
+            "Lifting a piano that slid off a truck ramp onto a moving crew member"
+          ]
+        },
+        {
+          "name": "Pulling Against Immovable Forces",
+          "description": "Dragging, hauling, or pulling something that will not yield — rope tug-of-war at survival scale, pulling a vehicle out of mud, hauling a net full of catch. The strain is horizontal and relentless, voice fracturing under the sustained pull.",
+          "count": 10,
+          "example_scenarios": [
+            "Pulling a rope attached to a dock to stop a boat drifting into rocks in a storm",
+            "Hauling a drowning horse out of a mud pit by its halter",
+            "Dragging an unconscious soldier out of a burning vehicle by the collar",
+            "Pulling a stuck truck out of a snowdrift using a tow chain alone",
+            "Hauling a full crab trap up from fifty feet of depth in freezing water",
+            "Dragging a cast-iron anchor hand-over-hand from the ocean floor",
+            "Pulling a collapsed section of tent pole through wet canvas in a hurricane",
+            "Hauling a loaded ore cart up a mine shaft incline by hand",
+            "Dragging a waterlogged canoe over a portage trail through dense brush",
+            "Pulling a sled loaded with supplies through chest-deep snow at altitude"
+          ]
+        },
+        {
+          "name": "Pushing Beyond Capacity",
+          "description": "Pressing or driving something that resists completely — a jammed door, a sliding vehicle, a machine that won't yield. The voice comes out in explosive bursts timed to each push, degrading into continuous strained vocalization.",
+          "count": 10,
+          "example_scenarios": [
+            "Pushing a car out of the path of an incoming train with seconds to spare",
+            "Pressing a flooded bulkhead door closed on a sinking submarine",
+            "Pushing a stuck elevator car up to floor level by hand from below",
+            "Driving a sofa barricade against a door as someone slams into it from the other side",
+            "Pushing a rolled truck back onto its wheels on an icy mountain road",
+            "Pressing a warped safe room door shut against a tornado's pressure differential",
+            "Shoving a stalled ambulance out of an intersection during a cardiac emergency",
+            "Pushing a collapsed barn wall upright to free cattle",
+            "Pressing a stuck flood gate closed as water rises around the operator's waist",
+            "Driving a loading dock door shut against hurricane-force wind"
+          ]
+        },
+        {
+          "name": "Straining Against Restraints",
+          "description": "Bound, cuffed, trapped in wreckage — the actor strains against ropes, zip ties, handcuffs, or structural debris with every muscle, voice becoming raw and desperate as flesh tears against the restraint.",
+          "count": 10,
+          "example_scenarios": [
+            "Straining zip-tied wrists apart behind a radiator in an abandoned warehouse",
+            "Pulling against handcuffs attached to a steering wheel as floodwater rises",
+            "Twisting out of rope restraints on a chair as smoke fills the room",
+            "Wrenching a trapped foot free from collapsed scaffolding as it shifts",
+            "Yanking a seatbelt that won't release after a rollover crash",
+            "Pulling a caught hand free from industrial machinery before it cycles again",
+            "Straining against a bungee cord tied around the wrists during a hazing ordeal",
+            "Wrenching against a leg iron chained to a wall as the building catches fire",
+            "Pulling an arm free from quicksand-like mud before losing consciousness",
+            "Breaking zip ties binding the ankles on the edge of a moving vehicle"
+          ]
+        },
+        {
+          "name": "Isometric Death Holds",
+          "description": "Holding a position under catastrophic load with no movement possible — supporting a ledge, bracing a collapsing structure, holding a rope above a drop. The actor holds the line, voice shaking with sustained muscular failure.",
+          "count": 10,
+          "example_scenarios": [
+            "Bracing a collapsing mine shaft ceiling with both arms while others crawl out",
+            "Holding a rope attached to a climber dangling over a crevasse until rescuers arrive",
+            "Supporting a collapsed porch roof above an elderly woman on both hands",
+            "Gripping a helicopter skid with both hands while hanging above the ocean",
+            "Holding a bridge support cable while a repair crew reconnects the anchor",
+            "Bracing a flood barrier with the body against surging water pressure",
+            "Holding an overloaded stretcher horizontal on a steep mountain descent",
+            "Supporting the weight of a child on an outstretched arm above broken glass",
+            "Gripping a boat's lifeline with one hand while the vessel rolls in storm swells",
+            "Holding a split beam in position while a trapped person is extracted below"
+          ]
+        },
+        {
+          "name": "Combat Grappling & Submission",
+          "description": "Physical combat that requires total muscular engagement — wrestling, choking, pinning, breaking free. The actor's speech is interrupted by exertion, impact, and the savage intimacy of body-to-body struggle.",
+          "count": 10,
+          "example_scenarios": [
+            "Breaking a chokehold from behind in a dark alley with full explosive effort",
+            "Pinning a larger attacker to the ground while calling for help",
+            "Escaping a mount position on the floor of a burning building",
+            "Forcing an armed wrist down against resistance to prevent a shooting",
+            "Wrestling a knife away from an attacker using both hands and body weight",
+            "Breaking free from a rear bear hug while ribs compress",
+            "Choking out an opponent who outweighs by fifty pounds in a survival scenario",
+            "Forcing a door open against someone pushing from the other side with full body",
+            "Pulling an attacker off a third person while absorbing their resistance",
+            "Struggling to maintain a joint lock on a panicking, adrenaline-flooded opponent"
+          ]
+        },
+        {
+          "name": "Sprint & Explosive Effort",
+          "description": "Pure explosive muscular output — sprinting, jumping, climbing at maximum velocity. The dialogue is delivered mid-exertion, syllables timed to footfalls, voice rattling with impact and effort.",
+          "count": 10,
+          "example_scenarios": [
+            "Sprinting full speed down a collapsing mine tunnel ahead of the cave-in",
+            "Climbing a chain-link fence at maximum speed to escape a guard dog",
+            "Running across a burning building's floor to reach a window before collapse",
+            "Sprinting through chest-deep snow to reach a child who fell through ice",
+            "Climbing a rope ladder on a moving helicopter with wind and noise chaos",
+            "Running up seven flights of fire stairs carrying a fire extinguisher",
+            "Sprinting down a ship's deck as it lists sharply to one side",
+            "Climbing out of a capsizing kayak and swimming hard for shore",
+            "Jumping between rooftops in pursuit, landing and recovering in motion",
+            "Sprinting the final stretch of a grueling mountain ultramarathon at the limit"
+          ]
+        },
+        {
+          "name": "Trapped in Machinery or Wreckage",
+          "description": "Pinned by mechanical or structural force — wedged in wreckage, caught in gears, trapped under vehicles. The actor speaks in the voice of someone whose thorax is compressed and whose every word costs oxygen.",
+          "count": 10,
+          "example_scenarios": [
+            "Pinned under a collapsed warehouse shelf with a forklift approach getting closer",
+            "Wedged in the crumpled driver's seat of an overturned truck with the door jammed",
+            "Caught between two closing industrial press plates with millimeters to spare",
+            "Pinned against a wall by a runaway shopping cart loaded with concrete blocks",
+            "Trapped in collapsed bleachers with steel tubing across the chest",
+            "Wedged in a drainage pipe during a flash flood with rising water",
+            "Pinned under a toppled hospital bed in an earthquake with staff trying to lift it",
+            "Caught in a grain auger that's pulled the sleeve before the kill switch is hit",
+            "Trapped between the car and the garage wall as the car rolls on a slope",
+            "Pinned under a fallen stage lighting rig that's still sparking electricity"
+          ]
+        },
+        {
+          "name": "Tug-of-War with Death",
+          "description": "Holding on to someone or something that is being pulled away by gravity, current, or force — keeping a grip while strength fails. The actor must voice the deterioration of grip and the terror of imminent loss.",
+          "count": 10,
+          "example_scenarios": [
+            "Gripping a child's wrist dangling from a cliff edge as grip slowly fails",
+            "Holding a partner's hand as they're pulled by a riptide current",
+            "Clutching a rope attached to a dog being swept downstream",
+            "Keeping hold of a stretcher handle as a helicopter lurches in turbulence",
+            "Gripping someone's collar as they slide toward open elevator shaft",
+            "Holding onto a fire escape railing while dangling above a six-story drop",
+            "Keeping grip on a steering wheel as power steering fails at high speed",
+            "Clutching a boat rail as a wave breaks over the stern and tries to sweep a crew member overboard",
+            "Holding the handle of a gurney on a steep ramp that starts to roll",
+            "Gripping a partner's ankle as they're pulled into a collapsed crawlspace"
+          ]
+        },
+        {
+          "name": "Endurance at the Edge of Collapse",
+          "description": "The actor has been straining for a long time and is now at the terminal edge — shaking, vision narrowing, muscles giving out, still trying. The voice is ragged, stripped of control, but still pushing words through the wreckage of the body.",
+          "count": 10,
+          "example_scenarios": [
+            "The final kilometers of a solo Arctic crossing, hauling a full sled, barely upright",
+            "Hour six of treading water after a sailing accident waiting for rescue",
+            "Holding a stress position in a POW interrogation, refusing to break",
+            "The last ascent of a fourteen-thousand-foot peak with severe altitude sickness",
+            "Completing a military selection obstacle course after three days without sleep",
+            "The final lap of an open-water swim in frigid conditions",
+            "End-stage of a strongman competition deadlift event at personal maximum",
+            "The last pitch of a solo free-climb with forearms pumped to failure",
+            "Finishing a wildfire hotshot shift after sixteen hours of line cutting",
+            "Completing a manual CPR cycle after thirty minutes with no mechanical assist and two responders down"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "BRTH",
+      "name": "Extreme Breathlessness",
+      "description": "The actor begins in a state of calm, full-breath awareness — perhaps a meditative stillness, a slow exhale of pleasure, a moment of quiet observation. Then the air is stripped away. Words arrive in ragged fragments, gasped syllables, incomplete sentences where the inhale is louder than the words themselves.",
+      "subcategories": [
+        {
+          "name": "Post-Sprint Oxygen Debt",
+          "description": "The collapse after maximum cardiovascular exertion — the lungs demanding more than the world can supply. Speech is delivered between enormous gasping breaths, voice pitched high with effort, sentences broken by involuntary inhales.",
+          "count": 10,
+          "example_scenarios": [
+            "Just finished a full sprint across a burning airfield to reach the last departing aircraft",
+            "Reached the top of a fire escape after sprinting twelve floors with gear",
+            "Completed a 400-meter sprint to stop someone from jumping from a bridge",
+            "Just outran a military guard dog across a flooded compound",
+            "Finished a desperate uphill run to flag down an ambulance on a mountain road",
+            "Just sprinted the length of a hospital corridor to reach an emergency code",
+            "Reached a child trapped on a collapsing pier after a full-speed beach sprint",
+            "Just ran from a wildfire front across a quarter mile of open meadow",
+            "Finished a desperate race to catch a runaway horse before it reached a highway",
+            "Just sprinted through airport security to stop someone at the gate"
+          ]
+        },
+        {
+          "name": "Near-Drowning & Water Inhalation",
+          "description": "Surfaces after breathing water — the lungs spasming, body purging fluid through coughing, voice wet and strangled as air fights its way back into flooded passages.",
+          "count": 10,
+          "example_scenarios": [
+            "Dragged to the surface after a riptide pulls under and holds for thirty seconds",
+            "Surfaces under a capsized kayak, finally finds the air pocket, gasping",
+            "Pulled from a frozen lake by bystanders after falling through ice",
+            "Rescued from a submerged car by a diver, choking water out on the riverbank",
+            "Survives a near-drowning in a rip current and collapses on a beach",
+            "Dragged up from a hotel pool after a seizure, staff performing rescue breathing",
+            "Pulled from a flooding basement as the last air pocket disappears",
+            "Surfaces during a scuba equipment failure after breathing partial water",
+            "Rescued from a storm surge that pinned against a seawall and submerged",
+            "Pulled out of a waterfall's hydraulic trap after circulating for forty seconds"
+          ]
+        },
+        {
+          "name": "Severe Asthma Attack",
+          "description": "The airways narrow to almost nothing — each inhale a whistling desperate pull, each word costing oxygen that the lungs can barely absorb. The actor must convey the claustrophobia of being unable to breathe inside a functioning body.",
+          "count": 10,
+          "example_scenarios": [
+            "Sudden onset asthma attack in a dusty barn with no inhaler present",
+            "Exercise-induced attack during a military fitness test with a superior watching",
+            "Smoke-triggered severe attack inside a burning building evacuation",
+            "Allergen exposure at an outdoor wedding causes attack with inhaler in the car",
+            "Cat dander attack in a new partner's apartment before a first date",
+            "Mold exposure in a flooded house triggers the worst attack in years",
+            "Cold air attack during a winter marathon at mile twenty",
+            "Pollen-triggered severe attack during a hiking trip far from medication",
+            "Stress-induced attack during a high-stakes job interview with no rescue inhaler",
+            "Attack triggered by chemical fumes in a laboratory accident"
+          ]
+        },
+        {
+          "name": "Choking on Food or Foreign Object",
+          "description": "The airway is suddenly and completely blocked — the actor moves from pleasurable eating or casual speech to total panic as nothing moves through the throat. Words are replaced by the desperate sounds of a body fighting for air.",
+          "count": 10,
+          "example_scenarios": [
+            "A piece of steak lodges in the throat at a romantic anniversary dinner",
+            "Inhales a vitamin capsule that catches sideways in the upper airway",
+            "A chunk of hard candy blocks the airway while driving alone on the highway",
+            "Bone from a fish fillet lodges transversely in the throat during a solo meal",
+            "A grape inhaled while laughing completely blocks the airway",
+            "A piece of unchewed meat blocks while eating alone at a late-night diner",
+            "A foreign object from a child's toy accidentally inhaled by the parent",
+            "A large pill swallowed dry lodges at the pharynx and won't move",
+            "A mouthful of food swallowed mid-laugh creates a complete blockage",
+            "A chunk of dry bread eaten too fast completely occludes the airway"
+          ]
+        },
+        {
+          "name": "Hyperventilation & Panic Spiral",
+          "description": "The breathing accelerates beyond control — CO2 depletes, extremities tingle, vision narrows, and the body begins to lock up. The actor is caught in the feedback loop of terror and breath, voice cycling up into pure hyperventilating panic.",
+          "count": 10,
+          "example_scenarios": [
+            "Trapped in a collapsed elevator hyperventilating as the walls seem to close in",
+            "Panic attack on an aircraft during extreme turbulence mid-ocean",
+            "PTSD-triggered hyperventilation in a crowded stadium after a firecracker pops",
+            "Hyperventilating in a parking garage after narrowly escaping an assault",
+            "Spiral triggered by a phone call delivering a terminal diagnosis",
+            "Locked in a supply closet by mistake and descending into claustrophobic panic",
+            "First responder hyperventilating after a mass casualty scene overwhelms",
+            "Hyperventilation spiral in a confined MRI machine during a medical emergency",
+            "Panic-induced hyperventilation before a solo skydive at the aircraft door",
+            "Hyperventilating in a police interview room after being wrongly accused"
+          ]
+        },
+        {
+          "name": "Altitude Sickness & Oxygen Starvation",
+          "description": "The oxygen simply isn't there — each breath accomplishes less, the mind fogs, the body moves in slow motion, but the actor still tries to communicate across the altitude barrier.",
+          "count": 10,
+          "example_scenarios": [
+            "Summit push on K2 at 8,600 meters with supplemental oxygen running out",
+            "Sudden ascent in a military aircraft with a failed pressurization system",
+            "Pilot hypoxia at cruising altitude with oxygen equipment failure",
+            "Altitude sickness onset during acclimatization on Denali at high camp",
+            "Hiker at 14,000 feet with no acclimatization and exertion-induced HACE",
+            "Hot air balloon emergency ascent above operational altitude in an emergency",
+            "Ski patrol responder called to 13,500 feet after a day at sea level",
+            "Construction worker on a high-altitude dam project in the Andes",
+            "Unpressurized WWII bomber mission at 25,000 feet with oxygen line cut by flak",
+            "High-altitude helicopter rescue at 18,000 feet with doors open"
+          ]
+        },
+        {
+          "name": "Smoke Inhalation",
+          "description": "The lungs fill with toxic gas and particulates — the throat burns, voice goes ragged and hoarse, coughing interrupts every phrase, and the world narrows to the next breath.",
+          "count": 10,
+          "example_scenarios": [
+            "Trapped in a smoke-filled corridor looking for a fire exit in a hotel",
+            "Inside a vehicle that has caught fire with stuck seatbelt and filling smoke",
+            "Wildfire smoke overrun with a shelter-in-place barely holding",
+            "House fire rescuer without SCBA who went in anyway to pull out occupants",
+            "Structural fire collapse with smoke entering the survival void rapidly",
+            "Industrial chemical fire with smoke that burns the airway instantly",
+            "Low-oxygen smoke environment in a ship's engine room fire",
+            "Sealed room with a fire on the other side slowly filling with carbon monoxide",
+            "Warehouse fire during an overnight security shift with no alarm triggered",
+            "Cooking fire that fills an apartment and traps an elderly resident"
+          ]
+        },
+        {
+          "name": "Panic-Induced Breathlessness from Threat",
+          "description": "Not exertion but pure sympathetic nervous system response — the body floods with adrenaline and the breath becomes impossible to regulate. The actor must navigate between the need to be silent and the body's demand to hyperventilate.",
+          "count": 10,
+          "example_scenarios": [
+            "Hiding in a closet from an intruder, trying to control breathing while terrified",
+            "Crouching behind a car as an active shooter passes feet away",
+            "Under a bed in a home invasion, body shaking, trying not to breathe audibly",
+            "Pressed against a wall in a warzone alley as boots approach in the dark",
+            "Hiding in tall grass from a predator animal that is hunting by sound",
+            "Frozen on a ledge above a thousand-foot drop, afraid to move or breathe",
+            "Inside a shipping container that's being loaded and darkness closes in",
+            "Crouched in a swamp under a dock as a patrol boat sweeps overhead",
+            "Pressed into the corner of an elevator when the power cuts and a stranger is present",
+            "Holding breath behind a dumpster after a street confrontation escalates"
+          ]
+        },
+        {
+          "name": "Medical Respiratory Emergency",
+          "description": "Pulmonary embolism, anaphylaxis, pneumothorax — the body loses the ability to breathe through pathology rather than environment. The actor is aware something is catastrophically wrong inside, and the voice reflects the slow horror of losing breath from within.",
+          "count": 10,
+          "example_scenarios": [
+            "Pulmonary embolism onset mid-flight over the Atlantic with no doctor aboard",
+            "Anaphylactic throat closure after an unexpected nut exposure at a dinner party",
+            "Spontaneous pneumothorax in the middle of a work presentation",
+            "Tension pneumothorax developing after a workplace injury with no medical help nearby",
+            "Severe allergic asthma triggered by bee sting in a remote wilderness area",
+            "Epiglottitis onset in an adult, airway closing faster than help can arrive",
+            "Post-operative respiratory depression waking alone in a recovery room",
+            "Drug reaction causing bronchospasm in an outpatient procedure with staff absent",
+            "Laryngeal edema developing after insect sting on a solo camping trip",
+            "Pulmonary edema from flash drowning event, lungs filling slowly after rescue"
+          ]
+        },
+        {
+          "name": "Underwater Endurance & Free Diving Panic",
+          "description": "The breath hold reaches its limit — CO2 builds, the diaphragm contracts involuntarily, the lungs beg for air, and the surface is still out of reach. The actor speaks at the edge of blackout, words fragmenting under oxygen depletion.",
+          "count": 10,
+          "example_scenarios": [
+            "Free diver at sixty feet on a breath hold when a current changes direction",
+            "Trapped under ice with one small air pocket that is rapidly depleting",
+            "Navy SEAL combat dive going past safe bottom time without realizing it",
+            "Competitive free diver approaching static apnea world record, losing control",
+            "Caught under a wave set with lungs already half-depleted from the last hold",
+            "Cave diver whose light fails at the farthest penetration point on a breath hold",
+            "Spearfisherman tangled in kelp at twenty meters on a long breath hold",
+            "Underwater photographer who misjudges depth and current simultaneously",
+            "Pearl diver in traditional practice, rope tangled at bottom, cannot ascend",
+            "Research diver whose rebreather malfunctions at depth with long return swim"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "PAIN",
+      "name": "Extreme Physical Pain",
+      "description": "The actor opens in a state of sensory richness — warmth, pleasure, presence, intimacy. Then the pain arrives. It may be sudden and catastrophic or escalating and inescapable. The voice moves through recognition, denial, and surrender — from articulate speech to pure vocalization, words dissolving into the primal language of agony.",
+      "subcategories": [
+        {
+          "name": "Gunshot Wounds",
+          "description": "The sudden trauma of ballistic impact — the body absorbs an energy transfer that the brain cannot immediately categorize. The actor moves from shock through blossoming pain, voice fragmenting under the weight of fresh mortal injury.",
+          "count": 10,
+          "example_scenarios": [
+            "Shot in the shoulder mid-sentence during a hostage negotiation",
+            "Taking a round to the thigh in a firefight while calling coordinates to a teammate",
+            "Gut shot in a robbery gone wrong, trying to reach a phone while alone",
+            "Shot through the hand while shielding someone else from a drive-by",
+            "Sniper round through the calf during a rooftop evacuation",
+            "Through-and-through shoulder wound in a police raid gone wrong",
+            "Accidental discharge at a gun range catches the foot, bullet through bone",
+            "Shot while wearing a vest — blunt trauma fractures ribs through the armor",
+            "Graze wound across the temple that splits skin to bone during a firefight",
+            "Multiple fragment wounds from a grenade detonation at fifteen feet"
+          ]
+        },
+        {
+          "name": "Severe Burns",
+          "description": "Chemical or thermal burn that strips the nerve endings before they die — the most exquisite pain the nervous system produces. The actor voices the escalating arc from contact to full-thickness burn agony.",
+          "count": 10,
+          "example_scenarios": [
+            "Molten metal splash from a foundry ladle across the forearm",
+            "Chemical burn from industrial acid spill on the torso and upper chest",
+            "Flash burn from an explosion at a gas station across the face and hands",
+            "Boiling water kettle tipped over the lap in a kitchen fall",
+            "Steam pipe rupture in an industrial plant, pressurized steam across the back",
+            "Napalm-adjacent incendiary burn in a combat environment",
+            "Alkali burn from strong lye solution in a soap-making accident",
+            "Severe sunburn after falling asleep unprotected on a reflective salt flat",
+            "Electrical arc flash burn across the arms and face during utility work",
+            "Partial-thickness burns from a wildfire overrun that caught a firefighter"
+          ]
+        },
+        {
+          "name": "Compound Fractures & Broken Bones",
+          "description": "Bone breaking through skin, limbs bending where they should not — the voice captures both the initial fracture shock and the nauseating sustained pain of displaced bone under pressure.",
+          "count": 10,
+          "example_scenarios": [
+            "Tibia shatters on impact during a motorcycle crash, bone visible",
+            "Forearm snapped mid-shaft in a football tackle gone wrong",
+            "Femur fracture in a ski accident far from the nearest lift",
+            "Wrist compound fracture from a direct fall on concrete from a height",
+            "Collarbone shattered by a direct impact in a cycling collision",
+            "Multiple rib fractures from a car door closing on the torso in a crash",
+            "Pelvis fracture from a horse kick while working with livestock",
+            "Ankle compound fracture after falling through a rotten wooden floor",
+            "Vertebral fracture in a construction site fall, still partially mobile",
+            "Hand crushed in heavy machinery, multiple metacarpals fractured"
+          ]
+        },
+        {
+          "name": "Impalement & Penetrating Wounds",
+          "description": "A foreign object enters the body and stays there — the actor must voice the difference between the initial puncture and the sustained, three-dimensional pain of an object inside living tissue.",
+          "count": 10,
+          "example_scenarios": [
+            "Impaled on a rebar stake in a construction site fall, cannot remove it",
+            "Pitchfork tine through the thigh in a farm accident",
+            "Fence post through the chest cavity after a vehicular accident off-road",
+            "Knife wound to the abdomen in a street confrontation, blade still inside",
+            "Arrow through the calf in a hunting accident from a misfire",
+            "Steel rod through the shoulder from an industrial press failure",
+            "Shard of glass through the foot from a car windshield during a crash",
+            "Impaled through the hip on ornamental iron fence spikes after a fall",
+            "Drill bit through the palm in a shop class accident",
+            "Wood splinter, fist-sized, through the forearm from an explosion"
+          ]
+        },
+        {
+          "name": "Animal Attacks",
+          "description": "The body is seized, bitten, lacerated, or crushed by an animal — the actor must convey both the mechanical violence of being prey and the specific horror of being held inside a living force.",
+          "count": 10,
+          "example_scenarios": [
+            "Mountain lion bite on the back of the skull during a trail run",
+            "Bull shark bite on the lower leg during a surf session",
+            "Grizzly bear mauling attack on the arms and torso during a trail encounter",
+            "Pit bull locked on the forearm with full crushing pressure",
+            "Alligator death roll on the ankle in a Florida waterway",
+            "Rattlesnake strike to the hand while reaching into a rock crevice",
+            "Wild boar tusk goring the inner thigh during a hunting trip",
+            "Moose stomp attack — hooves coming down on the ribcage and shoulder",
+            "Bark scorpion sting to the face and neck with full venom delivery",
+            "Box jellyfish tentacle wrap around both legs in the open ocean"
+          ]
+        },
+        {
+          "name": "Electrocution",
+          "description": "Electricity seizes the body — muscles lock, the heart lurches, pain radiates from the entry wound to every nerve ending simultaneously. The actor cannot voluntarily release the source; every syllable is forced through locked jaw and rigid throat.",
+          "count": 10,
+          "example_scenarios": [
+            "Hand locked to a live 240-volt wire in a home renovation accident",
+            "Lightning strike at close range — knocked off feet, hearing gone, burning",
+            "Power line falls across a car hood, contact through the door handle",
+            "Industrial 480-volt panel arc flash during maintenance work",
+            "Electric fence current sustained as a foot slips and cannot break contact",
+            "Taser deployment at maximum duration on bare skin by mistake in a training exercise",
+            "Submerged pool pump short circuit while treading water",
+            "Hand trapped on a faulty appliance with current and cannot release grip",
+            "Tower climber in contact with a live transmission line during a storm",
+            "Electrocution from a damaged extension cord in standing flood water"
+          ]
+        },
+        {
+          "name": "Surgical and Medical Agony",
+          "description": "Pain administered by the medical system — procedures that go wrong, insufficient anesthesia, field surgery without supplies. The actor must voice the obscene intimacy of clinical pain delivered by hands intended to heal.",
+          "count": 10,
+          "example_scenarios": [
+            "Anesthesia awareness during an open abdominal surgery, paralyzed but conscious",
+            "Field amputation of a crushed limb with only improvised pain management",
+            "Bone marrow biopsy in which the local anesthetic is insufficient",
+            "Wound debridement of a severe burn in a field hospital without adequate sedation",
+            "Dental extraction of a badly abscessed molar with failing local block",
+            "Chest tube insertion to relieve a pneumothorax in an emergency without enough lidocaine",
+            "Dislocated shoulder manual reduction with minimal sedation in a remote clinic",
+            "Fracture manipulation and splinting in the field on an expedition",
+            "Deep wound irrigation and suturing in a wilderness first-aid scenario",
+            "Interrupted epidural during a prolonged labor complication"
+          ]
+        },
+        {
+          "name": "Crush Injuries",
+          "description": "The body is compressed under weight — an avalanche, collapsed debris, industrial crush. The actor voices the slow, inescapable pressure of being squeezed by tons of world, ribs flexing, organs protesting.",
+          "count": 10,
+          "example_scenarios": [
+            "Trapped under rubble in an earthquake with torso partially compressed",
+            "Caught in an avalanche — compact snow hardening around the body",
+            "Arm pulled into industrial rollers in a paper mill accident",
+            "Lower body pinned under a collapsed stadium bleacher section",
+            "Hand inside a hydraulic press when the cycle triggers accidentally",
+            "Torso pinned between a backing truck and a loading dock wall",
+            "Leg trapped between two vehicles in a multi-car collision",
+            "Chest compressed under a collapsed retaining wall in a landslide",
+            "Hand in a car door as it slams closed with full force",
+            "Pinned under a heavy horse that falls during a trail ride"
+          ]
+        },
+        {
+          "name": "Nerve and Chronic Pain Crisis",
+          "description": "The worst of chronic pain conditions in their acute episodes — trigeminal neuralgia, cluster headaches, CRPS flare. The actor voices pain that arrives from inside, with no external cause to orient against.",
+          "count": 10,
+          "example_scenarios": [
+            "Trigeminal neuralgia lightning strike mid-sentence on a date",
+            "Cluster headache onset described as an ice pick through the eye socket",
+            "CRPS full flare in a limb triggered by a temperature change",
+            "Kidney stone passage through the ureter during an important meeting",
+            "Endometriosis rupture during a physical exam",
+            "Sciatica nerve compression crisis with drop to the floor mid-conversation",
+            "Gallbladder attack with referred shoulder tip pain escalating rapidly",
+            "Aortic dissection onset — the tearing chest pain that moves to the back",
+            "Pancreatitis acute episode — the belt of agony around the midsection",
+            "Ruptured ovarian cyst with internal bleeding, pain spreading as peritonitis begins"
+          ]
+        },
+        {
+          "name": "Torture and Extreme Deliberate Pain",
+          "description": "Pain applied by human hands with intent — the actor voices resistance, the attempt to maintain identity against systematic destruction of the body's comfort. The horror is in the slow, methodical nature of the assault.",
+          "count": 10,
+          "example_scenarios": [
+            "Fingernails being removed during a POW interrogation",
+            "Waterboarding — the drowning sensation applied deliberately and repeatedly",
+            "Stress position maintained for hours with guards ensuring no relief",
+            "Salt applied to open lacerations during an interrogation",
+            "Bones of the hand systematically broken one by one in an intelligence scenario",
+            "Sustained electrical current applied to bare feet in a detention scenario",
+            "Forced physical exertion to total collapse in a rendition scenario",
+            "Deliberate burning with a cigarette in a hostage situation",
+            "Sustained blunt trauma applied to the soles of the feet",
+            "Sleep deprivation combined with physical stress positions over seventy-two hours"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "TEMP",
+      "name": "Extreme Temperature Shock",
+      "description": "The actor begins in thermal comfort — a warm bath, cool shade, the pleasant sensation of moderate temperature against skin. Then the thermal assault arrives. The voice documents what happens to the human instrument under extreme cold or heat: teeth chatter, breath crystallizes, speech slurs with hypothermia, or words arrive in scorched bursts between desperate cooling attempts.",
+      "subcategories": [
+        {
+          "name": "Ice Water Immersion",
+          "description": "The body submerged in near-freezing water — the cold shock response, the hyperventilation, the progressive loss of muscle function. The actor voices the stages: gasp, panic, slurring control, hypothermic drift.",
+          "count": 10,
+          "example_scenarios": [
+            "Falling through lake ice in winter while crossing on foot",
+            "Ice bucket challenge taken to extreme — full submersion in an ice bath",
+            "Cold water therapy plunge pool session that goes too long",
+            "Capsized in a glacial river during a kayaking descent in early spring",
+            "Dropped into a frozen ocean after a shipwreck in Arctic waters",
+            "Falling into a frozen quarry pool while taking photographs at the edge",
+            "Military SERE training cold water immersion phase",
+            "Avalanche victim partially buried in slush and ice meltwater for hours",
+            "Jumping into a spring-fed swimming hole in April, water still four degrees",
+            "Search and rescue swimmer entering freezing ocean to reach a capsized vessel"
+          ]
+        },
+        {
+          "name": "Polar Storm Exposure",
+          "description": "Wind chill below minus forty, frostbite developing on extremities, the voice struggling to form words through frozen jaw and stiff lips. The actor conveys the progressive shutdown of the body's communication systems under cold.",
+          "count": 10,
+          "example_scenarios": [
+            "Stranded on an Antarctic research traverse in a white-out blizzard",
+            "Lost in a Siberian taiga winter storm with inadequate gear",
+            "Summit storm on Everest at the South Col with no shelter",
+            "Car breaks down on an isolated Canadian highway in a minus-forty cold snap",
+            "Mountaineer bivouacked without a sleeping bag above 7,000 meters in a storm",
+            "Overnight exposure in Minnesota backcountry after a snowshoe accident",
+            "Polar expedition member whose tent collapses in a katabatic wind event",
+            "Rescue team member operating in a wind chill of minus sixty on a mountain search",
+            "Sailor overboard in the North Sea in January, in the water for twenty minutes",
+            "Trail runner caught above treeline in a sudden Rocky Mountain whiteout"
+          ]
+        },
+        {
+          "name": "Scalding Water Burns",
+          "description": "Boiling or near-boiling liquid contacting the skin — the initial shock, the delayed blooming of searing pain as the nerve endings respond, the ongoing burning sensation that is worse seconds after contact.",
+          "count": 10,
+          "example_scenarios": [
+            "Knocking a full pot of boiling pasta water off the stove onto the feet and legs",
+            "Steam from a pressure cooker venting directly onto the face and hands",
+            "Scalding coffee spilled across the lap at freeway speed in a moving vehicle",
+            "Industrial steam pipe failure — a jet of 150-degree steam across the torso",
+            "Hot oil splash from a deep fryer during a kitchen fire",
+            "Boiling water geyser eruption in a geothermal area stepping off the path",
+            "Scalding tap water in an old building's shower with a failed pressure valve",
+            "Hot spring fall — surface looks safe, temperature is eighty-five degrees Celsius",
+            "Baking tray pulled from the oven contacts both forearms simultaneously",
+            "Pressure washer with hot water setting contacting bare skin at full pressure"
+          ]
+        },
+        {
+          "name": "Desert Heat Stroke",
+          "description": "The body overheating from the inside — core temperature rising past forty-one degrees, the brain starting to misfire, the voice going strange and dissociated as thermoregulation fails.",
+          "count": 10,
+          "example_scenarios": [
+            "Dehydrated hiker in Death Valley at peak summer heat, disoriented and collapsing",
+            "Marathon runner hitting heat stroke at mile twenty in a humid southern summer",
+            "Roofer in Arizona August sun with no shade break since seven a.m.",
+            "Military marching exercise in Saudi Arabia in summer, one soldier going down",
+            "Music festival attendee in a sealed tent area on a hot July afternoon",
+            "Agricultural worker in Imperial Valley during a heat emergency with no water",
+            "Cyclist bonking in the Mojave Desert with empty bottles and no shade",
+            "Homeless person in a Phoenix summer heatwave with nowhere to shelter",
+            "Construction worker on a black asphalt project in Texas in July",
+            "Ultramarathon runner in Badwater 135, core temperature reaching critical level"
+          ]
+        },
+        {
+          "name": "Fire Exposure and Burning",
+          "description": "Direct contact with open flame — clothing catching fire, hair igniting, skin blistering. The actor voices the primal terror of being on fire and the sensory overwhelm of burning alive.",
+          "count": 10,
+          "example_scenarios": [
+            "Sleeve catching fire from a fireplace and flames climbing the arm",
+            "Kitchen grease fire engulfs the cook's hands and torso",
+            "Wildfire overrun of a dozer operator who deploys a fire shelter",
+            "Stunt performer whose flame protection fails during a full-body burn take",
+            "Campfire explosion from accelerant poured on dying coals",
+            "Hair catching fire from a birthday candle leaning too close",
+            "Clothing ignition from an arc flash in an electrical substation",
+            "Trapped in a burning vehicle with door jammed as flames reach the cabin",
+            "Factory worker's clothing ignition from a chemical flash fire",
+            "Flamethrower training accident in a military scenario with proximity error"
+          ]
+        },
+        {
+          "name": "Cryogenic and Industrial Cold Exposure",
+          "description": "Extreme cold beyond ordinary winter — liquid nitrogen, cryogenic storage leaks, industrial freezer accidents. The cold is so extreme it causes burns. The actor voices the paradox of freezing and burning simultaneously.",
+          "count": 10,
+          "example_scenarios": [
+            "Liquid nitrogen spill onto the forearms in a laboratory accident",
+            "Industrial freezer door jammed shut during a solo stock check",
+            "Cryotherapy chamber malfunction holding the temperature below safe limits",
+            "Dry ice packed around a cargo shipment contacts bare skin during handling",
+            "Liquid oxygen contact on the skin during an aerospace maintenance error",
+            "Cold storage warehouse lock failure, trapped inside at minus twenty",
+            "Refrigerant leak in an enclosed mechanical room reaches toxic and extreme cold",
+            "Meat locker door failure on a trawler in the Bering Sea in winter",
+            "Medical professional accidentally contacts liquid helium in a lab dewar failure",
+            "Firefighter's glove torn off in a cryogenic gas suppression system activation"
+          ]
+        },
+        {
+          "name": "Hyperthermia in Enclosed Spaces",
+          "description": "Trapped in a hot car, a sauna gone wrong, an industrial oven, a shipping container in summer. The heat builds without escape and the actor voices the progressive cognitive and physical degradation of severe hyperthermia.",
+          "count": 10,
+          "example_scenarios": [
+            "Trapped in a parked car in summer with windows jammed and door locks failed",
+            "Sauna session with a jammed door, temperature climbing past one hundred degrees",
+            "Industrial oven proximity — maintenance worker trapped in a hot conveyor tunnel",
+            "Shipping container in a Arizona rail yard in July with partial ventilation",
+            "Server room with failed cooling during a summer surge, trapped inside",
+            "Greenhouse in July with a stuck door and full sun on glass panels",
+            "Laundry room on a cruise ship near the boiler intake with door jammed",
+            "Racehorse transport trailer broken down in Texas summer heat",
+            "HVAC worker in a ceiling crawlspace in Florida with no ventilation access",
+            "Military vehicle with broken air conditioning in a desert operation in August"
+          ]
+        },
+        {
+          "name": "Frostbite Onset and Extremity Loss",
+          "description": "The fingers, toes, nose, ears going numb and then dead — the strange painlessness of early frostbite giving way to the agonizing rewarm, the actor voicing the horror of watching the body disconnect from itself.",
+          "count": 10,
+          "example_scenarios": [
+            "Climber on Everest removing a glove to operate a camera, then unable to feel fingers",
+            "Night rescue team member with boots soaked through in minus twenty weather",
+            "Homeless person waking with frostbitten feet after a winter shelter is full",
+            "Polar expedition skier discovering blackened toes at a rest stop",
+            "Soldier in a winter trench with immersion foot developing into frostbite",
+            "Ice climbing belayer stationary for four hours in minus thirty conditions",
+            "Research scientist in an Antarctic field station whose heating system fails",
+            "Snowmobile accident victim waiting for rescue with no emergency gear",
+            "Winter hiker who stops moving and sits on snow with wet clothing",
+            "Child lost in a winter storm, found with white, waxy facial frostbite"
+          ]
+        },
+        {
+          "name": "Thermal Shock Contrast",
+          "description": "The body subjected to sudden extreme temperature transition — jumping from a sauna into ice water, an industrial temperature shock chamber, or sudden cold exposure after overheating. The vocal cords seize in the transition.",
+          "count": 10,
+          "example_scenarios": [
+            "Nordic sauna tradition — jumping from a hundred-degree sauna into a frozen lake",
+            "Industrial temperature testing chamber cycling an engineer from plus eighty to minus thirty",
+            "Cold shower taken at full cold after extreme heat exposure to prevent heat stroke",
+            "Firefighter emerging from a burning building into an exterior air temperature of minus fifteen",
+            "Athletes undergoing contrast hydrotherapy at extreme temperature differentials",
+            "Diver surfacing from warm tropical water into an Antarctic-style air temperature inversion",
+            "Worker in a frozen food facility moving from the blast freezer to the heat seal room",
+            "Participant in a cryotherapy clinic moving immediately to a steam room incorrectly",
+            "Desert military operator moving from a hundred-degree external to a cryogenic first aid treatment",
+            "Cooking competition contestant reaching into a commercial freezer immediately after oven work"
+          ]
+        },
+        {
+          "name": "Fever Crisis and Internal Heat",
+          "description": "The body burning from the inside — fever above 41 degrees, the voice hallucinatory and slick, words emerging from a state between waking and delirium, the body's own heat becoming the enemy.",
+          "count": 10,
+          "example_scenarios": [
+            "Malaria crisis fever in a remote jungle camp with no medication remaining",
+            "Sepsis fever spiking to forty-two degrees in a hospital room overnight",
+            "Heat stroke combined with viral infection driving fever to critical levels",
+            "Child's febrile convulsion onset in the middle of the night",
+            "Post-surgery infection fever reaching crisis point with no nursing check-in",
+            "Untreated appendicitis abscess rupturing with fever spiking simultaneously",
+            "Military recruit with untreated heat injury developing systemic fever",
+            "Meningitis fever onset — the rash appearing and the temperature climbing",
+            "Flu-related febrile delirium in an elderly person living alone",
+            "Dengue hemorrhagic fever crisis in a traveler without access to care"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "TASTE",
+      "name": "Extreme Oral & Gustatory Sensation",
+      "description": "The actor begins in a state of sensory anticipation — the pleasure of food, the warmth of a drink, the comfort of the mouth as the most intimate sensory organ. Then the oral assault arrives. The voice becomes wet, distorted, interrupted by involuntary sounds — coughing, gagging, the hiss of pain, words mangled by a mouth that is on fire, frozen, overwhelmed, or chemically attacked.",
+      "subcategories": [
+        {
+          "name": "Superhot Chili and Capsaicin Overload",
+          "description": "The mouth encountering capsaicin at the level of Carolina Reapers, Pepper X, or concentrated extract — the burning spreading from lips to throat to stomach, eyes streaming, voice going broken and wet.",
+          "count": 10,
+          "example_scenarios": [
+            "Biting into a Carolina Reaper without knowing what it is at a cookout",
+            "A chip challenge with a single chip coated in the world's hottest extract",
+            "Eating a ghost pepper on a dare with no dairy available to neutralize",
+            "Restaurant hot sauce prank — bottle swapped with a million-Scoville extract",
+            "Competitive chili eating where the last dish is a pure capsaicin reduction",
+            "Hot pepper eating contest at a county fair with escalating heat levels",
+            "Tasting a Trinidad Moruga Scorpion raw, skin and seeds included",
+            "Accidentally drinking a capsaicin extract used to deter bears",
+            "Spicy ramen challenge — the black level with a full spoonful of Reaper paste",
+            "Kimchi made with triple the normal gochugaru, fermented to peak heat"
+          ]
+        },
+        {
+          "name": "Extreme Sourness",
+          "description": "The salivary glands fire, the face collapses, the jaw seizes — citric acid and malic acid at concentrations that physically hurt. The actor voices the involuntary facial convulsion and the weird pain-pleasure of extreme sour.",
+          "count": 10,
+          "example_scenarios": [
+            "Eating a Warheads extreme sour candy challenge — entire bag at once",
+            "Biting into a Seville orange without preparation, flesh and pith",
+            "Drinking a shrub vinegar cocktail without warning — pure concentrated acid",
+            "Tasting a fermented beverage with extreme lactic acid concentration",
+            "Eating a pickled green plum preserved in maximum salt and acid",
+            "Sour candy challenge — a full packet of the most extreme powder",
+            "Drinking kombucha during secondary fermentation overshoot — very high acidity",
+            "Raw tamarind eaten without sweetener, full sour pulp",
+            "Lemon juice shots — straight citric acid in rapid succession",
+            "Eating a persimmon before it's ripe, full astringency and acidity combined"
+          ]
+        },
+        {
+          "name": "Scalding Food and Drink Burns",
+          "description": "Food or liquid too hot to safely consume, taken at peak temperature — the roof of the mouth, tongue, and throat burning with contact. The actor voices the delayed realization and cascading oral pain.",
+          "count": 10,
+          "example_scenarios": [
+            "Taking a large bite of fresh-from-the-oven pizza, cheese at peak molten temperature",
+            "Drinking coffee that's just come off the boil without waiting",
+            "A soup dumpling (xiao long bao) that ruptures and releases scalding broth",
+            "Hot chocolate drunk too fast in the cold, scalding the entire throat",
+            "Pulling a pot pie from the oven and eating the filling immediately",
+            "McDonald's hot coffee scenario — full cup spilled across the lap and hands",
+            "Eating ramen at the restaurant where it arrives still visibly boiling",
+            "Caramel sauce at caramelization temperature contacting the inside of the lip",
+            "Drinking tea poured directly from the kettle into a paper cup with no cooling",
+            "Molten cheese from a fondue pot that drops from the fork onto the tongue"
+          ]
+        },
+        {
+          "name": "Extreme Bitterness and Poisonous Taste",
+          "description": "Tastes that the body reads as toxic — extreme bitterness triggering immediate gag reflex, tannins causing astringency that closes the throat, or actual accidental poisoning from a plant or chemical. The actor voices the body's emergency rejection response.",
+          "count": 10,
+          "example_scenarios": [
+            "Accidentally drinking isopropyl alcohol from a mislabeled container",
+            "Eating raw elderberries before processing, full toxic tannin content",
+            "Chewing on a raw bitter melon — the most bitter substance in common cuisine",
+            "Accidentally swallowing chloroquine tablets meant for an adult dose as a child",
+            "Tasting quinine sulfate powder directly — the bitterest substance measurable",
+            "Eating a raw bitter cucumber gone fully yellow with cucurbitacin",
+            "Drinking tonic water concentrate before dilution — pure quinine",
+            "Accidentally chewing a vitamin B12 with B complex — metallic and bitter",
+            "Eating raw dandelion greens with the full bitterness unmitigated",
+            "Accidentally consuming a mouthful of strong cold brew concentrate instead of water"
+          ]
+        },
+        {
+          "name": "Wasabi and Horseradish Nasal Assault",
+          "description": "The sinuses ignite — the volatile isothiocyanates launching up through the nasal passage and detonating behind the eyes. The actor voices the involuntary vocalization and the strange upward-shooting pain that precedes the mouth fully processing the source.",
+          "count": 10,
+          "example_scenarios": [
+            "Eating a full portion of fresh wasabi from a Japanese restaurant without warning",
+            "Downing a wasabi bomb shot on a dare",
+            "Eating horseradish directly from the jar — a large spoonful",
+            "A sushi chef's error — full wasabi mound mistaken for avocado",
+            "Wasabi pea challenge — the ultra-concentrated version found at specialty stores",
+            "Real wasabi root grated fresh at a kaiseki meal — a thumb-sized mound",
+            "Horseradish in a Bloody Mary mixed at full competition strength",
+            "Chinese mustard from a dim sum restaurant — pure sinigrin assault",
+            "Sinus-clearing horseradish supplement taken at ten times the dose by accident",
+            "Wasabi ice cream from a novelty shop — the heat delayed and then overwhelming"
+          ]
+        },
+        {
+          "name": "Brain Freeze and Ice Overload",
+          "description": "The sphenopalatine ganglion firing in response to cold — the ice cream headache that radiates from the palate to behind the eyes. The actor voices the weird, helpless agony of a pain that is produced by pleasure.",
+          "count": 10,
+          "example_scenarios": [
+            "Eating a Big Gulp slushie in one continuous pull on a hot day",
+            "Ice cream eating challenge — maximum speed for sixty seconds",
+            "Sipping a frozen margarita through a straw aimed directly at the upper palate",
+            "Eating a pint of ice cream straight from the freezer without tempering",
+            "A snow cone eaten at full speed at a summer carnival",
+            "Cold water waterfall swim — face and mouth submerged in glacial runoff",
+            "Slushie competition — two contestants racing to finish identical cups",
+            "A frozen cocktail at a beach bar — eaten in one mouthful as a show-off move",
+            "Ice cube held against the palate as a heat relief technique in summer",
+            "Drinking ice-cold water too fast after exercise on a hot day"
+          ]
+        },
+        {
+          "name": "Extreme Oral Textures and Sensory Violations",
+          "description": "The mouth encountering textures that trigger the gag reflex or extreme revulsion — not taste but tactile oral sensation at the extreme. The actor voices the involuntary rejection response and the struggle to override it.",
+          "count": 10,
+          "example_scenarios": [
+            "Swallowing raw oysters that are still actively moving",
+            "Eating a live octopus with suckers attaching to the inside of the throat",
+            "Century egg eaten without preparation — the ammonia-sulfur combination",
+            "Eating natto for the first time — the slime, strings, and ammonia smell",
+            "Sea urchin gonads eaten raw for the first time — the iodine intensity",
+            "Fermented shark (hákarl) eaten at full pungency without nose holding",
+            "Durian flesh eaten in an enclosed space without prior exposure",
+            "Lutefisk in its most gelatinous form — the lye-cured fish texture",
+            "Raw liver eaten at room temperature as part of a survival scenario",
+            "Silkworm chrysalides in a Korean street food challenge"
+          ]
+        },
+        {
+          "name": "Alcohol and Solvent Extremes",
+          "description": "High-proof spirits consumed straight, grain alcohol taken without dilution, or accidental exposure to non-beverage solvents. The actor voices the burning from lips to esophagus to stomach, the involuntary tears, the gasp of the airways.",
+          "count": 10,
+          "example_scenarios": [
+            "Drinking Everclear (190 proof) straight from the bottle for the first time",
+            "A Navy-strength rum shot — 57% ABV, taken neat and too fast",
+            "A whiskey challenge requiring shots of cask-strength single malt at 65%",
+            "Accidentally swallowing mouthwash at high alcohol concentration as a child",
+            "Drinking raw moonshine from an unlicensed still with methanol contamination risk",
+            "A cocktail challenge — the highest-proof cocktail the bar can legally serve",
+            "Absinthe at vintage concentration (68–80%) with no water dilution",
+            "Polish spirytus rektyfikowany taken in a shot challenge",
+            "High-proof rubbing alcohol accidentally swallowed in a first-aid kit mix-up",
+            "Home-brewed fruit wine with accidental sugar addition doubling the ABV"
+          ]
+        },
+        {
+          "name": "Tooth and Jaw Pain During Eating",
+          "description": "The dental or jaw emergency mid-meal — biting down on an unexpected hard object, cracking a tooth, a filling dislodging, TMJ joint locking on a large bite. The actor voices the shattering surprise of oral skeletal pain.",
+          "count": 10,
+          "example_scenarios": [
+            "Biting down on an olive pit in a tapenade — the tooth cracks vertically",
+            "A fragment of ceramic from a broken bowl hidden in a meal — bites down hard",
+            "Cracking a molar on an unpopped popcorn kernel at a movie theater",
+            "A stone in a fig that contacts a root canal treated tooth",
+            "TMJ joint locking open mid-yawn while eating a large sandwich",
+            "Biting into frozen caramel that pulls a crown off completely",
+            "A filling that dislodges while eating sticky toffee pudding",
+            "A wisdom tooth fracturing on a particularly hard piece of sourdough crust",
+            "Ice chewing compulsion — a tooth shatters on a large ice cube",
+            "Biting into a whole chili thinking it's a mild pepper — capsaicin plus the crack"
+          ]
+        },
+        {
+          "name": "Medical and Chemical Oral Procedures",
+          "description": "Oral sensations delivered by the medical or dental system — topical anesthetics going wrong, suction biopsy, the shock of a dental injection, bitter medication in liquid form. The actor voices the clinical intimacy of mouth-as-procedure-site.",
+          "count": 10,
+          "example_scenarios": [
+            "Dental injection into an abscess that is too inflamed for the anesthetic to work",
+            "Bitter chemotherapy oral rinse that triggers immediate nausea",
+            "Oral glucose tolerance test drink — maximum sugar concentration drunk on an empty stomach",
+            "Activated charcoal drink for poisoning — texture and volume overwhelming",
+            "Post-tonsillectomy pain during first attempt to swallow food",
+            "Dental extraction under-anesthesia — the pressure and cracking sensations",
+            "Oral biopsy punch removing tissue from the cheek mucosa",
+            "Swallowing a nasogastric tube — the involuntary gagging and the tube entering the throat",
+            "Liquid potassium supplement at high concentration — the metallic burning",
+            "Nitrous oxide dental procedure that creates extreme dissociation and oral numbness"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "SHOCK",
+      "name": "Extreme Surprise & Startle",
+      "description": "The actor is at peak vulnerability — relaxed, sensory, present, perhaps mid-thought or mid-pleasure. Then the startle arrives and the entire nervous system fires simultaneously. The voice goes from calm to primal in a single beat, then the actor must process the stimulus — relief, horror, grief, rage, or catatonic silence emerging from the ruins of that first total-body alarm response.",
+      "subcategories": [
+        {
+          "name": "Jump Scares and Sudden Appearance",
+          "description": "Someone or something appears without warning in a space the actor believed was safe — the classic startle template. The initial scream gives way to processing, and the emotional aftermath is as important as the initial response.",
+          "count": 10,
+          "example_scenarios": [
+            "A person standing silently in a dark corner of the bedroom when the light comes on",
+            "Turning from the kitchen sink to find a stranger inside the house",
+            "A face appearing at the window while doing dishes at night",
+            "Someone tapping the shoulder from behind in an empty office at midnight",
+            "A figure in the bathroom mirror that wasn't there before",
+            "A child's face appearing over the side of the bathtub while soaking",
+            "A colleague hiding in a locker room to prank a new hire — it goes wrong",
+            "A person sitting in the back seat discovered when checking the rearview mirror",
+            "A masked figure standing in the hallway when stumbling to the bathroom at three a.m.",
+            "A face appearing on the other side of a frosted glass door in a building thought to be empty"
+          ]
+        },
+        {
+          "name": "Explosions and Sudden Loud Events",
+          "description": "The concussive physical impact of an unexpected explosion, gunshot, or sonic event that hits the body before the brain can process it. The actor voices the disorientation, tinnitus-adjacent silence, and the frantic reassembly of understanding.",
+          "count": 10,
+          "example_scenarios": [
+            "A transformer exploding on the street outside a window during a quiet morning",
+            "A gunshot fired inside a confined space during a robbery in progress",
+            "A firework detonating at ground level next to a crowd member",
+            "A sonic boom from a military jet over a suburban neighborhood without warning",
+            "A gas pipe explosion in an adjacent apartment while making coffee",
+            "A tire blowout at highway speed in the passenger seat of a car",
+            "A shotgun discharged indoors at close range during a confrontation",
+            "A thunderclap directly overhead after no audible approach in open country",
+            "An IED detonation near a convoy in a war zone — the ground lifting",
+            "A concert speaker stack toppling and crashing onto the stage during a set"
+          ]
+        },
+        {
+          "name": "Discovering a Body or Catastrophic Scene",
+          "description": "Walking into a space and finding death, severe injury, or devastation that the mind was utterly unprepared for. The vocal response moves from the sharp intake of startle to the extended collapse of comprehension.",
+          "count": 10,
+          "example_scenarios": [
+            "Coming home to find a partner has died during the day — unexpectedly, in a chair",
+            "Opening a car trunk to retrieve luggage and finding a body inside",
+            "Walking into a workplace shooting aftermath before emergency services arrive",
+            "Discovering a child has fallen into a backyard pool and is motionless",
+            "Opening a storage unit rented from an estate sale and finding human remains",
+            "Coming back to a campsite to find it destroyed and a companion missing",
+            "Walking into the aftermath of a house fire that claimed the neighbors",
+            "Finding a crashed vehicle off a mountain road and recognizing the car",
+            "Discovering a colleague slumped over a desk unresponsive in a locked office",
+            "Walking into a barn to find an animal has given birth and died simultaneously"
+          ]
+        },
+        {
+          "name": "Near-Miss Car Accidents",
+          "description": "The vehicle comes within inches of catastrophic collision and the body activates full sympathetic response before the danger fully passes. The actor voices the frozen instant and the shaking dissolution of adrenaline.",
+          "count": 10,
+          "example_scenarios": [
+            "A truck running a red light at full speed, passing inches in front of the hood",
+            "Brake failure on a mountain road — swerving and somehow stopping safely",
+            "A child running into the road, braking hard and stopping with centimeters to spare",
+            "A head-on near-miss on a foggy two-lane road, both vehicles pulling left simultaneously",
+            "A sudden blowout at 80 mph that fishtails the car back under control",
+            "Avoiding a multi-car pileup by using the shoulder and stopping in loose gravel",
+            "A pedestrian stepping off a curb who doesn't see the car until it passes them",
+            "Aquaplaning on a freeway, control lost and then miraculously recovered",
+            "A deer impact on a country road at night — the car survives, the actor doesn't know if the deer did",
+            "A bicycle courier cutting across traffic missing the mirror by less than an inch"
+          ]
+        },
+        {
+          "name": "Devastating News Received Suddenly",
+          "description": "The phone call, the knock on the door, the word from the doctor's mouth that ends the world as it was. The actor's calm is structural and then the news shatters the foundation. The startle is internal — the soul recoiling from information.",
+          "count": 10,
+          "example_scenarios": [
+            "A call from a hospital while eating breakfast telling you a family member died",
+            "A doctor entering the consultation room with a specific face that communicates everything before speaking",
+            "A text message from a partner of ten years containing only four words ending the relationship",
+            "A call from the police at two a.m. asking to speak to the next of kin",
+            "The lawyer's face when reading the will and realizing what it contains",
+            "An employer calling to say the position has been eliminated effective immediately",
+            "A pregnancy test result arriving unexpectedly when none was expected",
+            "A message revealing that someone the actor trusted has been lying for years",
+            "A DNA test result delivering information about parentage that rewrites identity",
+            "A military notification team arriving at the door in dress uniform"
+          ]
+        },
+        {
+          "name": "Intruder and Home Invasion Startle",
+          "description": "The home — the safest space — is revealed to be violated. Sounds in an empty house, evidence of presence, or the intruder in plain view. The actor voices the collapse of safety and the pure animal terror of being prey in one's own den.",
+          "count": 10,
+          "example_scenarios": [
+            "Hearing footsteps on the second floor while sitting alone on the ground floor",
+            "Finding the back door open that was locked when leaving three hours ago",
+            "A silhouette at the end of the hallway in the dark that doesn't belong to anyone living there",
+            "Waking to find someone standing at the foot of the bed in the dark",
+            "Coming home to find drawers opened and items moved but nothing obviously gone",
+            "A voice calling out from inside a house that was definitely empty on entry",
+            "Finding a window broken from the outside and glass inside on the floor",
+            "Seeing a light moving in a house through the window while locking the car outside",
+            "Realizing mid-shower that someone else is in the bathroom",
+            "Finding personal photographs left face-down on a kitchen counter that was bare when leaving"
+          ]
+        },
+        {
+          "name": "Animal and Wildlife Encounters",
+          "description": "The sudden appearance of a dangerous animal at close range — the pure biological startle when the prey-predator circuit fires. The actor moves from calm to high-alert primal response in a single heartbeat.",
+          "count": 10,
+          "example_scenarios": [
+            "Stepping on a coiled rattlesnake on a dark path and feeling it move underfoot",
+            "A bear appearing six feet away around a blind corner on a hiking trail",
+            "Reaching into a bag to find a large spider has taken up residence",
+            "A bull shark appearing beneath while floating on a surfboard",
+            "Waking from sleep to find a large spider walking across the face",
+            "Finding a venomous snake in the bedding when pulling back the covers",
+            "A mountain lion appearing on a fence post at eye level in a suburban backyard",
+            "A wasp nest disturbed while reaching into a garden shed — full swarm response",
+            "A wild boar charging from dense brush on a morning run in rural France",
+            "A crocodile emerging from the water directly beneath feet while standing on a riverbank"
+          ]
+        },
+        {
+          "name": "Medical Emergency Onset",
+          "description": "A medical crisis beginning without any warning — the person next to you having a seizure, a heart attack in a crowded restaurant, an anaphylactic reaction that no one expected. The actor voices the whiplash from social calm to emergency response.",
+          "count": 10,
+          "example_scenarios": [
+            "A companion having a grand mal seizure at the dinner table mid-conversation",
+            "A colleague collapsing face-first onto a keyboard in an open plan office",
+            "A child going limp and unresponsive in the arms for no apparent reason",
+            "Someone's allergic reaction visibly closing their throat at a restaurant",
+            "A fellow airplane passenger going gray and unconscious mid-flight",
+            "A runner collapsing at the finish line of a road race and not getting up",
+            "A stranger in a store having a cardiac arrest while reaching for a shelf item",
+            "A swimming companion who stops moving in the water without warning",
+            "A toddler who goes silent and blue during what seemed like routine fussing",
+            "A driver going unconscious at a red light in traffic next to the actor's car"
+          ]
+        },
+        {
+          "name": "Structural Failure and Environmental Collapse",
+          "description": "The built world suddenly failing — a floor giving way, a ceiling coming down, a bridge trembling, a building beginning to shake. The actor voices the instant when the assumed permanence of the physical world is revealed as illusion.",
+          "count": 10,
+          "example_scenarios": [
+            "A floor giving way underfoot in an old building without warning",
+            "The first shock of a major earthquake striking while sitting indoors",
+            "A balcony railing failing while leaning against it on the tenth floor",
+            "A bridge making a sound that indicates structural failure underfoot mid-crossing",
+            "A tree falling across the road directly ahead while driving at speed",
+            "A ceiling section collapsing onto a desk one seat away in an office",
+            "A dam making a groan that signals imminent failure during inspection",
+            "A dock collapsing into the water while walking out to a boat",
+            "A ladder rung snapping at the top of a fifteen-foot extension",
+            "A cliff edge crumbling underfoot while looking out from a scenic overlook"
+          ]
+        },
+        {
+          "name": "Digital and Information Shocks",
+          "description": "The modern-world startle — a notification, a message, a video, an image, a revelation delivered through a screen that triggers full-body physiological response. The actor is sitting in comfort and the horror arrives through a device.",
+          "count": 10,
+          "example_scenarios": [
+            "A video call showing something in the background of the other person's room that should not be there",
+            "An explicit video or photograph appearing in a work Slack channel by mistake",
+            "A news notification delivering a national catastrophe during a moment of total normalcy",
+            "A location ping from a partner's phone showing them somewhere they said they wouldn't be",
+            "A security camera notification showing someone inside an empty house",
+            "An email from a dead person's address — timestamped three minutes ago",
+            "A text message from an unknown number containing a photograph of the actor, taken today",
+            "A notification that all savings have been transferred out of a bank account",
+            "A social media notification showing a tagged photograph that should not exist",
+            "A voice message from an old phone backup playing through a speaker — a voice of someone who died"
+          ]
+        }
+      ]
+    }
+  ]
+}
