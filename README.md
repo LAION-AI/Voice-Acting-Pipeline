@@ -83,7 +83,7 @@ The pipeline supports **12 generation paths** organized into three families. Eac
 | **B** (Archetype) | 920 archetypes x 92 genres | Genre/character archetype-based: random archetype + emotions + Tempo/Arousal | [Path B Details](docs/path_b_archetype.md) |
 | **C** (Archetype Named) | Same as B + explicit naming | Archetype with explicit role naming in the DramaBox script (e.g. "a battle-hardened noble knight") | [Path C Details](docs/path_c_archetype_named.md) |
 | **D** (Reference Audio) | Timbre whisper + VoiceNet + Chatterbox VC | Reference audio pipeline: timbre caption guides prompt, DramaBox TTS + voice conversion to match reference speaker | [Path D Details](docs/path_d_reference.md) |
-| **AC** (Acting Challenge) | 12,898 acting challenges + VoiceNet gender/age | Audition-style method acting from challenge scenarios — naturalistic, genuine, dynamic emotional arc | [AC Details](docs/path_ac_acting_challenge.md) |
+| **AC** (Acting Challenge) | 18,647 acting challenges + VoiceNet gender/age | Audition-style method acting from challenge scenarios — naturalistic, genuine, dynamic emotional arc | [AC Details](docs/path_ac_acting_challenge.md) |
 | **SIT** (Situation) | 289 situations x EmoNet emotions | Situation-driven acting: actor is physically/socially IN a specific situation from the [Situation Taxonomy](data/situation_taxonomy.json) (body posture, activity, social context, environment, health, climate, fatigue, pain) with sampled emotions | [SIT Details](docs/path_sit_situation.md) |
 
 ### Character Consistent Paths (Two Scenes — "CUT TO:")
@@ -230,7 +230,7 @@ See [docs/path_d_reference.md](docs/path_d_reference.md) for full details.
 
 ### Path AC — Acting Challenge
 
-Audition-style method acting performances driven by acting challenge scenarios. Samples from 12,898 structured challenges covering diverse emotional and situational contexts.
+Audition-style method acting performances driven by acting challenge scenarios. Samples from 18,647 structured challenges covering diverse emotional and situational contexts.
 
 1. Sample a random acting challenge (title + instruction) from the [challenge database](https://projects.laion.ai/Voice-Acting-Pipeline/acting_challenges_preview.html)
 2. Sample speaker gender (VoiceNet GEND dimension, 7 levels) and age (AGEV dimension, 7 levels)
@@ -409,7 +409,13 @@ Voice-Acting-Pipeline/
 ├── pyproject.toml                     # Python packaging
 ├── data/
 │   ├── voicenet_ext_taxonomy.html     # VoiceNet (57 dims x 7 levels)
-│   ├── all_acting_challenges.json     # 12,898 acting challenge scenarios
+│   ├── all_acting_challenges.json     # 18,647 acting challenge scenarios
+│   ├── acting_challenges_situation_inspired.json  # 5,749 situation-inspired challenges
+│   ├── acting_challenges_eric_morris_inspired.json # 4,030 Eric Morris-inspired challenges
+│   ├── acting_challenges_existing_inspired.json    # 7,390 existing challenge variants
+│   ├── dramabox_cca_voicenet.json     # 19,332 pre-generated CC-A DramaBox prompts
+│   ├── dramabox_cc2c_archetype.json   # 9,999 pre-generated CC2-C DramaBox prompts
+│   ├── dramabox_accc_acting_challenge.json # 12,893 pre-generated ACCC DramaBox prompts
 │   ├── situation_taxonomy.json        # Situation taxonomy (poses, activities, contexts)
 │   ├── emonet_taxonomy.json           # EmoNet (40 emotions x 4 intensity levels)
 │   ├── vocal_bursts_taxonomy.json     # Vocal bursts (120 types)

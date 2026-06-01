@@ -29,7 +29,7 @@ Each situation level includes:
 
 ## Acting Challenge Database (Situation-Inspired)
 
-5,780 acting challenges generated from the situation taxonomy (289 situations x 20 variants each). Each variant samples:
+5,749 acting challenges generated from the situation taxonomy (289 situations x 20 variants each, with a small number of API failures). Each variant samples:
 
 - **1-3 EmoNet emotions** with intensity levels (slightly/clearly/extremely/very intensely present)
 - **Speaker gender** from 7 VoiceNet GEND levels
