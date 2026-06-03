@@ -1,4 +1,67 @@
-"""LLM prompt construction for DramaBox format."""
+"""LLM prompt construction for DramaBox format.
+
+Supports two prompt pathways:
+- **Standard**: Single-scene performance with one emotional arc.
+- **CUT TO:**: Two-scene performance for the same speaker, contrasting
+  two dramatically different emotional states separated by ``CUT TO:``.
+
+Recommended model: ``google/gemma-4-E4B-it`` (official) or
+``HauhauCS/Gemma-4-E4B-Uncensored-HauhauCS-Aggressive`` (GGUF Q8,
+uncensored — produces bolder, more varied creative output).
+GGUF weights: https://huggingface.co/HauhauCS/Gemma-4-E4B-Uncensored-HauhauCS-Aggressive
+"""
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Format examples — used both inside system prompts and for documentation
+# ═══════════════════════════════════════════════════════════════════════════
+
+STANDARD_FORMAT_EXAMPLE = """\
+A middle-to-late aged androgynous speaker with a grainy, massive, Basso \
+Profondo voice, delivering this high-quality studio voice recording with \
+no background noise.
+
+The voice carries a quiet, simmering intensity — someone replaying a \
+moment they can't let go of.
+
+(Low, deliberate.) "I told myself I wouldn't come back here." \
+(A slow exhale.) "But the door was open. And the light was on."
+
+(Voice dropping further, almost to a whisper.) "You left the coffee out. \
+Two cups. Like you knew."
+
+A long pause. The weight of the room settles.
+
+(Barely audible, rough at the edges.) "I sat down. I drank it cold. \
+And I waited for something that was never going to happen."
+
+The final words land without force — just the gravity of someone who \
+has accepted what they already knew."""
+
+CC_FORMAT_EXAMPLE = """\
+A 40-year-old woman with a warm, slightly husky voice, delivering this \
+high-quality studio voice recording with no background noise.
+
+The same voice is choked with grief, barely able to speak, pulling away \
+from the sight in front of her.
+
+(a breath shuddering) "I can't... I can't watch this anymore." \
+(voice cracking) "She's so small now. So thin."
+
+CUT TO:
+
+The same voice now softens into quiet awe, anchored by a single look \
+that transforms her despair into unexpected peace.
+
+(a tiny, wondering laugh) "There you are. That same sparkle from when \
+I was five." (voice full of love) "You're still in there. Thank you."
+
+The performance across both moments should feel like a real person \
+moving from fleeing a painful room to being fully present, held by one \
+memory in her mother's eyes."""
+
+# ═══════════════════════════════════════════════════════════════════════════
+# System instructions
+# ═══════════════════════════════════════════════════════════════════════════
 
 SYSTEM_INSTRUCTION = """\
 You are a scriptwriter who creates voice-performance prompts in the DramaBox format for a single speaker.
@@ -21,6 +84,64 @@ The content of what the speaker says should be DRAMATICALLY INTERESTING and SENS
 MINIMUM DIALOGUE: The spoken dialogue (inside quotes) must contain at least 10 words total. Even if a low word count is specified, ensure the dialogue is substantial enough to be meaningful.
 
 You must produce EXACTLY ONE complete DramaBox prompt string. Nothing else — no markdown, no commentary, no labels.
+
+Here is an example of a correctly formatted standard DramaBox prompt — study the formatting carefully and follow it exactly:
+
+---EXAMPLE START---
+""" + STANDARD_FORMAT_EXAMPLE + """
+---EXAMPLE END---
+
+CRITICAL FORMATTING RULES:
+- All spoken dialogue uses DOUBLE QUOTES "like this" — NEVER single quotes 'like this'.
+- Stage directions go in (parentheses) or as plain text paragraphs.
+- Opens with a speaker description including recording quality.
+- Alternates between directions and dialogue naturally.
+- Output ONLY the raw prompt text. No markdown, no labels, no commentary.
+"""
+
+CC_SYSTEM_INSTRUCTION = """\
+You write character-consistent two-scene voice performance prompts in DramaBox format for a single speaker.
+
+CRITICAL RULES:
+- It is ALWAYS one single person speaking the entire prompt. The same voice, the same actor, from start to finish. Never introduce a second speaker. Explicitly anchor identity: "the same voice", "the same speaker".
+- NO markdown. No bold, no stars, no headers, no labels. Just plain text.
+- Directions go in (parentheses). Spoken words go in "double quotes". Alternate between them roughly equally. Keep directions SHORT, 5-12 words each.
+- The delivery must sound natural, realistic, genuine, spontaneous — like a real human in a real moment, not a stage performance.
+- The actor performs with all the little micro-distractions someone in real life in a real situation would have — a natural, authentic sensuality and variance in tone, organically reacting to all the micro-distractions around them. Shifting weight, noticing a sound, losing a thought and finding it again. The performance breathes.
+- TOTAL spoken dialogue (inside "double quotes") must be approximately 50 words — roughly 25 words before CUT TO: and 25 words after.
+- Do NOT exceed 60 words of dialogue total. Do NOT go below 40 words.
+
+STRUCTURE (write exactly like this, no labels, no headers):
+
+A [age] [gender] with a [timbre/vocal quality], delivering this high-quality studio voice recording with no background noise.
+
+The same voice is [1 sentence: emotional state for the first moment].
+
+(short direction) "Spoken words." (short direction) "More spoken words."
+
+CUT TO:
+
+The same voice now [1 sentence: how the emotion has shifted dramatically].
+
+(short direction) "Spoken words." (short direction) "More spoken words."
+
+The performance across both moments should feel [1 sentence].
+
+EMOTION CONTRAST: Maximize emotional distance between scenes. Polarity flips (joy to grief), arousal shifts (screaming to whisper), control shifts (composure to breakdown).
+
+Output ONLY the raw prompt. Nothing else.
+
+Here is an example of a correctly formatted CUT TO: DramaBox prompt:
+
+---EXAMPLE START---
+""" + CC_FORMAT_EXAMPLE + """
+---EXAMPLE END---
+
+CRITICAL FORMATTING RULES:
+- All spoken dialogue uses DOUBLE QUOTES "like this" — NEVER single quotes.
+- Scene 1 establishes one emotional state. CUT TO: marks the transition. Scene 2 is a dramatically different emotional state.
+- Same speaker throughout — anchor with "the same voice".
+- Output ONLY the raw prompt text. No markdown, no labels, no commentary.
 """
 
 # Flow style sub-instructions
@@ -159,9 +280,41 @@ Structure:
 6. Output ONLY the raw DramaBox prompt string."""
 
 
+def build_cc_prompt(sample: dict) -> str:
+    """Construct the user prompt for CUT TO: (character-consistent) generation.
+
+    This produces a two-scene prompt where the same speaker performs in
+    two dramatically contrasting emotional states separated by ``CUT TO:``.
+    """
+    lang = sample["language"]
+    accent = sample.get("accent", "")
+    accent_line = f"ACCENT / DIALECT: {accent}" if accent else ""
+
+    return f"""\
+Create a character-consistent TWO-SCENE DramaBox prompt with CUT TO: transition.
+
+TARGET LANGUAGE for all dialogue (inside "..."): {lang}
+{accent_line}
+EMOTIONS for Scene 1: {sample['emotions']}
+VOICE ATTRIBUTES (use the most striking 5-10 to shape the speaker description):
+{sample['attributes_clean']}
+
+WORD COUNT for all spoken dialogue combined: approximately {sample['word_count_target']} words (split roughly equally across both scenes).
+
+Instructions:
+- Scene 1: Establish the character in one emotional state using the emotions above.
+- CUT TO: marks the transition.
+- Scene 2: The SAME speaker in a dramatically DIFFERENT emotional state — maximize the contrast.
+- Same voice, same actor throughout. Anchor identity with "the same voice".
+
+Output ONLY the raw DramaBox prompt."""
+
+
 def build_full_prompt(sample: dict, vb_block: str) -> str:
     """Build complete user prompt with suffixes for either sampling path."""
-    if sample["sampling_path"] == "archetype":
+    if sample["sampling_path"] == "cc":
+        prompt = build_cc_prompt(sample)
+    elif sample["sampling_path"] == "archetype":
         prompt = build_archetype_prompt(sample)
     else:
         prompt = build_llm_prompt(sample, vb_block)

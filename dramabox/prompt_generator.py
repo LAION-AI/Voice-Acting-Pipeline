@@ -10,7 +10,7 @@ from multiprocessing import Process, Queue, Event
 from pathlib import Path
 
 from .csv_io import CSV_FIELDNAMES, save_chunk
-from .prompts import SYSTEM_INSTRUCTION, build_full_prompt
+from .prompts import SYSTEM_INSTRUCTION, CC_SYSTEM_INSTRUCTION, build_full_prompt
 from .sampling import sample_voicenet, sample_archetype
 from .taxonomy import (
     parse_voicenet_html, load_vocal_bursts, load_archetypes,
@@ -165,6 +165,7 @@ def generate_all_prompts(config: dict) -> Path:
     outdir = Path(output_cfg.get("output_dir", "./output"))
     csv_prefix = output_cfg.get("csv_prefix", "dramabox")
     archetype_ratio = sampling_cfg.get("archetype_ratio", 0.20)
+    cc_ratio = sampling_cfg.get("cc_ratio", 0.0)
 
     mandatory_dim_codes = set(sampling_cfg.get("mandatory_dims", ["TEMP", "GEND", "AGEV"]))
 
@@ -181,6 +182,7 @@ def generate_all_prompts(config: dict) -> Path:
     print(f"  Output dir         : {outdir}", flush=True)
     print(f"  Random seed        : {seed}", flush=True)
     print(f"  Archetype ratio    : {archetype_ratio:.0%}", flush=True)
+    print(f"  CUT TO: ratio      : {cc_ratio:.0%}", flush=True)
     print(f"  Model              : {model_name} ({dtype_str})", flush=True)
     print("=" * 72, flush=True)
 
@@ -223,9 +225,18 @@ def generate_all_prompts(config: dict) -> Path:
     all_prompts = []
     path_a_count = 0
     path_b_count = 0
+    path_cc_count = 0
 
     for i in range(total):
-        if random.random() < archetype_ratio:
+        roll = random.random()
+        if roll < cc_ratio:
+            # CUT TO: (character-consistent two-scene) path
+            s = sample_voicenet(mandatory_dims, optional_dims,
+                                emotion_categories, config,
+                                wordlist_fn=_wordlist_fn)
+            s["sampling_path"] = "cc"
+            path_cc_count += 1
+        elif roll < cc_ratio + archetype_ratio:
             s = sample_archetype(archetypes, temp_dim, arou_dim,
                                  emotion_categories, config)
             path_b_count += 1
@@ -238,7 +249,7 @@ def generate_all_prompts(config: dict) -> Path:
         all_prompts.append(build_full_prompt(s, vb_block))
 
     print(f"  Done in {time.time()-t0:.1f}s. Path A: {path_a_count:,}, "
-          f"Path B: {path_b_count:,}", flush=True)
+          f"Path B: {path_b_count:,}, CUT TO:: {path_cc_count:,}", flush=True)
 
     # Phase 2: Launch GPU workers
     print(f"\nPhase 2: Launching {n_gpus} GPU workers...", flush=True)
@@ -269,7 +280,8 @@ def generate_all_prompts(config: dict) -> Path:
 
     print(f"Enqueueing {total:,} prompts...", flush=True)
     for i in range(total):
-        work_queue.put((i, SYSTEM_INSTRUCTION, all_prompts[i]))
+        sys_prompt = CC_SYSTEM_INSTRUCTION if all_samples[i]["sampling_path"] == "cc" else SYSTEM_INSTRUCTION
+        work_queue.put((i, sys_prompt, all_prompts[i]))
     for _ in range(n_gpus):
         work_queue.put(None)
 
@@ -393,6 +405,7 @@ def generate_all_prompts(config: dict) -> Path:
     print(f"  Chunks written      : {chunk_idx + 1} files in {outdir}/", flush=True)
     print(f"  Path A (voicenet)   : {path_a_count:,} ({path_a_count/total*100:.1f}%)", flush=True)
     print(f"  Path B (archetype)  : {path_b_count:,} ({path_b_count/total*100:.1f}%)", flush=True)
+    print(f"  Path CC (CUT TO:)   : {path_cc_count:,} ({path_cc_count/total*100:.1f}%)", flush=True)
     print(f"  Tokens              : {total_prompt_tokens:,} in / "
           f"{total_completion_tokens:,} out", flush=True)
     print("=" * 72, flush=True)

@@ -3,7 +3,7 @@
   "_docs": "See config_schema.md for full documentation of every field.",
 
   "prompt_generation": {
-    "_comment": "LLM used to generate DramaBox prompts. Requires ~16GB VRAM per GPU.",
+    "_comment": "LLM used to generate DramaBox prompts. Requires ~16GB VRAM per GPU. For GGUF: HauhauCS/Gemma-4-E4B-Uncensored-HauhauCS-Aggressive (Q8, uncensored, bolder creative output).",
     "llm_model": "google/gemma-4-E4B-it",
     "llm_dtype": "bfloat16",
     "batch_size": 16,
@@ -129,6 +129,7 @@
       "literary": 0.50,
       "tag": 0.50
     },
+    "cc_ratio": 0.30,
     "vocal_bursts_probability": 0.50,
     "tempo_bias_threshold": 3,
     "tempo_bias_weight": 1.5
