@@ -175,6 +175,7 @@ def synthesize_prompt(
     config: dict,
     seed: int = 42,
     voice_ref: str | None = None,
+    duration_multiplier: float | None = None,
 ) -> Path:
     """Generate a single audio file using a pre-loaded TTSServer.
 
@@ -185,6 +186,7 @@ def synthesize_prompt(
         config: Full configuration dict (uses 'tts' section).
         seed: Random seed for generation.
         voice_ref: Optional voice reference audio path. None for text-only.
+        duration_multiplier: Override duration multiplier. None uses config default.
 
     Returns:
         Path to the generated audio file.
@@ -193,12 +195,14 @@ def synthesize_prompt(
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
+    dur_mult = duration_multiplier if duration_multiplier is not None else tts_cfg.get("duration_multiplier", 1.1)
+
     kwargs = dict(
         prompt=prompt,
         output=str(output_path),
         cfg_scale=tts_cfg.get("cfg_scale", 2.0),
         stg_scale=tts_cfg.get("stg_scale", 1.5),
-        duration_multiplier=tts_cfg.get("duration_multiplier", 1.1),
+        duration_multiplier=dur_mult,
         gen_duration=0.0,
         seed=seed,
         watermark=tts_cfg.get("watermark", False),

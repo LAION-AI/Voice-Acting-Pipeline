@@ -628,6 +628,19 @@ def run_full_demo(config: dict) -> Path:
     audio_dir = outdir / "audio"
     audio_dir.mkdir(parents=True, exist_ok=True)
 
+    # Duration variation: distribute candidates across duration buckets
+    # so scoring can select the best-fitting length.
+    DURATION_OFFSETS = [-0.20, -0.10, 0.0, 0.10, 0.20]
+    base_dur_mult = config.get("tts", {}).get("duration_multiplier", 1.1)
+
+    def get_candidate_dur_mult(candidate_idx, total_candidates):
+        """Map candidate index to a duration multiplier with variation."""
+        if total_candidates <= 1:
+            return base_dur_mult
+        bucket_size = max(1, total_candidates // len(DURATION_OFFSETS))
+        bucket = min(candidate_idx // bucket_size, len(DURATION_OFFSETS) - 1)
+        return round(base_dur_mult * (1.0 + DURATION_OFFSETS[bucket]), 4)
+
     for path_key in ["A", "B", "C", "D"]:
         items = path_results[path_key]
         n_items = len(items)
@@ -645,6 +658,7 @@ def run_full_demo(config: dict) -> Path:
             for n in range(best_of_n_count):
                 raw_path = audio_dir / f"path{path_key}_{item_idx:03d}_n{n}_raw.wav"
                 gen_seed = seed + item_idx * 100 + n
+                dur_mult = get_candidate_dur_mult(n, best_of_n_count)
 
                 try:
                     synthesize_prompt(
@@ -654,9 +668,10 @@ def run_full_demo(config: dict) -> Path:
                         config=config,
                         seed=gen_seed,
                         voice_ref=None,  # Text-only for all paths
+                        duration_multiplier=dur_mult,
                     )
 
-                    candidate = {"raw": str(raw_path)}
+                    candidate = {"raw": str(raw_path), "duration_multiplier": dur_mult}
 
                     # Self-VC for Path A/B only
                     if needs_self_vc:
@@ -668,6 +683,7 @@ def run_full_demo(config: dict) -> Path:
                             config=config,
                             seed=gen_seed,
                             voice_ref=str(raw_path),
+                            duration_multiplier=dur_mult,
                         )
                         candidate["selfvc"] = str(vc_path)
                         candidate["audio_for_scoring"] = str(vc_path)
