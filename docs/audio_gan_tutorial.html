@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Training Audio GANs: A Comprehensive Tutorial</title>
+<style>
+:root {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --surface2: #1c2333;
+  --border: #30363d;
+  --text: #e6edf3;
+  --text-dim: #8b949e;
+  --accent: #58a6ff;
+  --accent2: #79c0ff;
+  --green: #3fb950;
+  --red: #f85149;
+  --yellow: #d29922;
+  --orange: #db6d28;
+  --purple: #bc8cff;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+h1 { font-size: 2.4rem; margin-bottom: 0.5rem; color: var(--accent); }
+h2 { font-size: 1.8rem; margin: 2.5rem 0 1rem; color: var(--accent2); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+h3 { font-size: 1.3rem; margin: 1.8rem 0 0.7rem; color: var(--green); }
+h4 { font-size: 1.1rem; margin: 1.2rem 0 0.5rem; color: var(--purple); }
+p { margin: 0.7rem 0; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code {
+  font-family: 'Fira Code', 'Cascadia Code', 'JetBrains Mono', monospace;
+  background: var(--surface2);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.9em;
+  color: var(--orange);
+}
+pre {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+pre code { background: none; padding: 0; color: var(--text); }
+.subtitle { color: var(--text-dim); font-size: 1.1rem; margin-bottom: 2rem; }
+.callout {
+  border-left: 4px solid var(--accent);
+  background: var(--surface);
+  padding: 1rem 1.2rem;
+  margin: 1.2rem 0;
+  border-radius: 0 8px 8px 0;
+}
+.callout.warn { border-left-color: var(--yellow); }
+.callout.danger { border-left-color: var(--red); }
+.callout.success { border-left-color: var(--green); }
+.callout strong { color: var(--accent2); }
+.callout.warn strong { color: var(--yellow); }
+.callout.danger strong { color: var(--red); }
+.callout.success strong { color: var(--green); }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+}
+th, td {
+  border: 1px solid var(--border);
+  padding: 0.5rem 0.8rem;
+  text-align: left;
+}
+th { background: var(--surface2); color: var(--accent2); font-weight: 600; }
+tr:nth-child(even) { background: var(--surface); }
+.term {
+  display: inline-block;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.6rem 1rem;
+  margin: 0.3rem 0;
+  width: 100%;
+}
+.term strong { color: var(--accent); }
+.term em { color: var(--text-dim); font-style: normal; font-size: 0.9em; }
+.diagram {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1rem 0;
+  font-family: monospace;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  white-space: pre;
+  overflow-x: auto;
+  color: var(--text-dim);
+}
+.diagram .highlight { color: var(--green); font-weight: bold; }
+.diagram .accent { color: var(--accent); }
+.diagram .warn { color: var(--yellow); }
+.toc {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem 2rem;
+  margin: 1.5rem 0;
+}
+.toc h3 { margin-top: 0; color: var(--accent2); }
+.toc ol { padding-left: 1.5rem; }
+.toc li { margin: 0.3rem 0; }
+.math {
+  display: block;
+  background: var(--surface2);
+  border-radius: 6px;
+  padding: 0.8rem 1.2rem;
+  margin: 0.8rem 0;
+  font-family: 'Cambria Math', 'Latin Modern Math', serif;
+  font-size: 1.05rem;
+  text-align: center;
+  color: var(--text);
+  overflow-x: auto;
+}
+.results-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.results-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+}
+.results-card h4 { margin-top: 0; }
+.metric { display: flex; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px solid var(--border); }
+.metric:last-child { border-bottom: none; }
+.metric .label { color: var(--text-dim); }
+.metric .value { font-weight: 600; font-family: monospace; }
+.good { color: var(--green); }
+.bad { color: var(--red); }
+.ok { color: var(--yellow); }
+@media (max-width: 768px) {
+  body { padding: 1rem; }
+  h1 { font-size: 1.8rem; }
+  .results-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<h1>Training Audio GANs</h1>
+<p class="subtitle">A practical guide to training generative adversarial networks for audio synthesis, with focus on BigVGAN v2 vocoder fine-tuning for the DramaBox TTS pipeline</p>
+
+<div class="toc">
+<h3>Table of Contents</h3>
+<ol>
+<li><a href="#part1">What is a GAN? (The Basics)</a></li>
+<li><a href="#part2">Audio Representations: How Computers See Sound</a></li>
+<li><a href="#part3">The Vocoder: From Spectrograms to Waveforms</a></li>
+<li><a href="#part4">HiFi-GAN &amp; BigVGAN Architecture</a></li>
+<li><a href="#part5">Discriminator Architectures: Teaching a Critic</a></li>
+<li><a href="#part6">Loss Functions: How GANs Learn</a></li>
+<li><a href="#part7">Hyperparameters: The Knobs You Can Turn</a></li>
+<li><a href="#part8">Training Dynamics: What to Watch For</a></li>
+<li><a href="#part9">Failure Modes: When Things Go Wrong</a></li>
+<li><a href="#part10">Fine-Tuning Pretrained Vocoders</a></li>
+<li><a href="#part11">Our Setup: DramaBox / LTX-2.3 Pipeline</a></li>
+<li><a href="#part12">Our Experiments: Discriminator Sweep &amp; Results</a></li>
+<li><a href="#part13">Current Training Analysis</a></li>
+<li><a href="#part14">Hyperparameter Tuning Cookbook</a></li>
+<li><a href="#part15">Compute Requirements</a></li>
+<li><a href="#part16">Glossary of Terms</a></li>
+<li><a href="#part17">References</a></li>
+</ol>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="part1">1. What is a GAN? (The Basics)</h2>
+
+<p>A <strong>Generative Adversarial Network (GAN)</strong> is a machine learning framework where two neural networks compete against each other to produce realistic outputs. Think of it as an art forger (the <strong>Generator</strong>) trying to create convincing fake paintings, while an art critic (the <strong>Discriminator</strong>) tries to distinguish fakes from real masterpieces.</p>
+
+<h3>The Two Players</h3>
+
+<div class="term"><strong>Generator (G)</strong> &mdash; Takes random noise or a conditioning input (like a mel spectrogram) and produces a synthetic output (like an audio waveform). Its goal: fool the discriminator into thinking the output is real.</div>
+
+<div class="term"><strong>Discriminator (D)</strong> &mdash; Takes both real and generated samples and outputs a score indicating how "real" each sample looks. Its goal: correctly classify real vs. fake.</div>
+
+<div class="diagram">
+                    ┌─────────────┐
+  Mel Spectrogram──▶│  Generator  │──▶ Fake Waveform ──┐
+                    │   (G)       │                     │
+                    └─────────────┘                     ▼
+                                                ┌──────────────┐
+                    Real Waveform ──────────────▶│Discriminator │──▶ Real/Fake Score
+                                                │    (D)       │
+                                                └──────────────┘
+                                                        │
+                    Gradient feedback ◄─────────────────┘
+                    (D tells G how to improve)
+</div>
+
+<h3>The Training Loop</h3>
+<p>Training alternates between two steps:</p>
+<ol>
+<li><strong>Train D</strong>: Show D real audio (label: "real") and G's fake audio (label: "fake"). D learns to tell them apart.</li>
+<li><strong>Train G</strong>: Generate fake audio and ask D to score it. G's loss is based on how well it fooled D. G learns to make more convincing fakes.</li>
+</ol>
+
+<p>At convergence, G produces outputs so realistic that D can't tell them from real data. The discriminator's output approaches 0.5 &mdash; maximum uncertainty &mdash; because every sample looks equally plausible.</p>
+
+<div class="callout">
+<strong>Key Insight:</strong> The discriminator is not used at inference time. It's a "training wheel" that teaches the generator to produce realistic outputs. Once training is done, only G is deployed.
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="part2">2. Audio Representations: How Computers See Sound</h2>
+
+<h3>Raw Waveform</h3>
+<p>Audio is stored as a sequence of amplitude values sampled at regular intervals. Common sample rates:</p>
+<table>
+<tr><th>Sample Rate</th><th>Use Case</th><th>Samples per Second</th></tr>
+<tr><td>16 kHz</td><td>Speech (telephony, TTS)</td><td>16,000</td></tr>
+<tr><td>22.05 kHz</td><td>Standard TTS</td><td>22,050</td></tr>
+<tr><td>24 kHz</td><td>High-quality speech</td><td>24,000</td></tr>
+<tr><td>44.1 kHz</td><td>Music, universal audio</td><td>44,100</td></tr>
+<tr><td>48 kHz</td><td>Professional audio</td><td>48,000</td></tr>
+</table>
+<p>At 16 kHz, one second of audio = 16,000 floating-point numbers. A 10-second clip = 160,000 values. This is what the generator outputs.</p>
+
+<h3>Mel Spectrogram</h3>
+<p>A <strong>mel spectrogram</strong> is a 2D representation of sound: time on one axis, frequency on the other, with pixel brightness indicating energy. The "mel" scale warps frequencies to match human hearing (we're more sensitive to differences between low pitches than high pitches).</p>
+
+<div class="term"><strong>How it's computed:</strong> <em>Short-Time Fourier Transform (STFT) decomposes the waveform into overlapping windows, applies FFT to each, maps the frequency bins onto the mel scale, and takes the log of the magnitudes.</em></div>
+
+<p>Key parameters that define a mel spectrogram:</p>
+<table>
+<tr><th>Parameter</th><th>What It Does</th><th>Typical Values</th></tr>
+<tr><td><code>n_fft</code></td><td>FFT window size in samples. Larger = better frequency resolution, worse time resolution</td><td>1024</td></tr>
+<tr><td><code>hop_length</code></td><td>Step between consecutive windows in samples. Controls time resolution</td><td>256</td></tr>
+<tr><td><code>n_mels</code></td><td>Number of mel frequency bins. More bins = finer frequency detail</td><td>80 &ndash; 128</td></tr>
+<tr><td><code>f_min</code></td><td>Lowest frequency captured (Hz)</td><td>0</td></tr>
+<tr><td><code>f_max</code></td><td>Highest frequency captured (Hz). Usually sr/2 (Nyquist)</td><td>8000 &ndash; 22050</td></tr>
+<tr><td><code>sample_rate</code></td><td>Sample rate of the input audio</td><td>16000 &ndash; 44100</td></tr>
+</table>
+
+<div class="callout">
+<strong>Why mel spectrograms?</strong> They compress a 16,000-dimensional waveform second into an ~62&times;80 matrix (~5,000 values) while preserving perceptually relevant information. This makes them ideal as an intermediate representation for TTS systems.
+</div>
+
+<h3>Latent Representations</h3>
+<p>Modern audio codecs like <strong>EnCodec</strong>, <strong>SoundStream</strong>, and the <strong>LTX-2.3 Audio VAE</strong> compress audio even further into a low-dimensional latent space using a learned encoder. The latent vectors are ~8&times; to ~160&times; smaller than mel spectrograms. A <strong>decoder</strong> reconstructs mel spectrograms from these latents, and then a <strong>vocoder</strong> converts the mel spectrogram to a waveform.</p>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="part3">3. The Vocoder: From Spectrograms to Waveforms</h2>
+
+<p>A <strong>vocoder</strong> (voice coder) is a model that converts a mel spectrogram back into an audio waveform. This is the final stage of a text-to-speech pipeline:</p>
+
+<div class="diagram">
+ Text ──▶ <span class="accent">Language Model</span> ──▶ Latent ──▶ <span class="accent">VAE Decoder</span> ──▶ Mel Spectrogram ──▶ <span class="highlight">Vocoder</span> ──▶ Waveform
+                                                                                        ▲
+                                                                                   This is what
+                                                                                   we're training
+</div>
+
+<h3>Why is this hard?</h3>
+<p>A mel spectrogram contains ~5,000 values per second. The output waveform contains ~16,000&ndash;48,000 values per second. The vocoder must <strong>invent</strong> all the missing detail &mdash; phase information, fine harmonic structure, transients &mdash; that was lost during the mel compression. This is fundamentally an <em>underdetermined</em> problem (many waveforms produce the same mel spectrogram).</p>
+
+<h3>Evolution of Vocoders</h3>
+<table>
+<tr><th>Year</th><th>Model</th><th>Type</th><th>Speed</th><th>Quality</th></tr>
+<tr><td>2016</td><td>WaveNet</td><td>Autoregressive</td><td>0.001&times; real-time</td><td>Excellent</td></tr>
+<tr><td>2018</td><td>WaveRNN</td><td>Autoregressive</td><td>4&times; real-time</td><td>Good</td></tr>
+<tr><td>2019</td><td>MelGAN</td><td>GAN</td><td>2,500&times; real-time</td><td>Moderate</td></tr>
+<tr><td>2020</td><td>HiFi-GAN</td><td>GAN</td><td>1,187&times; real-time</td><td>Excellent</td></tr>
+<tr><td>2022</td><td>BigVGAN</td><td>GAN</td><td>45&times; real-time</td><td>State-of-art</td></tr>
+<tr><td>2023</td><td>Vocos</td><td>Fourier-based</td><td>3,150&times; real-time</td><td>Excellent</td></tr>
+<tr><td>2024</td><td>BigVGAN v2</td><td>GAN</td><td>45&times; (faster with CUDA kernel)</td><td>Best universal</td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="part4">4. HiFi-GAN &amp; BigVGAN Architecture</h2>
+
+<h3>HiFi-GAN Generator (2020)</h3>
+<p>The foundational architecture used by BigVGAN. It's a fully convolutional upsampling network:</p>
+
+<div class="diagram">
+ Mel Spectrogram (80 &times; T)
+         │
+         ▼
+  ┌──────────────────┐
+  │ Conv1D (pre-net)  │  Project mel channels → 512 channels
+  └────────┬─────────┘
+           │
+  ┌────────▼─────────┐
+  │ TransposedConv1D  │  Upsample 8&times; (kernel=16, stride=8)
+  │ + MRF Block       │  Multi-Receptive-Field Fusion
+  └────────┬─────────┘
+  ┌────────▼─────────┐
+  │ TransposedConv1D  │  Upsample 8&times; (kernel=16, stride=8)
+  │ + MRF Block       │  → now 64&times; upsampled
+  └────────┬─────────┘
+  ┌────────▼─────────┐
+  │ TransposedConv1D  │  Upsample 2&times; (kernel=4, stride=2)
+  │ + MRF Block       │  → 128&times;
+  └────────┬─────────┘
+  ┌────────▼─────────┐
+  │ TransposedConv1D  │  Upsample 2&times; (kernel=4, stride=2)
+  │ + MRF Block       │  → <span class="highlight">256&times; upsampled</span> (= hop_length)
+  └────────┬─────────┘
+           │
+  ┌────────▼─────────┐
+  │ Conv1D (post-net) │  Project to 1 channel
+  │ + tanh            │  Clamp to [-1, 1]
+  └──────────────────┘
+           │
+           ▼
+  Waveform (1 &times; T&times;256)
+</div>
+
+<p>The <strong>Multi-Receptive-Field Fusion (MRF)</strong> module processes features through parallel residual blocks with different kernel sizes (3, 7, 11) and dilation patterns, then averages their outputs. This captures both fine-grained detail and broader patterns.</p>
+
+<h3>BigVGAN: What Changed?</h3>
+
+<h4>1. Snake Activation Function</h4>
+<p>Standard activations (ReLU, LeakyReLU) have no inherent understanding of periodicity. Audio is fundamentally periodic (speech = vocal cord vibrations + resonances). The <strong>Snake activation</strong> adds a periodic inductive bias:</p>
+
+<div class="math">
+Snake(x) = x + (1/&alpha;) &middot; sin&sup2;(&alpha; &middot; x)
+</div>
+
+<p>Where &alpha; is a <em>learnable</em> parameter that controls the frequency. Each channel learns its own frequency. The identity term <code>x</code> ensures the function is monotonic (always increasing), which makes optimization tractable.</p>
+
+<p><strong>SnakeBeta</strong> (used in BigVGAN v2) adds a separate trainable parameter &beta; for amplitude control:</p>
+
+<div class="math">
+SnakeBeta(x) = x + (1/&beta;) &middot; sin&sup2;(&alpha; &middot; x)
+</div>
+
+<p>Both &alpha; and &beta; are parameterized in log-scale for numerical stability.</p>
+
+<h4>2. Anti-Aliased Multi-Periodicity Composition (AMP)</h4>
+<p>Applying a nonlinear activation (like Snake) to an upsampled signal creates high-frequency harmonics that can alias back into the audible range, producing metallic/buzzing artifacts. The AMP module prevents this:</p>
+
+<div class="diagram">
+  Input signal
+      │
+      ▼
+  Upsample 2&times; (insert zeros + low-pass filter)
+      │
+      ▼
+  Apply Snake activation (creates harmonics above Nyquist)
+      │
+      ▼
+  Low-pass filter (remove harmonics above Nyquist)
+      │
+      ▼
+  Downsample 2&times; back to original rate
+      │
+      ▼
+  Clean, alias-free activated signal
+</div>
+
+<p>The low-pass filters use <strong>Kaiser-windowed sinc</strong> filters, a classical signal processing design borrowed from <a href="https://arxiv.org/abs/2106.12423">StyleGAN3</a>.</p>
+
+<h4>3. Larger Model</h4>
+<table>
+<tr><th>Property</th><th>HiFi-GAN V1</th><th>BigVGAN-base</th><th>BigVGAN (full)</th></tr>
+<tr><td>Parameters</td><td>14M</td><td>14M</td><td>112M</td></tr>
+<tr><td>Upsample rates</td><td>[8,8,2,2]</td><td>[8,8,2,2]</td><td>[4,4,2,2,2,2]</td></tr>
+<tr><td>Initial channels</td><td>512</td><td>512</td><td>1536</td></tr>
+<tr><td>Activation</td><td>LeakyReLU</td><td>Snake</td><td>SnakeBeta + AMP</td></tr>
+<tr><td>Anti-aliasing</td><td>None</td><td>None</td><td>Kaiser-sinc filters</td></tr>
+</table>
+
+<h4>4. BigVGAN v2 Improvements (2024)</h4>
+<ul>
+<li><strong>MS-SB-CQTD</strong>: Multi-Scale Sub-Band Constant-Q Transform Discriminator (see below)</li>
+<li><strong>Segment size 65,536</strong> (up from 8,192) &mdash; model sees 4 seconds of context instead of 0.5s</li>
+<li><strong>Diverse training data</strong>: Multi-language speech, singing, music, environmental sounds</li>
+<li><strong>Custom CUDA kernel</strong>: 1.5&ndash;3&times; faster inference on A100</li>
+<li><strong>Up to 44 kHz / 128 mel bands / 512&times; upsampling</strong></li>
+</ul>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="part5">5. Discriminator Architectures: Teaching a Critic</h2>
+
+<p>The discriminator is the "teacher" that provides gradient signal to the generator. Its design profoundly affects what the generator learns. Audio GANs typically use <strong>multiple sub-discriminators</strong>, each specializing in a different aspect of audio quality.</p>
+
+<h3>Multi-Period Discriminator (MPD)</h3>
+<p>Introduced in HiFi-GAN. Exploits the periodic nature of audio by reshaping the 1D waveform into 2D tensors with different periods:</p>
+
+<div class="diagram">
+  Waveform: [s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, ...]
+
+  Period=2:  │s1 s2│    Period=3:  │s1 s2 s3│    Period=5:  │s1 s2 s3 s4 s5│
+             │s3 s4│               │s4 s5 s6│               │s6 s7 s8 s9 s10│
+             │s5 s6│               │s7 s8 s9│               │...            │
+             │...  │               │...     │
+
+  Standard periods: {2, 3, 5, 7, 11} (prime numbers to avoid overlap)
+  Each 2D tensor → 2D CNN → scalar score
+</div>
+
+<p>This captures harmonic patterns at different fundamental frequencies. A voice at 200 Hz has period = sample_rate/200 = 80 samples at 16 kHz. By checking primes, MPD covers many harmonic relationships.</p>
+
+<h3>Multi-Scale Discriminator (MSD)</h3>
+<p>Three 1D CNNs operating at different time scales:</p>
+<ul>
+<li><strong>Scale 1</strong>: Raw waveform (full detail)</li>
+<li><strong>Scale 2</strong>: 2&times; average-pooled (half resolution)</li>
+<li><strong>Scale 3</strong>: 4&times; average-pooled (quarter resolution)</li>
+</ul>
+<p>Captures both fine-grained texture (Scale 1) and broader structure (Scale 3).</p>
+
+<h3>Multi-Resolution Discriminator (MRD)</h3>
+<p>From <a href="https://arxiv.org/abs/2106.07889">UnivNet</a>. Operates on <strong>linear spectrograms</strong> (not waveforms) computed with different STFT parameters. Used in BigVGAN to replace MSD because spectral representations make frequency-domain artifacts more visible.</p>
+
+<h3>STFT Discriminator (What We Use)</h3>
+<p>Our custom <strong>Multi-Resolution STFT Discriminator</strong> operates on log-magnitude + phase spectrograms via 2D convolutions. This was the key breakthrough in our experiments:</p>
+
+<div class="diagram">
+  Waveform
+      │
+      ├──▶ STFT(n_fft=256,  hop=64)  ──▶ [log_mag + phase] ──▶ 2D CNN ──▶ Score₁
+      ├──▶ STFT(n_fft=512,  hop=128) ──▶ [log_mag + phase] ──▶ 2D CNN ──▶ Score₂
+      ├──▶ STFT(n_fft=1024, hop=256) ──▶ [log_mag + phase] ──▶ 2D CNN ──▶ Score₃
+      └──▶ STFT(n_fft=2048, hop=512) ──▶ [log_mag + phase] ──▶ 2D CNN ──▶ Score₄
+                                                                    │
+                                                      Total D loss = Σ all scores
+</div>
+
+<div class="callout success">
+<strong>Why STFT discriminators work for our task:</strong> The metallic artifacts from BigVGAN's Snake activations are nearly invisible in the raw waveform (amplitude differences &lt;0.1%) but are clearly visible as extra harmonic lines in the spectrogram. An STFT discriminator sees these artifacts 10&ndash;100&times; more clearly than waveform-based discriminators (MPD/MSD).
+</div>
+
+<h3>MS-SB-CQTD (BigVGAN v2)</h3>
+<p>Multi-Scale Sub-Band Constant-Q Transform Discriminator. Uses CQT instead of STFT. CQT provides logarithmic frequency resolution (like human hearing), giving better pitch accuracy and harmonic tracking. Published at ICASSP 2024.</p>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="part6">6. Loss Functions: How GANs Learn</h2>
+
+<p>Audio GANs use a combination of losses. The total generator loss looks like:</p>
+
+<div class="math">
+L<sub>G</sub> = L<sub>adv</sub> + &lambda;<sub>fm</sub> &middot; L<sub>FM</sub> + &lambda;<sub>mel</sub> &middot; L<sub>mel</sub> [+ &lambda;<sub>stft</sub> &middot; L<sub>STFT</sub>]
+</div>
+
+<h3>Adversarial Loss (L<sub>adv</sub>)</h3>
+<p>The core GAN signal. Two main formulations:</p>
+
+<h4>LSGAN (Least Squares GAN)</h4>
+<p>Used in HiFi-GAN, BigVGAN, and our experiments.</p>
+<div class="math">
+L<sub>D</sub> = E[(D(real) - 1)&sup2; + D(fake)&sup2;]<br>
+L<sub>G</sub> = E[(D(fake) - 1)&sup2;]
+</div>
+<p>The discriminator wants D(real)&rarr;1 and D(fake)&rarr;0. The generator wants D(fake)&rarr;1. The L2 penalty provides smooth gradients everywhere (unlike vanilla GAN which saturates). With K sub-discriminators, losses are summed.</p>
+
+<h4>Hinge Loss</h4>
+<p>Used in Vocos. Clips the gradient when D is already confident:</p>
+<div class="math">
+L<sub>D</sub> = E[max(0, 1 - D(real))] + E[max(0, 1 + D(fake))]<br>
+L<sub>G</sub> = -E[D(fake)]
+</div>
+<p>Hinge loss can be more aggressive &mdash; D gets no further reward for pushing scores beyond &plusmn;1.</p>
+
+<h3>Feature Matching Loss (L<sub>FM</sub>)</h3>
+<p>Compares intermediate features of the discriminator for real and fake audio:</p>
+<div class="math">
+L<sub>FM</sub> = &Sigma;<sub>l</sub> ||D<sup>(l)</sup>(real) - D<sup>(l)</sup>(fake)||<sub>1</sub>
+</div>
+<p>This stabilizes training by giving the generator a "perceptual" learning signal from the discriminator's learned features, rather than just the final scalar score. It prevents the generator from overtraining against the current discriminator state. Standard weight: <strong>&lambda;<sub>fm</sub> = 2</strong>.</p>
+
+<h3>Mel-Spectrogram L1 Loss (L<sub>mel</sub>)</h3>
+<p>Direct reconstruction loss between mel spectrograms of real and generated audio:</p>
+<div class="math">
+L<sub>mel</sub> = ||log mel(real) - log mel(fake)||<sub>1</sub>
+</div>
+<p>This is typically the <strong>strongest</strong> learning signal, with weight <strong>&lambda;<sub>mel</sub> = 45</strong> in HiFi-GAN and BigVGAN. It ensures the generated audio has roughly correct energy distribution across frequencies. In our training, we use a multi-resolution variant with 4 mel configs.</p>
+
+<h3>Multi-Resolution STFT Loss (L<sub>STFT</sub>)</h3>
+<p>Combines spectral convergence and log-magnitude L1 at multiple STFT resolutions:</p>
+<div class="math">
+L<sub>STFT</sub> = (1/N) &Sigma;<sub>i</sub> [||STFT<sub>i</sub>(real) - STFT<sub>i</sub>(fake)||<sub>F</sub> / ||STFT<sub>i</sub>(real)||<sub>F</sub> + ||log|STFT<sub>i</sub>(real)| - log|STFT<sub>i</sub>(fake)|||<sub>1</sub>]
+</div>
+<p>We use this with weight <strong>&lambda;<sub>stft</sub> = 5</strong> in our training.</p>
+
+<div class="callout">
+<strong>Loss Weight Balance:</strong> In all major vocoders (HiFi-GAN, BigVGAN, our setup), the reconstruction losses (mel, STFT) dominate with combined weight ~50, while adversarial + feature matching have weight ~5. The GAN provides "sharpening" and "detail" while reconstruction losses ensure correctness.
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="part7">7. Hyperparameters: The Knobs You Can Turn</h2>
+
+<h3>Reference Table: Published Hyperparameters</h3>
+
+<table>
+<tr><th>Parameter</th><th>HiFi-GAN</th><th>BigVGAN v1</th><th>BigVGAN v2</th><th>Our Setup</th></tr>
+<tr><td>G Learning Rate</td><td>2e-4</td><td>1e-4</td><td>1e-4</td><td>5e-5</td></tr>
+<tr><td>D Learning Rate</td><td>2e-4</td><td>1e-4</td><td>1e-4</td><td>2e-4</td></tr>
+<tr><td>Optimizer</td><td>AdamW</td><td>AdamW</td><td>AdamW</td><td>AdamW</td></tr>
+<tr><td>&beta;<sub>1</sub>, &beta;<sub>2</sub></td><td>0.8, 0.99</td><td>0.8, 0.99</td><td>0.8, 0.99</td><td>0.8, 0.99</td></tr>
+<tr><td>LR Decay</td><td>0.999/epoch</td><td>0.999/epoch</td><td>0.999/epoch</td><td>Cosine</td></tr>
+<tr><td>Batch Size</td><td>16</td><td>32</td><td>32</td><td>6&ndash;12</td></tr>
+<tr><td>Segment Length</td><td>8,192</td><td>8,192</td><td>65,536</td><td>up to 160,000</td></tr>
+<tr><td>&lambda;<sub>mel</sub></td><td>45</td><td>45</td><td>45</td><td>45</td></tr>
+<tr><td>&lambda;<sub>fm</sub></td><td>2</td><td>2</td><td>2</td><td>2</td></tr>
+<tr><td>&lambda;<sub>adv</sub></td><td>1</td><td>1</td><td>1</td><td>1</td></tr>
+<tr><td>&lambda;<sub>stft</sub></td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>5</td></tr>
+<tr><td>Grad Clip</td><td>&mdash;</td><td>1000</td><td>500 (100 warmup)</td><td>5</td></tr>
+<tr><td>D/G Update Ratio</td><td>1:1</td><td>1:1</td><td>1:1</td><td><strong>5:1</strong></td></tr>
+<tr><td>Discriminator</td><td>MPD+MSD</td><td>MPD+MRD</td><td>MPD+MRD+CQT</td><td><strong>Multi-Res STFT</strong></td></tr>
+<tr><td>Spectral Norm</td><td>MSD only</td><td>MSD only</td><td>varies</td><td>All of D</td></tr>
+<tr><td>R1 Penalty</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>0 (disabled)</td></tr>
+</table>
+
+<h3>What Each Hyperparameter Controls</h3>
+
+<div class="term"><strong>G Learning Rate</strong> &mdash; <em>How fast the generator adapts. Too high: training instability, divergent loss. Too low: slow convergence. For fine-tuning, use 0.5&ndash;1&times; the from-scratch rate.</em></div>
+
+<div class="term"><strong>D Learning Rate</strong> &mdash; <em>How fast the discriminator adapts. Must be balanced with G LR. If D learns too fast, it gives vanishing gradients to G ("D too strong"). If too slow, it provides no useful signal ("D collapse").</em></div>
+
+<div class="term"><strong>D/G Update Ratio</strong> &mdash; <em>How many D steps per G step. 1:1 is standard. We use 5:1 because our STFT discriminator is small (4.6M params) relative to the generator (115M), so it needs more updates to keep up.</em></div>
+
+<div class="term"><strong>Batch Size</strong> &mdash; <em>Larger batches reduce gradient noise and mode collapse risk. BigVGAN doubled from 16 to 32 specifically for stability. We use 6&ndash;12 due to VRAM constraints.</em></div>
+
+<div class="term"><strong>Gradient Clipping</strong> &mdash; <em>Caps the maximum gradient magnitude. Essential in BigVGAN because the anti-aliased activation can amplify gradients. We use aggressive clipping (5.0) because our setup is more sensitive to gradient spikes.</em></div>
+
+<div class="term"><strong>Spectral Normalization</strong> &mdash; <em>Constrains the Lipschitz constant of D's layers by normalizing weight matrices by their largest singular value. Prevents D from becoming too "sharp" (high capacity but unstable). However, it can also prevent D from learning subtle differences.</em></div>
+
+<div class="term"><strong>R1 Gradient Penalty</strong> &mdash; <em>Penalizes the gradient of D w.r.t. real data: R1 = &lambda; &middot; E[||&nabla;D(real)||&sup2;]. Regularizes D to be "smooth." We found R1=10 was too strong for our fine-tuning task &mdash; it prevented D from learning.</em></div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="part8">8. Training Dynamics: What to Watch For</h2>
+
+<h3>Healthy Training Indicators</h3>
+
+<table>
+<tr><th>Metric</th><th>Healthy Range</th><th>What It Means</th></tr>
+<tr><td>D(real)</td><td>0.7 &ndash; 1.0</td><td>D correctly classifies real audio</td></tr>
+<tr><td>D(fake)</td><td>0.0 &ndash; 0.3</td><td>D correctly rejects fake audio</td></tr>
+<tr><td>D gap = D(r) - D(f)</td><td>0.3 &ndash; 0.9</td><td>D can discriminate &mdash; the sweet spot</td></tr>
+<tr><td>d_loss (LSGAN, 4 sub-discs)</td><td>0.3 &ndash; 2.0</td><td>D is learning but not overwhelming G</td></tr>
+<tr><td>mel_loss</td><td>Decreasing</td><td>Generator output is improving</td></tr>
+<tr><td>g_adv (LSGAN, 4 sub-discs)</td><td>1.0 &ndash; 3.5</td><td>G is being challenged but not crushed</td></tr>
+</table>
+
+<h3>The Balance Dance</h3>
+
+<p>GAN training is a dynamic equilibrium between two opposing forces. Think of it as a seesaw:</p>
+
+<div class="diagram">
+  D too weak (gap &lt; 0.1)                    D too strong (gap &gt; 0.95)
+  ┌─────────────────────┐                    ┌─────────────────────┐
+  │ D gives no useful    │                    │ D is perfect, G gets│
+  │ gradient to G.       │                    │ no useful gradient  │
+  │ G improves only via  │                    │ (vanishing gradient)│
+  │ mel/STFT losses.     │                    │ g_adv plateaus at   │
+  │ GAN adds nothing.    │                    │ maximum value.      │
+  └─────────────────────┘                    └─────────────────────┘
+
+                         <span class="highlight">┌───────────────┐</span>
+                         <span class="highlight">│  SWEET SPOT    │</span>
+                         <span class="highlight">│  gap: 0.3-0.8  │</span>
+                         <span class="highlight">│  D provides    │</span>
+                         <span class="highlight">│  useful signal │</span>
+                         <span class="highlight">│  G can still   │</span>
+                         <span class="highlight">│  improve       │</span>
+                         <span class="highlight">└───────────────┘</span>
+</div>
+
+<div class="callout warn">
+<strong>Important nuance:</strong> When fine-tuning (not training from scratch), a gap near 1.0 can still be fine &mdash; if mel loss is still decreasing. In our experiments, D quickly learns to near-perfect discrimination (gap &gt; 0.95) because our generated audio is already very close to real audio. The G's main learning signal comes from mel/STFT reconstruction losses, with the GAN adding subtle sharpening.
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="part9">9. Failure Modes: When Things Go Wrong</h2>
+
+<h3>Discriminator Collapse (D Too Weak)</h3>
+<div class="callout danger">
+<strong>Symptoms:</strong> D(real) &asymp; D(fake) &asymp; 0.5, gap &asymp; 0, d_loss constant at maximum value (e.g., 4.0 for 8 LSGAN sub-discriminators). The discriminator outputs ~0.5 for everything &mdash; maximum confusion.<br><br>
+<strong>Root causes:</strong>
+<ul>
+<li>Real and fake audio too similar for D to distinguish (common in fine-tuning)</li>
+<li>R1 gradient penalty too high (suppresses D's ability to develop features)</li>
+<li>D learning rate too low</li>
+<li>Spectral normalization too restrictive for the signal difference</li>
+<li>D operating in wrong domain (waveform-domain D can't see spectral artifacts)</li>
+</ul>
+<strong>Fixes:</strong>
+<ul>
+<li>Switch to spectral-domain discriminator (STFT, CQT)</li>
+<li>Remove or reduce R1 penalty</li>
+<li>Increase D learning rate</li>
+<li>Increase D/G update ratio (give D more steps to learn)</li>
+<li>Remove spectral normalization (carefully &mdash; may destabilize)</li>
+</ul>
+</div>
+
+<p>This was our <strong>central challenge</strong>. The original waveform discriminators (MPD+MSD with 8 sub-discriminators) were stuck at gap &asymp; 0.001 because the BigVGAN-generated audio was &gt;99% identical to real audio at the waveform level. The metallic artifacts were invisible to waveform-domain D but clearly visible in spectrograms.</p>
+
+<h3>Mode Collapse (G Too Narrow)</h3>
+<div class="callout danger">
+<strong>Symptoms:</strong> G produces similar outputs regardless of input. Audio sounds "frozen" or "buzzy." Multiple different mel inputs yield near-identical waveforms.<br><br>
+<strong>Root causes:</strong>
+<ul>
+<li>D too strong (G learns a single "safe" output that fools D)</li>
+<li>Insufficient training data diversity</li>
+<li>Too many discriminators (BemaGANv2 found 3 simultaneous discriminators cause collapse)</li>
+<li>Learning rate too high</li>
+</ul>
+<strong>Fixes:</strong>
+<ul>
+<li>Reduce D learning rate or freeze D layers</li>
+<li>Increase batch size (BigVGAN doubled to 32 for this reason)</li>
+<li>Add reconstruction losses (mel L1, STFT) to anchor G's output</li>
+<li>Data augmentation</li>
+</ul>
+</div>
+
+<h3>Generator Explosion</h3>
+<div class="callout danger">
+<strong>Symptoms:</strong> mel loss suddenly jumps from ~0.3 to &gt;1.0 or more. G gradients spike. Generated audio becomes noise.<br><br>
+<strong>Root causes:</strong>
+<ul>
+<li>Removing spectral normalization without stabilization (we saw mel: 0.3 &rarr; 8.5)</li>
+<li>Gradient explosion through deep computation graphs (decoder &rarr; vocoder chains)</li>
+<li>Learning rate too high after warmup</li>
+</ul>
+<strong>Fixes:</strong>
+<ul>
+<li>Gradient clipping (we use max_norm=5.0)</li>
+<li>Lower G learning rate</li>
+<li>Reduce adversarial weight</li>
+<li>Use spectral normalization on D (even if it limits D capacity, stability is more important)</li>
+</ul>
+</div>
+
+<h3>Metallic / Ringing Artifacts</h3>
+<div class="callout danger">
+<strong>Symptoms:</strong> Audio sounds "tinny," "metallic," or has a shimmer/ringing quality, especially at high frequencies.<br><br>
+<strong>Root causes:</strong>
+<ul>
+<li>Aliasing from upsampling without proper anti-aliasing filters</li>
+<li>Snake activation producing harmonics that fold back into audible range</li>
+<li>Out-of-distribution mel spectrograms (from LoRA-modified models) causing BigVGAN to extrapolate poorly</li>
+<li>Instance normalization (in MelGAN) washing away pitch information</li>
+</ul>
+<strong>Fixes:</strong>
+<ul>
+<li>Anti-aliased activations (BigVGAN's AMP module)</li>
+<li>Fine-tuning the vocoder on the actual mel spectrograms it will receive</li>
+<li>STFT discriminator to penalize spectral artifacts directly</li>
+<li>FA-GAN-style anti-aliased deconvolution modules</li>
+</ul>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="part10">10. Fine-Tuning Pretrained Vocoders</h2>
+
+<p>Fine-tuning adapts a pretrained vocoder (trained on generic data by NVIDIA) to your specific use case. This is what we're doing &mdash; adapting BigVGAN v2 to handle mel spectrograms produced by our LoRA-modified DiT model.</p>
+
+<h3>Best Practices from the Literature</h3>
+
+<ol>
+<li><strong>Lower learning rate</strong>: Use 0.25&ndash;0.5&times; the from-scratch rate. BigVGAN from scratch uses 1e-4; we use 5e-5 for G.</li>
+
+<li><strong>Match the mel pipeline</strong>: Generate mel spectrograms with your actual model (not ground-truth mels) as training data. We use "teacher-forced" data &mdash; running our DiT model at low noise (sigma=0.15) to produce mel spectrograms that match inference conditions.</li>
+
+<li><strong>FreezeD</strong>: Freeze lower layers of the discriminator to preserve learned features while fine-tuning only the upper layers. Not always necessary if using a fresh discriminator (as we do with our STFT disc).</li>
+
+<li><strong>D pre-training</strong>: Some approaches freeze G for the first few thousand steps and train only D, letting it adapt to the new data distribution. We found this provides marginal benefit in our setting.</li>
+
+<li><strong>Differential learning rates</strong>: Apply higher LR to output layers, lower to backbone. In our e2e mode, decoder gets 1e-5 while vocoder gets 5e-5.</li>
+
+<li><strong>Short fine-tuning</strong>: Pretrained vocoders need far fewer steps than from-scratch training. HiFi-GAN transfer learning: ~10K steps. Our fine-tuning: ~5K steps (15 epochs &times; 333 steps).</li>
+</ol>
+
+<div class="callout">
+<strong>BigVGAN's universality:</strong> BigVGAN was specifically designed to generalize to out-of-distribution audio without fine-tuning. For many use cases, fine-tuning isn't necessary. We fine-tune because our LoRA-modified DiT produces subtly different mel spectrograms that push BigVGAN slightly OOD, causing metallic artifacts from the Snake activations.
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="part11">11. Our Setup: DramaBox / LTX-2.3 Pipeline</h2>
+
+<h3>Architecture Overview</h3>
+<p>DramaBox uses NVIDIA's LTX-2.3 model for text-to-speech synthesis. The audio pipeline has three stages:</p>
+
+<div class="diagram">
+ ┌──────────┐     ┌───────────────┐     ┌─────────────────┐     ┌──────────┐
+ │  DiT     │     │ VAE Decoder   │     │  BigVGAN v2     │     │  BWE     │
+ │ (22B)    │────▶│ (Audio        │────▶│  (Vocoder)      │────▶│ (16→48   │──▶ 48kHz
+ │          │     │  Decoder)     │     │  115M params    │     │  kHz)    │   Waveform
+ │ Latent   │     │ 32M params    │     │  mel → 16kHz    │     │          │
+ │ Space    │     │ latent → mel  │     │  waveform       │     │          │
+ └──────────┘     └───────────────┘     └─────────────────┘     └──────────┘
+                                               ▲
+                                          Fine-tuned from
+                                         LTX-2.3 checkpoint
+                                        (NOT raw NVIDIA weights)
+</div>
+
+<h3>Is BigVGAN Using NVIDIA's Pretrained Weights?</h3>
+<p><strong>No.</strong> The vocoder in DramaBox was initialized from NVIDIA's BigVGAN v2 architecture and code (adopted from <code>github.com/NVIDIA/BigVGAN</code>), but the weights were <strong>fine-tuned as part of the LTX-2.3 training process</strong>. The actual checkpoint comes from:</p>
+<pre><code>/home/deployer/laion/DramaBox/models/ltx-2.3-22b-dev.safetensors</code></pre>
+<p>This 22B parameter file contains the full model including the vocoder weights, which were jointly trained with the rest of the LTX-2.3 system.</p>
+
+<h3>The Problem We're Solving</h3>
+<p>When we apply LoRA adapters to the DiT for style transfer, the latent space shifts slightly. The VAE decoder converts these shifted latents to mel spectrograms that are subtly different from what BigVGAN was trained on. BigVGAN's Snake activations &mdash; which are tuned to specific frequency patterns &mdash; produce harmonic ringing when processing these slightly OOD mels.</p>
+
+<h3>Our Training Data</h3>
+<ul>
+<li><strong>2,000 pairs</strong> of (predicted mel/latent, real audio) at sigma=0.15</li>
+<li>Generated via "teacher forcing": run the DiT at low noise to produce mel spectrograms, paired with the corresponding ground-truth audio</li>
+<li>sigma=0.15 is low noise, most representative of inference conditions</li>
+<li>Sample rate: 16 kHz, stereo (2 channels)</li>
+<li>Max segment: 10 seconds (vocoder mode) or 8 seconds (decoder/e2e modes)</li>
+</ul>
+
+<h3>Three Training Modes</h3>
+
+<table>
+<tr><th>Mode</th><th>What's Trained</th><th>What's Frozen</th><th>Input</th><th>VRAM</th></tr>
+<tr><td><strong>Vocoder</strong></td><td>BigVGAN vocoder (115M)</td><td>&mdash;</td><td>Predicted mel &rarr; wav</td><td>22.5 GB</td></tr>
+<tr><td><strong>Decoder</strong></td><td>VAE decoder (32M)</td><td>Vocoder (grad-through)</td><td>Predicted latent &rarr; mel &rarr; wav</td><td>53 GB</td></tr>
+<tr><td><strong>E2E</strong></td><td>Decoder (32M) + Vocoder (115M)</td><td>&mdash;</td><td>Predicted latent &rarr; mel &rarr; wav</td><td>53.5 GB</td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="part12">12. Our Experiments: Discriminator Sweep &amp; Results</h2>
+
+<h3>The Problem: Discriminator Collapse</h3>
+<p>Our initial experiments used standard HiFi-GAN waveform discriminators (MPD + MSD, 8 sub-discriminators). After training, we discovered <strong>complete discriminator collapse</strong>:</p>
+
+<table>
+<tr><th>Metric</th><th>Expected</th><th>Observed</th><th>Diagnosis</th></tr>
+<tr><td>D(real)</td><td>~0.8</td><td>~0.5</td><td class="bad">D outputs 0.5 for everything</td></tr>
+<tr><td>D(fake)</td><td>~0.2</td><td>~0.5</td><td class="bad">Maximum confusion</td></tr>
+<tr><td>gap</td><td>0.3&ndash;0.8</td><td><strong>0.001</strong></td><td class="bad">Zero discrimination ability</td></tr>
+<tr><td>d_loss per update</td><td>0.5&ndash;2.0</td><td>4.0</td><td class="bad">8 sub-discs &times; (0.25+0.25) = 4.0</td></tr>
+</table>
+
+<p>The math: With LSGAN and D outputting 0.5 for everything: each sub-discriminator contributes (0.5-1)&sup2; + (0.5)&sup2; = 0.25 + 0.25 = 0.5. With 8 sub-discriminators: 8 &times; 0.5 = 4.0. This is the "equilibrium trap" &mdash; D can't improve because real and fake look identical at the waveform level.</p>
+
+<h3>Round 1: Waveform Discriminator Sweep (8 configs)</h3>
+<p>We systematically tested modifications to the waveform discriminator across 8 GPUs:</p>
+
+<table>
+<tr><th>Config</th><th>Changes</th><th>Gap</th><th>Result</th></tr>
+<tr><td>baseline</td><td>R1=10, D_LR=4e-6, LSGAN, SN</td><td class="bad">&lt;0.01</td><td>Collapse</td></tr>
+<tr><td>no_r1</td><td>R1=0</td><td class="bad">&lt;0.01</td><td>Collapse</td></tr>
+<tr><td>high_dlr</td><td>R1=0, D_LR=2e-4, d_every=1</td><td class="bad">&lt;0.01</td><td>Immediate equilibrium</td></tr>
+<tr><td>hinge</td><td>Hinge loss, R1=0, D_LR=1e-4</td><td class="bad">&lt;0.01</td><td>No discrimination</td></tr>
+<tr><td><strong>no_sn</strong></td><td>No spectral norm, R1=0</td><td class="good"><strong>0.66</strong></td><td>D learned! But G exploded (mel: 0.3&rarr;8.5)</td></tr>
+<tr><td>hinge_no_sn</td><td>Hinge + no SN</td><td class="bad">&lt;0.01</td><td>No discrimination</td></tr>
+<tr><td>moderate</td><td>R1=0.1, D_LR=1e-4</td><td class="bad">&lt;0.01</td><td>Immediate equilibrium</td></tr>
+<tr><td>d_pretrain</td><td>200 D pre-training steps, hinge</td><td class="ok">0.22&rarr;0</td><td>Small gap during pretrain, collapsed when G started</td></tr>
+</table>
+
+<div class="callout warn">
+<strong>Key insight from Round 1:</strong> The only config where D learned (no_sn) also destroyed G. Waveform discriminators fundamentally cannot see the subtle spectral artifacts we're trying to fix. The signal difference is &lt;0.1% in the time domain.
+</div>
+
+<h3>Round 2: STFT Discriminator Sweep (8 configs)</h3>
+<p>We introduced a new Multi-Resolution STFT Discriminator and tested 8 configs across two paths:</p>
+
+<table>
+<tr><th>Config</th><th>Discriminator</th><th>mel</th><th>D(r)</th><th>D(f)</th><th>gap</th></tr>
+<tr><td>no_sn_slow_g</td><td>Waveform, no SN, G_LR=1e-6</td><td>0.343</td><td>0.532</td><td>0.475</td><td class="bad">0.057</td></tr>
+<tr><td>no_sn_low_adv</td><td>Waveform, no SN, adv=0.05</td><td>0.344</td><td>0.536</td><td>0.491</td><td class="bad">0.045</td></tr>
+<tr><td>no_sn_d5g1</td><td>Waveform, no SN, 5:1 ratio</td><td>0.361</td><td>0.530</td><td>0.481</td><td class="bad">0.049</td></tr>
+<tr><td>stft_disc</td><td><strong>STFT</strong>, LSGAN, SN</td><td>0.346</td><td>0.601</td><td>0.408</td><td class="ok">0.193</td></tr>
+<tr><td>stft_disc_no_sn</td><td><strong>STFT</strong>, no SN</td><td>0.316</td><td>0.626</td><td>0.384</td><td class="ok">0.242</td></tr>
+<tr><td>stft_disc_hinge</td><td><strong>STFT</strong>, hinge</td><td>0.483</td><td>1.898</td><td>-3.44</td><td class="bad">5.34 (too aggressive)</td></tr>
+<tr><td><strong>stft_d5g1</strong></td><td><strong>STFT, 5:1 ratio</strong></td><td><strong>0.328</strong></td><td><strong>0.957</strong></td><td><strong>0.040</strong></td><td class="good"><strong>0.917</strong></td></tr>
+<tr><td>hybrid_stft_wav</td><td>STFT + waveform</td><td>0.351</td><td>0.702</td><td>0.342</td><td class="ok">0.360</td></tr>
+</table>
+
+<div class="callout success">
+<strong>Winner: stft_d5g1</strong> &mdash; Multi-Resolution STFT Discriminator with 5:1 D/G update ratio. D(real)=0.957, D(fake)=0.040, gap=0.917. The discriminator classifies with &gt;95% accuracy while mel loss stays stable at 0.328. The STFT domain makes artifacts 10&ndash;100&times; more visible to the discriminator.
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="part13">13. Current Training Analysis</h2>
+
+<p>We're running three experiments with the winning configuration on A100 GPUs:</p>
+
+<h3>Winning Configuration</h3>
+<table>
+<tr><td>Discriminator</td><td>Multi-Resolution STFT (4 resolutions: 256/64, 512/128, 1024/256, 2048/512)</td></tr>
+<tr><td>D parameters</td><td>4,600,196</td></tr>
+<tr><td>D/G ratio</td><td>5:1 (5 D updates per 1 G update)</td></tr>
+<tr><td>D LR</td><td>2e-4</td></tr>
+<tr><td>G LR</td><td>5e-5 (vocoder), 1e-5 (decoder)</td></tr>
+<tr><td>Loss</td><td>LSGAN + mel L1 (45) + STFT (5) + FM (2) + adv (1)</td></tr>
+<tr><td>Normalization</td><td>Spectral norm on D, no R1</td></tr>
+<tr><td>Grad clipping</td><td>5.0 on both G and D</td></tr>
+<tr><td>LR schedule</td><td>Cosine annealing</td></tr>
+</table>
+
+<h3>Training Progress</h3>
+
+<div class="results-grid">
+<div class="results-card">
+<h4 style="color: var(--accent);">Vocoder (GPU 0, 22.5 GB)</h4>
+<div class="metric"><span class="label">Progress</span><span class="value">Epoch 5/15</span></div>
+<div class="metric"><span class="label">D(real)</span><span class="value good">0.999</span></div>
+<div class="metric"><span class="label">D(fake)</span><span class="value good">0.000</span></div>
+<div class="metric"><span class="label">Gap</span><span class="value good">0.999</span></div>
+<div class="metric"><span class="label">Mel Loss</span><span class="value">0.323</span></div>
+<div class="metric"><span class="label">d_loss</span><span class="value">0.001</span></div>
+<div class="metric"><span class="label">g_adv</span><span class="value">4.000</span></div>
+</div>
+
+<div class="results-card">
+<h4 style="color: var(--green);">Decoder (GPU 1, 53 GB)</h4>
+<div class="metric"><span class="label">Progress</span><span class="value">Epoch 2/15</span></div>
+<div class="metric"><span class="label">D(real)</span><span class="value good">0.995</span></div>
+<div class="metric"><span class="label">D(fake)</span><span class="value good">0.000</span></div>
+<div class="metric"><span class="label">Gap</span><span class="value good">0.994</span></div>
+<div class="metric"><span class="label">Mel Loss</span><span class="value">0.307</span></div>
+<div class="metric"><span class="label">d_loss</span><span class="value">0.007</span></div>
+<div class="metric"><span class="label">g_adv</span><span class="value">3.953</span></div>
+</div>
+
+<div class="results-card">
+<h4 style="color: var(--purple);">E2E (GPU 2, 53.5 GB)</h4>
+<div class="metric"><span class="label">Progress</span><span class="value">Epoch 2/15</span></div>
+<div class="metric"><span class="label">D(real)</span><span class="value good">0.999</span></div>
+<div class="metric"><span class="label">D(fake)</span><span class="value good">0.005</span></div>
+<div class="metric"><span class="label">Gap</span><span class="value good">0.994</span></div>
+<div class="metric"><span class="label">Mel Loss</span><span class="value">0.337</span></div>
+<div class="metric"><span class="label">d_loss</span><span class="value">0.012</span></div>
+<div class="metric"><span class="label">g_adv</span><span class="value">4.000</span></div>
+</div>
+
+<div class="results-card">
+<h4 style="color: var(--text-dim);">Previous (Waveform D)</h4>
+<div class="metric"><span class="label">Progress</span><span class="value">3 epochs</span></div>
+<div class="metric"><span class="label">D(real)</span><span class="value bad">0.504</span></div>
+<div class="metric"><span class="label">D(fake)</span><span class="value bad">0.503</span></div>
+<div class="metric"><span class="label">Gap</span><span class="value bad">0.001</span></div>
+<div class="metric"><span class="label">Mel Loss</span><span class="value">0.350</span></div>
+<div class="metric"><span class="label">d_loss</span><span class="value bad">4.000</span></div>
+<div class="metric"><span class="label">g_adv</span><span class="value">1.500</span></div>
+</div>
+</div>
+
+<h3>Interpretation</h3>
+
+<p><strong>D is very strong &mdash; is that a problem?</strong> The discriminator has near-perfect accuracy (gap &asymp; 1.0), d_loss &asymp; 0, and g_adv &asymp; 4.0 (maximum LSGAN penalty for 4 sub-discriminators). This is "D too strong" by classical GAN theory. However:</p>
+
+<ol>
+<li><strong>Mel loss is still decreasing</strong> (0.6 &rarr; 0.32), meaning G is still improving. The mel/STFT reconstruction losses (weight 50) dominate over the adversarial loss (weight 1+2).</li>
+<li><strong>The g_adv plateau at 4.0 is expected</strong> when D is near-perfect with LSGAN: (D(fake)-1)&sup2; &asymp; (0-1)&sup2; = 1.0 per sub-disc &times; 4 = 4.0.</li>
+<li><strong>Gradients still flow</strong>: Even though D's scores are saturated, the feature matching loss provides smooth gradients through D's intermediate layers.</li>
+</ol>
+
+<div class="callout warn">
+<strong>What to watch:</strong> If mel loss stops decreasing while g_adv stays at 4.0, the adversarial signal has become pure noise (vanishing gradients through D). At that point, reducing D's learning rate or increasing G's learning rate would help. In our case, the cosine LR schedule will naturally reduce D's LR over time.
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="part14">14. Hyperparameter Tuning Cookbook</h2>
+
+<h3>Decision Tree: Which Discriminator?</h3>
+
+<div class="diagram">
+ Are artifacts visible in the waveform?
+      │
+      ├── <span class="highlight">YES</span> → Use MPD + MSD (standard HiFi-GAN setup)
+      │
+      └── <span class="warn">NO</span> → Are artifacts visible in the spectrogram?
+               │
+               ├── <span class="highlight">YES</span> → Use STFT Discriminator or MRD
+               │          │
+               │          ├── Harmonic artifacts → CQT Discriminator (log-freq)
+               │          └── Broadband artifacts → Multi-Res STFT Discriminator
+               │
+               └── <span class="warn">NO</span> → Artifacts may not be fixable with GAN training alone.
+                          Consider architectural changes (anti-aliasing, etc.)
+</div>
+
+<h3>Quick Fixes for Common Problems</h3>
+
+<table>
+<tr><th>Problem</th><th>Diagnostic</th><th>Fix</th></tr>
+<tr><td>D collapse (gap &lt; 0.05)</td><td>D(r) &asymp; D(f) &asymp; 0.5</td><td>Switch to spectral D, increase D LR, increase D/G ratio, remove R1</td></tr>
+<tr><td>G explosion (mel spikes)</td><td>mel jumps 2&times;+ suddenly</td><td>Lower G LR, add gradient clipping, increase mel loss weight</td></tr>
+<tr><td>D too strong (g_adv maxed)</td><td>gap &gt; 0.95, mel stalled</td><td>Reduce D LR, reduce D/G ratio, add spectral norm to D</td></tr>
+<tr><td>Training oscillates</td><td>mel alternates up/down</td><td>Increase batch size, lower both LRs, add LR warmup</td></tr>
+<tr><td>Metallic artifacts persist</td><td>Spikes in high-freq spectrogram</td><td>Fine-tune vocoder on actual inference mels, use STFT disc</td></tr>
+</table>
+
+<h3>Hyperparameter Sensitivity Ranking</h3>
+<p>From most to least sensitive in our experiments:</p>
+<ol>
+<li><strong>Discriminator domain</strong> (waveform vs. spectral) &mdash; BY FAR the most important. Switching to STFT disc changed gap from 0.001 to 0.917.</li>
+<li><strong>D/G update ratio</strong> &mdash; 1:1 gave gap=0.19, 5:1 gave gap=0.92 with same disc.</li>
+<li><strong>Spectral normalization on D</strong> &mdash; Removing it allowed D to learn in waveform domain, but caused G explosion.</li>
+<li><strong>R1 gradient penalty</strong> &mdash; R1=10 fully suppressed D learning. R1=0 is fine with spectral norm.</li>
+<li><strong>D learning rate</strong> &mdash; 4e-6 (too low for fine-tuning), 2e-4 (good), 1e-3 (would be too high).</li>
+<li><strong>G learning rate</strong> &mdash; 5e-5 works well for fine-tuning. From-scratch BigVGAN uses 1e-4.</li>
+<li><strong>Loss function</strong> &mdash; LSGAN vs. hinge had moderate impact. Hinge was too aggressive for our STFT disc.</li>
+<li><strong>Loss weights</strong> &mdash; mel=45, fm=2, adv=1 are robust defaults from HiFi-GAN that work well.</li>
+</ol>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="part15">15. Compute Requirements</h2>
+
+<h3>Training from Scratch</h3>
+<table>
+<tr><th>Model</th><th>Hardware</th><th>Steps</th><th>Time</th></tr>
+<tr><td>HiFi-GAN V1 (14M)</td><td>2&times; V100</td><td>2.5M</td><td>~14 days (~650 GPU-hours)</td></tr>
+<tr><td>BigVGAN-base (14M)</td><td>8&times; V100</td><td>1M</td><td>~3&ndash;5 days</td></tr>
+<tr><td>BigVGAN full (112M)</td><td>8&times; V100</td><td>1M</td><td>~7&ndash;10 days</td></tr>
+<tr><td>BigVGAN v2 (112M)</td><td>8&times; A100</td><td>5M</td><td>~2&ndash;4 weeks</td></tr>
+</table>
+
+<h3>Fine-Tuning (Our Setup)</h3>
+<table>
+<tr><th>Mode</th><th>GPU</th><th>VRAM</th><th>Steps/Epoch</th><th>Epochs</th><th>Est. Total Time</th></tr>
+<tr><td>Vocoder (115M)</td><td>1&times; A100 80GB</td><td>22.5 GB</td><td>166</td><td>15</td><td>~1.5 hours</td></tr>
+<tr><td>Decoder (32M trainable)</td><td>1&times; A100 80GB</td><td>53 GB</td><td>333</td><td>15</td><td>~3 hours</td></tr>
+<tr><td>E2E (147M trainable)</td><td>1&times; A100 80GB</td><td>53.5 GB</td><td>333</td><td>15</td><td>~3 hours</td></tr>
+</table>
+
+<h3>VRAM Estimation</h3>
+<p>Rough formula for vocoder fine-tuning with GAN:</p>
+<div class="math">
+VRAM &asymp; 2 &times; (G_params + D_params) &times; bytes_per_param + batch_activations
+</div>
+<p>In fp32 (4 bytes/param): 115M params = ~460 MB for weights, &times;2 for gradients = 920 MB. Optimizer states (AdamW) add 2&times; more = 1.84 GB. Plus activations, intermediate tensors, and the discriminator. The decoder/e2e modes add the VAE decoder and its gradient-through computation.</p>
+
+<h3>Inference Speed</h3>
+<table>
+<tr><th>Model</th><th>Real-time Factor</th><th>Latency for 10s Audio</th></tr>
+<tr><td>BigVGAN-base (14M)</td><td>70&times;</td><td>~143 ms</td></tr>
+<tr><td>BigVGAN full (112M)</td><td>45&times;</td><td>~222 ms</td></tr>
+<tr><td>BigVGAN v2 (CUDA kernel)</td><td>~90&times;</td><td>~111 ms</td></tr>
+<tr><td>Vocos (4M)</td><td>3,150&times;</td><td>~3 ms</td></tr>
+</table>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="part16">16. Glossary of Terms</h2>
+
+<div class="term"><strong>Activation Function</strong> &mdash; <em>A nonlinear function applied element-wise after each neural network layer. Common ones: ReLU, LeakyReLU, Snake. Without nonlinearities, a neural network would be equivalent to a single linear transformation.</em></div>
+
+<div class="term"><strong>AdamW</strong> &mdash; <em>An optimizer that maintains per-parameter learning rate adjustments using first and second moment estimates (mean and variance of gradients). The "W" means weight decay is decoupled from gradient updates. Standard choice for GAN training.</em></div>
+
+<div class="term"><strong>Adversarial Loss</strong> &mdash; <em>The loss that comes from the GAN game: the generator is penalized when the discriminator correctly identifies its output as fake.</em></div>
+
+<div class="term"><strong>Aliasing</strong> &mdash; <em>When a signal contains frequencies above half the sampling rate (Nyquist frequency), those frequencies "fold back" and appear as lower-frequency artifacts. In audio, this causes metallic/ringing sounds.</em></div>
+
+<div class="term"><strong>Anti-aliasing</strong> &mdash; <em>Applying a low-pass filter before or after sampling to prevent aliasing. In BigVGAN, Kaiser-sinc filters are used around nonlinear activations to prevent harmonics from aliasing.</em></div>
+
+<div class="term"><strong>Batch Size</strong> &mdash; <em>Number of training examples processed together. Larger batches give more stable gradient estimates but require more memory. GAN training benefits from larger batches (HiFi-GAN: 16, BigVGAN: 32).</em></div>
+
+<div class="term"><strong>Codec (Audio)</strong> &mdash; <em>A system that encodes audio into a compressed representation and decodes it back. Neural codecs (EnCodec, SoundStream) use learned encoder/decoder networks with vector quantization.</em></div>
+
+<div class="term"><strong>Cosine Annealing</strong> &mdash; <em>A learning rate schedule that follows a cosine curve from initial LR to a minimum. Gradually reduces the learning rate for fine-grained optimization in later training.</em></div>
+
+<div class="term"><strong>CQT (Constant-Q Transform)</strong> &mdash; <em>Like STFT but with logarithmic frequency resolution (constant Q factor). Lower frequencies get better frequency resolution, higher frequencies get better time resolution. Matches human pitch perception.</em></div>
+
+<div class="term"><strong>D/G Update Ratio</strong> &mdash; <em>How many discriminator training steps per generator step. 1:1 is standard. Higher ratios (5:1, 10:1) give D more time to learn, useful when D is weaker than G.</em></div>
+
+<div class="term"><strong>Discriminator Collapse</strong> &mdash; <em>When the discriminator cannot distinguish real from fake data, outputting ~0.5 for everything. The adversarial loss becomes constant and provides no gradient signal to the generator.</em></div>
+
+<div class="term"><strong>Feature Matching Loss</strong> &mdash; <em>L1 distance between intermediate feature maps of the discriminator for real and fake audio. Provides smoother, more stable gradient signal than the adversarial loss alone. Weight: &lambda;<sub>fm</sub>=2.</em></div>
+
+<div class="term"><strong>FFT (Fast Fourier Transform)</strong> &mdash; <em>An algorithm that decomposes a signal into its frequency components. A time-domain waveform becomes a frequency-domain spectrum showing which frequencies are present and their amplitudes.</em></div>
+
+<div class="term"><strong>Fine-tuning</strong> &mdash; <em>Starting from pretrained weights and continuing training on a specific dataset, typically with a lower learning rate. Much faster than training from scratch (thousands vs. millions of steps).</em></div>
+
+<div class="term"><strong>Generator</strong> &mdash; <em>The neural network that produces synthetic data (in our case, audio waveforms). In a vocoder GAN, the generator IS the vocoder.</em></div>
+
+<div class="term"><strong>Gradient Clipping</strong> &mdash; <em>Capping the maximum magnitude of gradients during backpropagation. Prevents training instability from gradient explosions. Typical values: 5.0 (aggressive) to 1000 (gentle).</em></div>
+
+<div class="term"><strong>Hinge Loss</strong> &mdash; <em>A GAN loss formulation where the discriminator receives no further reward for pushing scores beyond &plusmn;1. Can be more stable than LSGAN but also more aggressive.</em></div>
+
+<div class="term"><strong>Hop Length</strong> &mdash; <em>The step size (in samples) between consecutive STFT windows. Smaller hop = better time resolution but larger output. Typical: 256 samples at 16 kHz = 62.5 frames/second.</em></div>
+
+<div class="term"><strong>LSGAN (Least Squares GAN)</strong> &mdash; <em>A GAN formulation using L2 (squared) loss instead of cross-entropy. D tries to make D(real)=1, D(fake)=0 using squared error. Provides smooth, non-saturating gradients.</em></div>
+
+<div class="term"><strong>Mel Scale</strong> &mdash; <em>A perceptual frequency scale where equal distances correspond to equal perceived pitch differences. Warps linear frequency such that lower frequencies are more finely resolved (matching human hearing).</em></div>
+
+<div class="term"><strong>Mel Spectrogram</strong> &mdash; <em>A time-frequency representation of audio using mel-scaled frequency bins with log-magnitude values. The standard intermediate representation for TTS systems.</em></div>
+
+<div class="term"><strong>Mode Collapse</strong> &mdash; <em>When the generator converges to producing a limited set of outputs regardless of input. In audio, causes repetitive, buzzy, or frozen-sounding artifacts.</em></div>
+
+<div class="term"><strong>MOS (Mean Opinion Score)</strong> &mdash; <em>Human-rated audio quality on a 1&ndash;5 scale (1=bad, 5=excellent). The gold standard for audio evaluation. UTMOS is an automated predictor of MOS.</em></div>
+
+<div class="term"><strong>MPD (Multi-Period Discriminator)</strong> &mdash; <em>Reshapes 1D waveform into 2D with different periods {2,3,5,7,11} and applies 2D convolutions. Captures harmonic/periodic structure in audio.</em></div>
+
+<div class="term"><strong>MRD (Multi-Resolution Discriminator)</strong> &mdash; <em>Operates on linear spectrograms at multiple STFT resolutions. Provides frequency-domain discrimination. Used in BigVGAN to replace MSD.</em></div>
+
+<div class="term"><strong>MSD (Multi-Scale Discriminator)</strong> &mdash; <em>Three 1D CNNs at original, 2&times;, and 4&times; downsampled rates. Captures both fine and coarse temporal patterns.</em></div>
+
+<div class="term"><strong>n_fft</strong> &mdash; <em>The FFT window size in samples. Larger = better frequency resolution but worse time resolution. Typical: 1024 samples.</em></div>
+
+<div class="term"><strong>n_mels</strong> &mdash; <em>Number of mel frequency bins. More bins = finer frequency detail. Typical: 80 (HiFi-GAN), 100 (BigVGAN 24kHz), 128 (BigVGAN 44kHz).</em></div>
+
+<div class="term"><strong>Nyquist Frequency</strong> &mdash; <em>Half the sample rate. The maximum frequency that can be represented without aliasing. At 16 kHz sample rate, Nyquist = 8 kHz.</em></div>
+
+<div class="term"><strong>PESQ (Perceptual Evaluation of Speech Quality)</strong> &mdash; <em>An objective metric predicting perceived speech quality. Scores from -0.5 to 4.5 (higher = better). Requires a reference signal.</em></div>
+
+<div class="term"><strong>R1 Gradient Penalty</strong> &mdash; <em>Regularization on the discriminator: R1 = &lambda; &middot; E[||&nabla;D(real)||&sup2;]. Forces D to be smooth near real data points. Can prevent D from learning subtle differences if too high.</em></div>
+
+<div class="term"><strong>Segment Size</strong> &mdash; <em>The length (in samples) of audio clips used during training. Longer segments give more context but use more memory. HiFi-GAN: 8,192, BigVGAN v2: 65,536.</em></div>
+
+<div class="term"><strong>Snake Activation</strong> &mdash; <em>f(x) = x + (1/&alpha;)sin&sup2;(&alpha;x). A periodic activation function with learnable frequency &alpha;. Provides periodic inductive bias for modeling audio waveforms.</em></div>
+
+<div class="term"><strong>Spectral Normalization</strong> &mdash; <em>Normalizing each layer's weight matrix by its largest singular value. Constrains the discriminator's Lipschitz constant, preventing it from becoming too "sharp" and destabilizing training.</em></div>
+
+<div class="term"><strong>STFT (Short-Time Fourier Transform)</strong> &mdash; <em>Applies FFT to overlapping windows of a signal, producing a time-frequency representation. Parameters: n_fft (window size), hop_length (step size).</em></div>
+
+<div class="term"><strong>Transposed Convolution</strong> &mdash; <em>A "reverse" convolution that upsamples (increases spatial/temporal resolution). Used in the generator to go from low-resolution mel (62 frames/sec) to high-resolution waveform (16,000 samples/sec).</em></div>
+
+<div class="term"><strong>UTMOS</strong> &mdash; <em>University of Tokyo MOS. An SSL-based automated predictor of Mean Opinion Score for speech quality. Scores 1&ndash;5, restricted to 16 kHz audio.</em></div>
+
+<div class="term"><strong>VAE (Variational Autoencoder)</strong> &mdash; <em>A model with encoder and decoder that maps data to/from a continuous latent space. In LTX-2.3, the Audio VAE's decoder converts latent vectors to mel spectrograms.</em></div>
+
+<div class="term"><strong>Vocoder</strong> &mdash; <em>A model that converts a mel spectrogram (or similar intermediate representation) into an audio waveform. The final stage of a TTS pipeline.</em></div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<h2 id="part17">17. References</h2>
+
+<h3>Papers</h3>
+<ul>
+<li>Kong et al. (2020) &mdash; <a href="https://arxiv.org/abs/2010.05646">HiFi-GAN: Generative Adversarial Networks for Efficient and High Fidelity Speech Synthesis</a> (NeurIPS 2020)</li>
+<li>Lee et al. (2023) &mdash; <a href="https://arxiv.org/abs/2206.04658">BigVGAN: A Universal Neural Vocoder with Large-Scale Training</a> (ICLR 2023)</li>
+<li>NVIDIA (2024) &mdash; <a href="https://huggingface.co/nvidia/bigvgan_v2_24khz_100band_256x">BigVGAN v2</a> (HuggingFace)</li>
+<li>Bak et al. (2023) &mdash; <a href="https://arxiv.org/abs/2206.13404">Avocodo: Generative Adversarial Network for Artifact-free Vocoder</a> (AAAI 2023)</li>
+<li>Siuzdak (2024) &mdash; <a href="https://arxiv.org/abs/2306.00814">Vocos: Closing the gap between time-domain and Fourier-based neural vocoders</a> (ICLR 2024)</li>
+<li>Yoneyama et al. (2024) &mdash; <a href="https://arxiv.org/abs/2311.14957">MS-SB-CQTD: Multi-Scale Sub-Band CQT Discriminator</a> (ICASSP 2024)</li>
+<li>Shirahata et al. (2023) &mdash; <a href="https://arxiv.org/abs/2309.02836">BigVSAN: Enhancing BigVGAN with Slicing Adversarial Network</a> (ICASSP 2024)</li>
+<li>Luo et al. (2024) &mdash; <a href="https://arxiv.org/abs/2402.00892">EVA-GAN: Enhanced Various Audio Generation</a></li>
+<li>BemaGANv2 (2025) &mdash; <a href="https://arxiv.org/html/2506.09487">Discriminator Combination Strategies for GAN-based Vocoders</a></li>
+</ul>
+
+<h3>Repositories</h3>
+<ul>
+<li><a href="https://github.com/NVIDIA/BigVGAN">NVIDIA/BigVGAN</a> &mdash; Official BigVGAN implementation</li>
+<li><a href="https://github.com/jik876/hifi-gan">jik876/hifi-gan</a> &mdash; Official HiFi-GAN implementation</li>
+<li><a href="https://github.com/ncsoft/avocodo">ncsoft/avocodo</a> &mdash; Avocodo: Artifact-free Vocoder</li>
+</ul>
+
+<hr style="margin: 3rem 0; border-color: var(--border);">
+<p style="color: var(--text-dim); text-align: center; font-size: 0.85rem;">
+Generated June 2026 for the DramaBox Voice Acting Pipeline<br>
+Based on research from NVIDIA BigVGAN, HiFi-GAN, Vocos, Avocodo, BemaGANv2, and our own discriminator sweep experiments
+</p>
+
+</body>
+</html>
