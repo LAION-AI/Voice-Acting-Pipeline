@@ -535,7 +535,25 @@ def reannotate_worker(gpu_id, work_items, enhanced_dir):
 
     model_id = "google/gemma-4-E4B-it"
     print(f"  [GPU {gpu_id}] Loading Gemma 4 E4B-it...", flush=True)
-    tokenizer = AutoTokenizer.from_pretrained(model_id)
+
+    # Patch tokenizer config: transformers 4.x expects extra_special_tokens as dict,
+    # but Gemma 4 ships it as a list. Copy tokenizer files to a temp dir and fix.
+    from huggingface_hub import snapshot_download
+    tok_src = snapshot_download(model_id, allow_patterns=["tokenizer*", "special_tokens*", "*.model"])
+    tok_dir = tempfile.mkdtemp(prefix="gemma_tok_")
+    for fname in os.listdir(tok_src):
+        src_f = os.path.join(tok_src, fname)
+        if os.path.isfile(src_f):
+            shutil.copy2(src_f, os.path.join(tok_dir, fname))
+    tc_path = os.path.join(tok_dir, "tokenizer_config.json")
+    with open(tc_path, encoding="utf-8") as f:
+        tc = json.load(f)
+    if isinstance(tc.get("extra_special_tokens"), list):
+        tc["extra_special_tokens"] = {t: t for t in tc["extra_special_tokens"]}
+        with open(tc_path, "w", encoding="utf-8") as f:
+            json.dump(tc, f)
+
+    tokenizer = AutoTokenizer.from_pretrained(tok_dir)
     model = AutoModelForCausalLM.from_pretrained(
         model_id, torch_dtype=torch.bfloat16, device_map="cuda",
     )
