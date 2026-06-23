@@ -1,17 +1,7 @@
-# Vocalino V 0.1: Voice Acting Pipeline
-*By <a href="https://scholar.google.com/citations?user=EvrlaSAAAAAJ">Christoph Schuhmann </a>*
+# Voice Acting Pipeline
+*By <a href="https://scholar.google.com/citations?user=EvrlaSAAAAAJ">Christoph Schuhmann</a>*
 
-**The first voice acting pipeline with open-weights components and open post training data that combines zero-shot voice cloning with natural language performance direction.** Vocalino allows you to provide a reference voice (or generate one from scratch) and use free-form text instructions to direct *how* the line is performed. It generates speech that maintains strict voice consistency with your reference audio while adhering to your specific emotional and stylistic prompts — giving you total control over the actor and the performance without any model training.
-
-<p align="center">
-  <a href="https://www.youtube.com/watch?v=C6KCFS_UD_A">
-    <img src="https://img.youtube.com/vi/C6KCFS_UD_A/maxresdefault.jpg" width="700">
-  </a>
-</p>
-
-<p align="center">
-  Click to watch demo video
-</p>
+**Open-weights voice acting data pipeline combining structured taxonomy sampling, DramaBox TTS synthesis, Sidon speech restoration, and ChatterboxVC augmentation with best-of-N ranking across 46 scoring methods.**
 
 > **Dataset Plan:** See the full technical white paper — [Towards an Emotionally Expressive Audio Omni-Model](LAION-Voice-Whitepaper.md) — for the complete LAION Voice and LAION Voice Acting dataset construction plan, model inventory, and annotation strategy.
 
@@ -23,26 +13,71 @@ End-to-end voice prompt generation and audio synthesis using the [DramaBox](http
 
 This pipeline generates richly annotated voice performance prompts in the **DramaBox format** — single-speaker scenes with stage directions (English) and spoken dialogue (target language) — then synthesizes them into audio. Each prompt is procedurally constructed by sampling from structured taxonomies, then expanded by an LLM (Gemma 4 E4B-it) into a full performance script.
 
-## Current Pipeline: DramaBox + RE-USE + LavaSR BWE
+## Current Pipeline: DramaBox + Sidon + ChatterboxVC
 
-The full audio processing chain for the current ACCC (Acting Challenge Character Consistent) experiment:
+The full audio processing chain:
 
 ```
-Taxonomy Sampling → Gemma 4 LLM → DramaBox TTS (22B DiT, 8 GPUs)
-                                        ↓
-                               RE-USE Enhancement (SEMamba)
-                                        ↓
-                               LavaSR BWE (48 kHz upsampling, no denoising)
-                                        ↓
-                        ┌───────────────┼───────────────┐
-                        ↓               ↓               ↓
-                   Parakeet ASR    VoiceCLAP        EmoNet (40
-                   (WER)           Large + Small    emotion MLPs)
-                        ↓               ↓               ↓
-                        └───────────────┼───────────────┘
-                                        ↓
-                              Best-of-25 Ranking
-                              (46 scoring methods)
+Taxonomy Sampling          LLM Prompt Gen         DramaBox TTS (22B)
+(VoiceNet/Archetype/       (Gemma 4 E4B-it)       CFG=2.5, STG=1.5
+ Situation/ActingChall)                            25 candidates/prompt
+        |                        |                        |
+        +------------------------+                        |
+                                                          v
+                                              +---------------------------+
+                                              |  Per-Sample Augment       |
+                                              |                           |
+                                              |  Path A: Sidon only       |
+                                              |  Path B: VC + Sidon       |
+                                              |                           |
+                                              |  Pick best by             |
+                                              |  DNS-MOS OVR score        |
+                                              +-------------+-------------+
+                                                            |
+                                              +-------------v-------------+
+                                              |  ASR + CUT TO: Split      |
+                                              |  (Whisper turbo)          |
+                                              +-------------+-------------+
+                                                            |
+                                              +-------------v-------------+
+                                              |  Best-of-25 Ranking       |
+                                              |  (WER, VoiceCLAP,         |
+                                              |   EmoNet, Content)        |
+                                              +-------------+-------------+
+                                                            |
+                                              +-------------v-------------+
+                                              |  MOSS Re-annotation       |
+                                              |  (Audio -> DramaBox)      |
+                                              +---------------------------+
+```
+
+### Augmentation Sub-Pipeline
+
+For each raw TTS candidate, two enhancement paths run and the best is selected:
+
+```
+Raw TTS Audio --+---> Sidon (16kHz->48kHz) ---> DNS-MOS --+
+                |                                         +--> Pick higher OVR
+                +---> Chatterbox VC ---> Sidon ---> DNS-MOS+
+                      (to ref or self)
+```
+
+### Two-Part CUT TO: Pipeline
+
+For two-scene audio, a self-VC of the full audio provides the VC target for speaker consistency:
+
+```
+Full Audio ---> Self-VC ---> Sidon ---> full_enhanced (VC target)
+                                              |
+            +---------------------------------+
+            |
+Part 1 --+---> Sidon only ---> DNS-MOS --+
+         |                               +--> Pick best
+         +---> VC(->full_enhanced) + Sidon ---> DNS-MOS --+
+
+Part 2 --+---> Sidon only ---> DNS-MOS --+
+         |                               +--> Pick best
+         +---> VC(->full_enhanced) + Sidon ---> DNS-MOS --+
 ```
 
 **Scoring methods (46 total):**
@@ -105,18 +140,26 @@ All CC paths generate two scenes with the **same speaker** in **contrasting emot
 
 ## Audio Processing
 
-### RE-USE Speech Enhancement
+### Sidon Speech Restoration
 
-All paths use [nvidia/RE-USE](https://huggingface.co/nvidia/RE-USE) (SEMamba) for speech enhancement:
-- **Standalone/short audio:** Direct enhancement (single pass)
-- **CC/CC2/ACCC (long audio):** Chunked enhancement (15s chunks, 1s overlap, cross-faded)
+All paths use [Sidon](https://huggingface.co/sarulab-speech/sidon_raw_weight) (w2v-BERT LoRA encoder + DAC decoder) for speech restoration:
+- Input 16 kHz -> output 48 kHz (simultaneous enhancement + super-resolution)
+- LoRA-adapted w2v-BERT 2.0 extracts clean SSL features from noisy/degraded input
+- DAC-based vocoder synthesizes high-quality 48 kHz audio from the clean features
 
-### LavaSR Bandwidth Extension
+### ChatterboxVC Augmentation
 
-After RE-USE, audio passes through [LavaSR BWE](https://huggingface.co/YatharthS/LavaSR) for bandwidth extension:
-- Upsamples RE-USE output (16 kHz) to **48 kHz** with learned spectral detail via Vocos
-- **Denoising disabled** — preserves the natural texture that RE-USE already cleaned
-- This is the key difference from earlier pipeline versions that stopped at RE-USE
+Optionally, [Chatterbox VC](https://github.com/resemble-ai/chatterbox) (S3Gen flow-matching VC) is applied before Sidon:
+- Self-VC (voice-converts to itself) removes TTS artifacts while preserving speaker identity
+- Reference-VC (voice-converts to a reference speaker) enables voice cloning in Path D
+- Both paths are scored with DNS-MOS OVR; the higher-scoring result is kept
+
+### DNS-MOS Quality Scoring
+
+Each enhanced candidate is scored using a native PyTorch DNS-MOS model:
+- Predicts SIG (signal quality), BAK (background quality), OVR (overall quality) on a 1-5 scale
+- Used to select between Sidon-only and VC+Sidon augmentation paths
+- Audio is chunked into 9-second windows and scores are averaged
 
 ### Audio Splitting (CC/CC2/ACCC)
 
@@ -255,7 +298,7 @@ Audition-style method acting performances driven by acting challenge scenarios. 
 2. Sample speaker gender (VoiceNet GEND dimension, 7 levels) and age (AGEV dimension, 7 levels)
 3. Sample word count (40-80 words)
 4. Gemma 4 generates a DramaBox prompt — actor performs the challenge naturalistically
-5. DramaBox TTS -> RE-USE -> LavaSR BWE -> Best-of-N scoring
+5. DramaBox TTS -> Sidon+VC augmentation -> Best-of-N scoring
 
 Key characteristics:
 - **No self-introduction** — the actor simply begins performing
@@ -314,8 +357,8 @@ Challenge-driven two-scene format: same actor performing the same acting challen
 1. Sample acting challenge + gender + age (same as standalone AC)
 2. Sample word count (40-80 total, split ~evenly between scenes)
 3. Gemma 4 generates two contrasting scenes from the same challenge
-4. DramaBox TTS -> RE-USE -> LavaSR BWE -> Best-of-25 scoring
-5. Qwen3-ASR word timestamps -> split into Scene 1 + Scene 2
+4. DramaBox TTS -> Sidon+VC augmentation -> Best-of-25 scoring
+5. Whisper turbo ASR word timestamps -> split into Scene 1 + Scene 2
 
 See [docs/path_ac_acting_challenge.md#accc-character-consistent](docs/path_ac_acting_challenge.md#accc-character-consistent) for full details.
 
@@ -407,15 +450,16 @@ Languages are configured in `config.json`. Currently active: English, German, Fr
 |-------|---------|------|
 | [`google/gemma-4-E4B-it`](https://huggingface.co/google/gemma-4-E4B-it) | DramaBox prompt generation | ~16GB |
 | [`ResembleAI/Dramabox`](https://huggingface.co/ResembleAI/Dramabox) | TTS synthesis (22B DiT) | ~24GB |
-| [`nvidia/RE-USE`](https://huggingface.co/nvidia/RE-USE) | Speech enhancement (SEMamba) | ~1GB |
-| [`YatharthS/LavaSR`](https://huggingface.co/YatharthS/LavaSR) | Bandwidth extension (48 kHz upsampling via Vocos) | ~2GB |
+| [`sarulab-speech/sidon_raw_weight`](https://huggingface.co/sarulab-speech/sidon_raw_weight) | Speech restoration (w2v-BERT LoRA + DAC, 16kHz->48kHz) | ~4GB |
+| [Chatterbox VC](https://github.com/resemble-ai/chatterbox) | Voice conversion (S3Gen flow-matching VC) | ~4GB |
+| DNS-MOS (PyTorch) | Quality scoring (SIG/BAK/OVR, 1-5 scale) | ~0.1GB |
 | [`laion/VoiceCLAP`](https://huggingface.co/laion/VoiceCLAP) | Audio-text similarity scoring (Large 3584-dim + Small 768-dim) | ~2GB |
 | [`laion/Empathic-Insight-Voice-Plus`](https://huggingface.co/laion/Empathic-Insight-Voice-Plus) | 40 EmoNet emotion scoring + content enjoyment (BUD-E-Whisper + MLP) | ~2GB |
 | [`laion/BUD-E-Whisper`](https://huggingface.co/laion/BUD-E-Whisper) | Audio encoder for emotion scoring (768-dim embeddings) | ~1GB |
 | [`Qwen/Qwen3-ASR-1.7B`](https://huggingface.co/Qwen/Qwen3-ASR-1.7B) | Word-level timestamps for audio splitting | ~4GB |
 | [`nvidia/parakeet-tdt-0.6b-v3`](https://huggingface.co/nvidia/parakeet-tdt-0.6b-v3) | ASR for WER scoring | ~2GB |
 | [`laion/timbre-whisper`](https://huggingface.co/laion/timbre-whisper) | On-the-fly timbre captioning (Path D) | ~2GB |
-| [Chatterbox VC](https://github.com/resemble-ai/chatterbox) | Voice conversion (Path D) | ~4GB |
+| [MOSS-Audio-8B-Thinking](https://huggingface.co/ICTNLP/MOSS-Audio-8B-Thinking) | Audio-guided prompt re-annotation (3 passes per sample) | ~8GB |
 
 ## Project Structure
 
@@ -457,7 +501,10 @@ Voice-Acting-Pipeline/
 │   ├── prompts.py                     # LLM prompt construction
 │   ├── prompt_generator.py            # Multi-GPU LLM batch generation
 │   ├── tts_synthesizer.py             # Multi-GPU DramaBox TTS
-│   ├── reuse_enhance.py               # RE-USE speech enhancement
+│   ├── sidon_enhance.py               # Sidon + ChatterboxVC augmentation (replaces RE-USE + LavaSR)
+│   ├── reuse_enhance.py               # RE-USE speech enhancement (legacy)
+│   ├── moss_refine.py                 # MOSS-Audio re-annotation (audio-guided prompt rewriting)
+│   ├── moss_pipeline.py               # MOSS orchestrator (multi-GPU job distribution)
 │   ├── scoring.py                     # ASR WER + content enjoyment + EmoNet scoring
 │   ├── demo_grid.py                   # HTML demo grid generator
 │   └── pipeline.py                    # Mode 1-6 orchestrator
@@ -507,103 +554,71 @@ Voice-Acting-Pipeline/
 |-----------|---------|-------------|
 | Prompt generation | 1 GPU, 16GB VRAM | 4+ GPUs, 16GB+ each |
 | TTS synthesis | 1 GPU, 24GB VRAM | 4+ GPUs, 24GB+ each |
-| Refinement + scoring | 1 GPU, 8GB VRAM | 1 GPU, 16GB+ |
-| RE-USE enhancement | CPU or GPU | 1 GPU |
-| LavaSR BWE | 1 GPU, 4GB VRAM | 1 GPU |
+| Sidon + ChatterboxVC augmentation | 1 GPU, 12GB VRAM | 8 GPUs (parallel workers) |
+| MOSS re-annotation | 1 GPU, 8GB VRAM (4-bit) | 8 GPUs (parallel workers) |
 | VoiceCLAP + EmoNet scoring | 1 GPU, 4GB VRAM | 8 GPUs (parallel workers) |
 | RAM | 32GB | 64GB+ |
 
 ---
 
-# Vocalino V0.1 — Interactive Voice Design Server
+## MOSS Re-Annotation (Audio-Guided Prompt Rewriting)
 
-The Vocalino server provides a web UI and API for interactive voice design and zero-shot voice cloning. It is independent of the DramaBox data pipeline above.
+After post-processing, the pipeline runs a MOSS re-annotation pass (`dramabox/moss_refine.py`) that closes the loop between intended and actual performance.
 
-## How It Works
+### Concept
 
-### The Concept: "Directing" AI Speech
+Original DramaBox prompts are **directions** — the TTS model interprets them, and the actual audio may differ from what was requested. MOSS-Audio-8B-Thinking listens to each generated audio clip together with the original prompt and ASR transcript, then **rewrites the prompt to match what was actually performed**.
 
-Standard TTS can generate emotions but with random voices. Standard Voice Conversion (VC) can clone a specific person but requires pre-acted source audio. Vocalino decouples **vocal identity** from **performance style** by chaining advanced stylistic generation with high-fidelity voice conversion.
+### Three Inference Passes Per Sample
+
+1. **Full audio** -> refined two-scene prompt matching the actual performance
+2. **Part 1 audio** -> standalone single-scene prompt for Scene 1
+3. **Part 2 audio** -> standalone single-scene prompt for Scene 2
 
 ### Architecture
 
 ```
-                     ┌────────────────────┐
-    Text + Style ──> │  Qwen3-TTS 1.7B    │ ──> Raw TTS audio
-                     │  (VoiceDesign)      │     (12 Hz codec tokens -> wav)
-                     └────────────────────┘
-                              │
-                              v
-                     ┌────────────────────┐
-    Reference WAV ─> │  Seed-VC V2        │ ──> Voice-converted audio
-                     │  (CFM + AR)        │     (matches reference timbre)
-                     └────────────────────┘
-                              │
-                              v
-                     ┌────────────────────┐
-                     │  ECAPA-TDNN        │ ──> 2048-dim embedding
-                     │  (Speaker Encoder) │     -> cosine similarity vs ref
-                     └────────────────────┘
+Original DramaBox Prompt
+        +
+ASR Transcript (from Whisper)
+        +
+Generated Audio (MP3)
+        |
+        v
++---------------------------+
+|  MOSS-Audio-8B-Thinking   |
+|  (4-bit, per-GPU worker)  |
+|                           |
+|  Listens to audio +       |
+|  reads text context        |
+|                           |
+|  Rewrites prompt to       |
+|  match actual performance  |
++---------------------------+
+        |
+        v
+moss_refined_prompt_full
+moss_refined_prompt_part1
+moss_refined_prompt_part2
 ```
 
-### Features
+### Why Re-Annotation Matters
 
-- **Web UI** — dark-themed browser interface served at `/ui` for interactive voice design
-- **Batched TTS** — generate K candidates in a single forward pass (~2x faster)
-- **SSE Streaming** — candidates stream to the UI as they complete
-- **Speaker Similarity Ranking** — ECAPA-TDNN embeddings rank candidates by voice consistency
-- **INT8 Quantization** — optional bitsandbytes INT8 reduces TTS VRAM from ~15 GB to ~7 GB
-- **Multi-GPU** — split TTS and VC across GPUs for VRAM isolation
+- Original prompts are **suggestions**, not guarantees
+- Audio may differ from prompt due to TTS interpretation
+- MOSS-refined prompts become **ground truth** for annotations
+- Enables training on **what models actually do**, not what we asked for
 
-## Server Quick Start
+### Usage
 
 ```bash
-# Basic launch (single GPU, bfloat16)
-python server.py
-
-# With INT8 quantization (halves TTS VRAM)
-TTS_QUANTIZE=int8 python server.py
-
-# Multi-GPU (TTS on GPU 0, VC on GPU 1)
-CUDA_VISIBLE_DEVICES=0,1 VC_DEVICE=cuda:1 python server.py
+# Run MOSS re-annotation on all post-processed samples
+python dramabox/moss_refine.py                    # All GPUs
+python dramabox/moss_refine.py --num-gpus 4       # 4 GPUs
+python dramabox/moss_refine.py --test             # First 10 samples, 1 GPU
 ```
 
-The server starts on `http://0.0.0.0:8000`. Open the web UI at `http://<server-ip>:8000/ui/`.
-
-## Web UI
-<img width="1335" height="853" alt="image" src="https://github.com/user-attachments/assets/6e0ff245-5e45-4dc1-808d-e675a2b92aad" />
-
-### Section 1: Voice Design (Reference Creation)
-- Enter text and a natural-language voice/style description
-- Generate N samples (batched for speed)
-- Listen, download, or select any sample as reference
-
-### Section 2: Full Pipeline (Voice-Consistent Generation)
-- Upload or select a reference audio (target speaker identity)
-- Enter text and emotion/style instruction
-- Generate K candidates — each streamed to the UI as it completes
-- Candidates ranked by speaker embedding similarity (green = best match)
-
-## API Reference
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/tts/generate-voice-design` | POST | Generate speech with style prompt |
-| `/voice-design/batch` | POST | Batched voice design (N samples) |
-| `/vc/convert` | POST | Voice conversion with Seed-VC V2 |
-| `/pipeline/tts-then-vc` | POST | TTS + voice conversion combined |
-| `/pipeline/ranked` | POST | Generate K candidates, rank by similarity |
-| `/pipeline/ranked-stream` | POST (SSE) | Streaming version of ranked pipeline |
-| `/health` | GET | Server status and configuration |
-
-## Server Configuration
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `TTS_DEVICE` | `cuda:0` | GPU for Qwen3-TTS |
-| `VC_DEVICE` | *(same as TTS)* | GPU for Seed-VC |
-| `TTS_QUANTIZE` | `none` | `none` = bfloat16, `int8` = INT8 |
-| `DEFAULT_DIFF_STEPS` | `12` | VC diffusion steps |
+Requires `/tmp/moss_venv` with `transformers==4.57.1` (MOSS is incompatible with transformers >= 5.x).
 
 ---
 

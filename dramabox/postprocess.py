@@ -4,13 +4,15 @@ DramaBox Post-Processing Pipeline
 ===================================
 
 Downloads tars from laion/dramabox-voice-acting-data, applies:
-  1. RE-USE speech enhancement (skip for singing/humming prompts)
-  2. LavaSR super-resolution
-  3. Whisper turbo ASR with word-level timestamps
-  4. CUT TO: scene split detection (longest silence gap)
-  5. Audio split into part1 + part2, plus concatenated full audio
-  6. VoiceCLAP Large embeddings for part1, part2, and full
-  7. MP3 conversion (256kbps mono 48kHz) for all three variants
+  1. Sidon+ChatterboxVC augmentation (best-of-2 by DNS-MOS OVR)
+     - Path A: Sidon only (16kHz -> 48kHz)
+     - Path B: ChatterboxVC -> Sidon (48kHz)
+     - Picks path with higher DNS-MOS OVR score
+  2. Whisper turbo ASR with word-level timestamps
+  3. CUT TO: scene split detection (longest silence gap)
+  4. Audio split into part1 + part2, plus concatenated full audio
+  5. VoiceCLAP Large embeddings for part1, part2, and full
+  6. MP3 conversion (256kbps mono 48kHz) for all three variants
 
 Uploads processed files to laion/dramabox-voice-acting-data-annotated.
 
@@ -67,7 +69,6 @@ log = logging.getLogger("postprocess")
 # Paths and constants
 # ---------------------------------------------------------------------------
 BASE_DIR = Path(__file__).resolve().parent
-REUSE_DIR = Path("/home/deployer/laion/REUSE")
 OUTPUT_DIR = BASE_DIR / "dramabox_postprocess_output"
 STATE_FILE = OUTPUT_DIR / "postprocess_state.json"
 PROGRESS_DIR = OUTPUT_DIR / "progress"
@@ -284,7 +285,6 @@ def run_worker(gpu_id: int, work_file: str):
 
     import torch
     import torchaudio
-    import torch.nn as nn
     import warnings
     warnings.filterwarnings("ignore")
 
@@ -295,56 +295,10 @@ def run_worker(gpu_id: int, work_file: str):
     log.info(f"[GPU {gpu_id}] {total} items to process. Loading models...")
     t0 = time.time()
 
-    # --- Load RE-USE ---
-    sys.path.insert(0, str(REUSE_DIR))
-    from models.stfts import mag_phase_stft, mag_phase_istft
-    from models.generator_SEMamba_time_d4 import SEMamba
-    from utils.util import load_config, pad_or_trim_to_match
-
-    reuse_cfg = load_config(str(
-        REUSE_DIR / "recipes" /
-        "USEMamba_30x1_lr_00002_norm_05_vq_065_nfft_320_hop_40_NRIR_012_pha_0005_com_04_early_001.yaml"
-    ))
-    reuse_model = SEMamba.from_pretrained("nvidia/RE-USE", cfg=reuse_cfg).to("cuda")
-    reuse_model.eval()
-
-    reuse_n_fft = reuse_cfg["stft_cfg"]["n_fft"]
-    reuse_hop = reuse_cfg["stft_cfg"]["hop_size"]
-    reuse_win = reuse_cfg["stft_cfg"]["win_size"]
-    reuse_compress = reuse_cfg["model_cfg"]["compress_factor"]
-    reuse_sr = reuse_cfg["stft_cfg"]["sampling_rate"]
-    RELU = nn.ReLU()
-    log.info(f"[GPU {gpu_id}] RE-USE loaded")
-
-    # --- Load LavaSR (with vocos monkey-patch) ---
-    import vocos.feature_extractors as _vfe
-    _OrigMSF = _vfe.MelSpectrogramFeatures
-
-    class _PatchedMSF(_OrigMSF):
-        def __init__(self, sample_rate=24000, n_fft=1024, hop_length=256,
-                     n_mels=100, padding="center", f_min=None, f_max=None,
-                     norm=None, mel_scale=None):
-            super(_OrigMSF, self).__init__()
-            if padding not in ("center", "same"):
-                raise ValueError("Padding must be 'center' or 'same'.")
-            self.padding = padding
-            mel_kwargs = dict(sample_rate=sample_rate, n_fft=n_fft, hop_length=hop_length,
-                              n_mels=n_mels, center=(padding == "center"), power=1)
-            if f_min is not None:
-                mel_kwargs["f_min"] = f_min
-            if f_max is not None:
-                mel_kwargs["f_max"] = f_max
-            if norm is not None:
-                mel_kwargs["norm"] = norm
-            if mel_scale is not None:
-                mel_kwargs["mel_scale"] = mel_scale
-            self.mel_spec = torchaudio.transforms.MelSpectrogram(**mel_kwargs)
-
-    _vfe.MelSpectrogramFeatures = _PatchedMSF
-
-    from LavaSR.model import LavaEnhance2
-    lavasr_model = LavaEnhance2("YatharthS/LavaSR", device="cuda:0")
-    log.info(f"[GPU {gpu_id}] LavaSR loaded")
+    # --- Load Sidon + ChatterboxVC enhancer ---
+    from dramabox.sidon_enhance import SidonEnhancer
+    enhancer = SidonEnhancer(device="cuda:0")
+    log.info(f"[GPU {gpu_id}] Sidon + ChatterboxVC enhancer loaded")
 
     # --- Load Whisper turbo ---
     import whisper
@@ -364,37 +318,6 @@ def run_worker(gpu_id: int, work_file: str):
     log.info(f"[GPU {gpu_id}] All models loaded in {load_time:.1f}s")
 
     # --- Helper functions ---
-    def make_even(v):
-        v = int(round(v))
-        return v if v % 2 == 0 else v + 1
-
-    def enhance_reuse(wav_tensor, sr):
-        """Apply RE-USE enhancement. wav_tensor: (C, T) on cuda."""
-        with torch.no_grad():
-            n_fft_s = make_even(reuse_n_fft * sr // reuse_sr)
-            hop_s = make_even(reuse_hop * sr // reuse_sr)
-            win_s = make_even(reuse_win * sr // reuse_sr)
-
-            noisy_mag, noisy_pha, noisy_com = mag_phase_stft(
-                wav_tensor, n_fft=n_fft_s, hop_size=hop_s, win_size=win_s,
-                compress_factor=reuse_compress, center=True, addeps=False,
-            )
-            amp_g, pha_g, _ = reuse_model(noisy_mag, noisy_pha)
-            mag = torch.expm1(RELU(amp_g))
-            zero_portion = torch.sum(mag == 0, 1) / mag.shape[1]
-            amp_g[:, :, (zero_portion > 0.5)[0]] = 0
-
-            audio_g = mag_phase_istft(amp_g, pha_g, n_fft_s, hop_s, win_s, reuse_compress)
-            audio_g = pad_or_trim_to_match(wav_tensor.detach(), audio_g, pad_value=1e-8)
-            return audio_g
-
-    def enhance_lavasr(wav_path_in, wav_path_out):
-        """Apply LavaSR super-resolution. LavaSR expects 16kHz input and outputs 48kHz."""
-        wav, sr_in = lavasr_model.load_audio(wav_path_in, input_sr=16000)
-        output = lavasr_model.enhance(wav, enhance=True, denoise=False)
-        if output.dim() == 1:
-            output = output.unsqueeze(0)
-        torchaudio.save(wav_path_out, output.cpu(), 48000)
 
     def run_whisper(audio_path):
         """Run Whisper ASR with word-level timestamps. Returns (text, word_timestamps)."""
@@ -549,49 +472,48 @@ def run_worker(gpu_id: int, work_file: str):
             # [1] Check singing keywords
             singing = is_singing_prompt(original_prompt)
 
-            # [2] Load audio
-            wav_tensor, sr = torchaudio.load(wav_path)
-            wav_cuda = wav_tensor.to("cuda")
+            # [2] Sidon + ChatterboxVC augmentation
+            # Save raw audio to temp file for enhancer input
+            tmp_raw = os.path.join(output_dir, f"_tmp_raw_{base_name}.wav")
+            shutil.copy2(wav_path, tmp_raw)
 
-            # [3] RE-USE enhancement (skip for singing)
             if not singing:
-                wav_cuda = enhance_reuse(wav_cuda, sr)
-                reuse_applied = True
+                try:
+                    enhanced_np, enhance_method = enhancer.augment_sample(tmp_raw)
+                    sidon_applied = True
+                except Exception as e:
+                    log.warning(f"[GPU {gpu_id}] Sidon augmentation failed for {base_name}: {e}, loading raw")
+                    wav_raw, sr_raw = torchaudio.load(tmp_raw)
+                    enhanced_np = to_mono(wav_raw.numpy())
+                    enhance_method = "none"
+                    sidon_applied = False
             else:
-                reuse_applied = False
+                wav_raw, sr_raw = torchaudio.load(tmp_raw)
+                enhanced_np = to_mono(wav_raw.numpy())
+                enhance_method = "skipped_singing"
+                sidon_applied = False
 
-            # Save to temp WAV for LavaSR input, free GPU memory
-            tmp_pre_lavasr = os.path.join(output_dir, f"_tmp_pre_lavasr_{base_name}.wav")
-            torchaudio.save(tmp_pre_lavasr, wav_cuda.cpu(), sr)
-            del wav_cuda, wav_tensor
             torch.cuda.empty_cache()
 
-            # [4] LavaSR super-resolution
-            tmp_post_lavasr = os.path.join(output_dir, f"_tmp_post_lavasr_{base_name}.wav")
-            try:
-                enhance_lavasr(tmp_pre_lavasr, tmp_post_lavasr)
-            except Exception as e:
-                log.warning(f"[GPU {gpu_id}] LavaSR failed for {base_name}: {e}, using pre-LavaSR audio")
-                shutil.copy2(tmp_pre_lavasr, tmp_post_lavasr)
-            torch.cuda.empty_cache()
-
-            # Load LavaSR output
-            wav_enhanced, sr_out = torchaudio.load(tmp_post_lavasr)
-            mono_np = to_mono(wav_enhanced.numpy())
+            # Enhanced output is at 48 kHz
+            sr_out = 48000
+            mono_np = enhanced_np
             total_duration = len(mono_np) / sr_out
 
-            # [5] Whisper ASR
-            asr_text, word_ts = run_whisper(tmp_post_lavasr)
+            # [3] Whisper ASR on enhanced audio
+            tmp_enhanced = os.path.join(output_dir, f"_tmp_enhanced_{base_name}.wav")
+            import soundfile as sf
+            sf.write(tmp_enhanced, mono_np, sr_out)
+            asr_text, word_ts = run_whisper(tmp_enhanced)
 
-            # [5b] Detect prompt type
+            # [4] Detect prompt type
             has_cut_to = bool(re.search(r'\bCUT\s+TO\s*:', original_prompt))
 
-            # [6] Full audio (always saved)
+            # [5] Full audio (always saved)
             full_np = mono_np.copy()
             full_dur = len(full_np) / sr_out
             full_16k = resample_to_16k(full_np, sr_out)
 
-            import soundfile as sf
             full_wav = os.path.join(output_dir, f"_tmp_full_{base_name}.wav")
             sf.write(full_wav, full_np, sr_out)
             full_mp3 = os.path.join(output_dir, f"{base_name}_full.mp3")
@@ -650,7 +572,7 @@ def run_worker(gpu_id: int, work_file: str):
                 ffp3.wait()
 
                 # Cleanup temp files
-                for tmp in [tmp_pre_lavasr, tmp_post_lavasr, part1_wav, part2_wav, full_wav]:
+                for tmp in [tmp_raw, tmp_enhanced, part1_wav, part2_wav, full_wav]:
                     try:
                         os.unlink(tmp)
                     except OSError:
@@ -667,7 +589,8 @@ def run_worker(gpu_id: int, work_file: str):
                     "language": sidecar.get("language", ""),
                     "original_prompt": original_prompt,
                     "singing_flag": singing,
-                    "reuse_applied": reuse_applied,
+                    "sidon_applied": sidon_applied,
+                    "enhance_method": enhance_method,
                     "asr_transcript": asr_text,
                     "word_timestamps": word_ts,
                     "split_point_sec": round(split_sec, 3),
@@ -711,7 +634,7 @@ def run_worker(gpu_id: int, work_file: str):
                 ffp.wait()
 
                 # Cleanup temp files
-                for tmp in [tmp_pre_lavasr, tmp_post_lavasr, full_wav]:
+                for tmp in [tmp_raw, tmp_enhanced, full_wav]:
                     try:
                         os.unlink(tmp)
                     except OSError:
@@ -724,7 +647,8 @@ def run_worker(gpu_id: int, work_file: str):
                     "language": sidecar.get("language", ""),
                     "original_prompt": original_prompt,
                     "singing_flag": singing,
-                    "reuse_applied": reuse_applied,
+                    "sidon_applied": sidon_applied,
+                    "enhance_method": enhance_method,
                     "asr_transcript": asr_text,
                     "word_timestamps": word_ts,
                     "split_point_sec": None,
@@ -760,7 +684,7 @@ def run_worker(gpu_id: int, work_file: str):
             log.warning(f"[GPU {gpu_id}] OOM on {base_name}, clearing cache and skipping")
             torch.cuda.empty_cache()
             errors += 1
-            for suffix in ["_tmp_pre_lavasr_", "_tmp_post_lavasr_", "_tmp_part1_", "_tmp_part2_", "_tmp_full_"]:
+            for suffix in ["_tmp_raw_", "_tmp_enhanced_", "_tmp_part1_", "_tmp_part2_", "_tmp_full_"]:
                 tmp_f = os.path.join(output_dir, f"{suffix}{base_name}.wav")
                 try:
                     os.unlink(tmp_f)
@@ -771,7 +695,7 @@ def run_worker(gpu_id: int, work_file: str):
             log.error(f"[GPU {gpu_id}] ERROR on {base_name}: {e}")
             traceback.print_exc()
             errors += 1
-            for suffix in ["_tmp_pre_lavasr_", "_tmp_post_lavasr_", "_tmp_part1_", "_tmp_part2_", "_tmp_full_"]:
+            for suffix in ["_tmp_raw_", "_tmp_enhanced_", "_tmp_part1_", "_tmp_part2_", "_tmp_full_"]:
                 tmp_f = os.path.join(output_dir, f"{suffix}{base_name}.wav")
                 try:
                     os.unlink(tmp_f)
