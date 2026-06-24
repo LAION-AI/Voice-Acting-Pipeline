@@ -10,6 +10,7 @@ build/
 
 # Output
 output/
+sample_groups_output/
 *.wav
 *.mp3
 

@@ -26,7 +26,6 @@ import multiprocessing as mp
 import os
 import re
 import sys
-import shutil
 import subprocess
 import tempfile
 import time
@@ -239,6 +238,238 @@ def run_tts_synthesis(groups, output_dir):
 
 
 # ---------------------------------------------------------------------------
+# LLM-guided CUT TO: splitting helpers
+# ---------------------------------------------------------------------------
+def _extract_json_from_response(text):
+    """Extract a JSON object from LLM response, handling code fences."""
+    text = text.strip()
+    if text.startswith("```"):
+        text = re.sub(r'^```(?:json)?\s*', '', text)
+        text = re.sub(r'\s*```\s*$', '', text)
+    match = re.search(r'\{[^{}]*\}', text)
+    if match:
+        return json.loads(match.group())
+    return json.loads(text)
+
+
+def _gap_based_fallback(word_ts, total_duration):
+    """Original gap-based splitting as fallback. Returns (split_sec, method_str)."""
+    lo, hi = total_duration * 0.20, total_duration * 0.80
+    gaps = []
+    for i in range(1, len(word_ts)):
+        gap_s = word_ts[i - 1]["end"]
+        gap_e = word_ts[i]["start"]
+        gap_mid = (gap_s + gap_e) / 2
+        if lo <= gap_mid <= hi:
+            gaps.append((gap_e - gap_s, gap_mid))
+    if gaps:
+        _, split_sec = max(gaps)
+        return split_sec, "gap_fallback"
+    return total_duration / 2, "midpoint_fallback"
+
+
+def find_llm_split_point(prompt, word_ts, total_duration, tokenizer, model):
+    """Use Gemma 4 E4B-it to identify the ideal CUT TO: split timestamp.
+
+    The LLM reads the original DramaBox prompt (which contains a "CUT TO:"
+    marker between two scenes) together with the ASR word-level timestamps
+    and decides where the scene transition happens in the audio.
+
+    Returns (split_sec, method_str).
+    """
+    import torch
+
+    # Format word timestamps compactly
+    ts_parts = []
+    for w in word_ts:
+        ts_parts.append(f'{w["start"]:.2f}-{w["end"]:.2f} "{w["word"]}"')
+    ts_str = " | ".join(ts_parts)
+
+    user_msg = (
+        "You are analyzing a voice performance from a DramaBox prompt with two scenes "
+        'separated by "CUT TO:".\n\n'
+        f"DramaBox prompt:\n{prompt}\n\n"
+        f"Word-by-word transcript with timestamps (seconds):\n{ts_str}\n\n"
+        f"Total duration: {total_duration:.2f}s\n\n"
+        "Identify the exact timestamp (in seconds) where the CUT TO: scene transition "
+        "occurs. Match the dialogue in each scene from the prompt to the ASR words "
+        "to find where Scene 1 ends and Scene 2 begins. The split should be right "
+        "at the boundary — do NOT include any Scene 2 words in Part 1.\n\n"
+        'Respond with ONLY: {"split_sec": <float>, "reasoning": "<brief>"}'
+    )
+    messages = [{"role": "user", "content": user_msg}]
+
+    try:
+        encoded = tokenizer.apply_chat_template(
+            messages, return_tensors="pt", add_generation_prompt=True
+        )
+        input_ids = encoded["input_ids"].to("cuda")
+        with torch.no_grad():
+            outputs = model.generate(input_ids=input_ids, max_new_tokens=128,
+                                     temperature=0.3, top_p=0.9, do_sample=True)
+        new_tokens = outputs[0][input_ids.shape[-1]:]
+        response = tokenizer.decode(new_tokens, skip_special_tokens=True).strip()
+        result = _extract_json_from_response(response)
+        split_sec = float(result["split_sec"])
+        # Validate: must be in 10%-90% of duration
+        if not (0.1 * total_duration <= split_sec <= 0.9 * total_duration):
+            raise ValueError(f"split_sec {split_sec} outside valid range "
+                             f"[{0.1*total_duration:.2f}, {0.9*total_duration:.2f}]")
+        return split_sec, "llm_guided"
+    except Exception as e:
+        print(f"    LLM split failed ({e}), using gap-based fallback", flush=True)
+        return _gap_based_fallback(word_ts, total_duration)
+
+
+def find_quiet_spot(audio_np, sr, target_sec, word_ts,
+                    search_radius=1.5):
+    """Find a quiet cut point in an inter-word silence gap near target_sec.
+
+    Strategy:
+      1. Build list of inter-word gaps from ASR timestamps.
+      2. Pick the gap closest to target_sec (within ±search_radius).
+      3. Within that gap, find the quietest sample using RMS energy.
+      4. If no gap is found, fall back to the boundary of the nearest word.
+
+    This guarantees the cut NEVER lands inside a word.
+
+    Returns (best_sec, quiet_spot_found).
+    """
+    hop_samples = int(sr * 0.010)   # 10ms hop
+    window_samples = int(sr * 0.020)  # 20ms window
+    total_dur = len(audio_np) / sr
+
+    # --- Step 1: Build inter-word gaps ---
+    # Gaps are silences between consecutive words, plus leading/trailing silence.
+    gaps = []
+    if word_ts:
+        # Leading silence (before first word)
+        if word_ts[0]["start"] > 0.05:
+            gaps.append((0.0, word_ts[0]["start"]))
+        # Inter-word gaps
+        for i in range(1, len(word_ts)):
+            gap_start = word_ts[i - 1]["end"]
+            gap_end = word_ts[i]["start"]
+            if gap_end - gap_start > 0.01:  # at least 10ms gap
+                gaps.append((gap_start, gap_end))
+        # Trailing silence (after last word)
+        if word_ts[-1]["end"] < total_dur - 0.05:
+            gaps.append((word_ts[-1]["end"], total_dur))
+
+    # --- Step 2: Find nearest gap to target_sec ---
+    def gap_distance(gap):
+        g_start, g_end = gap
+        g_mid = (g_start + g_end) / 2
+        return abs(g_mid - target_sec)
+
+    # Filter gaps within search_radius of target
+    nearby_gaps = [(g, gap_distance(g)) for g in gaps
+                   if abs((g[0] + g[1]) / 2 - target_sec) <= search_radius]
+    nearby_gaps.sort(key=lambda x: x[1])
+
+    # --- Step 3: Find quietest point within the best gap ---
+    # Small margin (ms) to stay away from word edges
+    MARGIN = 0.015  # 15ms
+
+    def _quietest_in_range(lo_sec, hi_sec):
+        """Find the quietest sample position strictly within [lo_sec, hi_sec]."""
+        lo_samp = max(0, int(lo_sec * sr))
+        hi_samp = min(len(audio_np), int(hi_sec * sr))
+        best_rms = float("inf")
+        best_pos = (lo_samp + hi_samp) // 2
+        for pos in range(lo_samp, max(lo_samp + 1, hi_samp - window_samples), hop_samples):
+            rms = np.sqrt(np.mean(audio_np[pos:pos + window_samples] ** 2))
+            if rms < best_rms:
+                best_rms = rms
+                best_pos = pos  # use window start, not centre
+        return max(lo_samp, min(best_pos, hi_samp)) / sr, best_rms
+
+    if nearby_gaps:
+        best_gap = nearby_gaps[0][0]
+        # Shrink gap by MARGIN on each side so we never touch a word edge
+        safe_lo = best_gap[0] + MARGIN
+        safe_hi = best_gap[1] - MARGIN
+        if safe_lo >= safe_hi:
+            # Gap too narrow for margins — just use midpoint
+            cut_sec = (best_gap[0] + best_gap[1]) / 2
+        else:
+            cut_sec, _ = _quietest_in_range(safe_lo, safe_hi)
+            cut_sec = max(safe_lo, min(cut_sec, safe_hi))
+        return round(cut_sec, 4), True
+
+    # --- Step 4: No gap nearby — snap to nearest inter-word midpoint ---
+    # Build midpoints of all gaps and pick the closest to target
+    gap_midpoints = [(g[0] + g[1]) / 2 for g in gaps]
+    if gap_midpoints:
+        best_mid = min(gap_midpoints, key=lambda m: abs(m - target_sec))
+        return round(best_mid, 4), False
+
+    # Last resort: pick the end-of-word boundary closest to target + 15ms
+    if word_ts:
+        ends = [w["end"] for w in word_ts]
+        best_end = min(ends, key=lambda e: abs(e - target_sec))
+        return round(best_end + MARGIN, 4), False
+
+    # Absolute fallback
+    return round(target_sec, 4), False
+
+
+def get_fade_strategy(prompt, split_sec, quiet_found, word_ts, tokenizer, model):
+    """Use Gemma 4 to recommend fade strategy for the CUT TO: split.
+    Returns dict with fade_out_ms, fade_in_ms, silence_gap_ms, method.
+    """
+    import torch
+
+    DEFAULT = {"fade_out_ms": 50, "fade_in_ms": 50,
+               "silence_gap_ms": 0, "method": "fade"}
+
+    # Get words near split point
+    before_words = [w["word"] for w in word_ts if w["end"] <= split_sec]
+    after_words = [w["word"] for w in word_ts if w["start"] >= split_sec]
+    before_str = " ".join(before_words[-3:]) if before_words else "(silence)"
+    after_str = " ".join(after_words[:3]) if after_words else "(silence)"
+
+    user_msg = (
+        "You are a professional audio editor splitting a two-scene voice performance "
+        "at the CUT TO: transition.\n\n"
+        f"DramaBox prompt:\n{prompt}\n\n"
+        f"Split at: {split_sec:.3f}s\n"
+        f'Quiet spot at split: {"yes" if quiet_found else "no -- fades needed"}\n'
+        f'Words before split: "{before_str}"\n'
+        f'Words after split: "{after_str}"\n\n'
+        "Choose the best cutting strategy:\n"
+        "- Sharp emotional contrast -> hard cut + silence gap (50-300ms)\n"
+        "- Gradual transition -> short fade-out/fade-in\n"
+        "- No quiet spot -> fades required to avoid clicks\n\n"
+        'Respond with ONLY: {"fade_out_ms": <0-200>, "fade_in_ms": <0-200>, '
+        '"silence_gap_ms": <0-500>, "method": "<hard_cut|fade|crossfade>"}'
+    )
+    messages = [{"role": "user", "content": user_msg}]
+
+    try:
+        encoded = tokenizer.apply_chat_template(
+            messages, return_tensors="pt", add_generation_prompt=True
+        )
+        input_ids = encoded["input_ids"].to("cuda")
+        with torch.no_grad():
+            outputs = model.generate(input_ids=input_ids, max_new_tokens=64,
+                                     temperature=0.3, top_p=0.9, do_sample=True)
+        new_tokens = outputs[0][input_ids.shape[-1]:]
+        response = tokenizer.decode(new_tokens, skip_special_tokens=True).strip()
+        result = _extract_json_from_response(response)
+        # Validate and clamp values
+        return {
+            "fade_out_ms": max(0, min(200, int(result.get("fade_out_ms", 50)))),
+            "fade_in_ms": max(0, min(200, int(result.get("fade_in_ms", 50)))),
+            "silence_gap_ms": max(0, min(500, int(result.get("silence_gap_ms", 0)))),
+            "method": result.get("method", "fade"),
+        }
+    except Exception as e:
+        print(f"    LLM fade strategy failed ({e}), using defaults", flush=True)
+        return DEFAULT
+
+
+# ---------------------------------------------------------------------------
 # Step 3: Enhancement + ASR + Splitting + Scoring (multi-GPU)
 # ---------------------------------------------------------------------------
 def enhance_worker(gpu_id, work_items, tts_dir, enhanced_dir):
@@ -275,6 +506,16 @@ def enhance_worker(gpu_id, work_items, tts_dir, enhanced_dir):
         print(f"  [GPU {gpu_id}] VoiceCLAP loaded", flush=True)
     except Exception as e:
         print(f"  [GPU {gpu_id}] VoiceCLAP unavailable ({e}), using WER+DNS-MOS scoring", flush=True)
+
+    # Load Gemma 4 E4B-it for LLM-guided CUT TO: splitting
+    from transformers import AutoTokenizer, AutoModelForCausalLM
+    gemma_model_id = "google/gemma-4-E4B-it"
+    gemma_tok = AutoTokenizer.from_pretrained(gemma_model_id)
+    gemma_llm = AutoModelForCausalLM.from_pretrained(
+        gemma_model_id, torch_dtype=torch.bfloat16, device_map="cuda",
+    )
+    gemma_llm.eval()
+    print(f"  [GPU {gpu_id}] Gemma 4 E4B-it loaded for CUT TO: splitting", flush=True)
 
     results = []
     for item in work_items:
@@ -358,7 +599,7 @@ def enhance_worker(gpu_id, work_items, tts_dir, enhanced_dir):
             else:
                 result["wer"] = None
 
-            # --- CUT TO: split ---
+            # --- CUT TO: split (LLM-guided) ---
             has_cut_to = bool(re.search(r'\bCUT\s+TO\s*:', prompt))
             result["has_cut_to"] = has_cut_to
 
@@ -367,34 +608,50 @@ def enhance_worker(gpu_id, work_items, tts_dir, enhanced_dir):
             total_duration = len(mono_np) / sr_out
 
             if has_cut_to and word_ts:
-                # Find longest silence gap in middle 20-80%
-                lo, hi = total_duration * 0.20, total_duration * 0.80
-                gaps = []
-                for i in range(1, len(word_ts)):
-                    gap_s = word_ts[i-1]["end"]
-                    gap_e = word_ts[i]["start"]
-                    gap_mid = (gap_s + gap_e) / 2
-                    if lo <= gap_mid <= hi:
-                        gaps.append((gap_e - gap_s, gap_mid))
-                if gaps:
-                    _, split_sec = max(gaps)
-                else:
-                    split_sec = total_duration / 2
-                result["split_sec"] = round(split_sec, 3)
+                # Phase 1: LLM determines ideal split timestamp
+                llm_split_sec, split_method = find_llm_split_point(
+                    prompt, word_ts, total_duration, gemma_tok, gemma_llm)
 
+                # Phase 2: Energy-based quiet spot near LLM timestamp
+                quiet_sec, quiet_found = find_quiet_spot(
+                    mono_np, sr_out, llm_split_sec, word_ts)
+
+                # Clamp to valid range
+                split_sec = max(0.5, min(quiet_sec, total_duration - 0.5))
+
+                # Phase 3: LLM determines fade strategy
+                fade_strategy = get_fade_strategy(
+                    prompt, split_sec, quiet_found, word_ts,
+                    gemma_tok, gemma_llm)
+
+                result["split_sec"] = round(split_sec, 3)
+                result["llm_split_sec"] = round(llm_split_sec, 3)
+                result["split_method"] = split_method
+                result["quiet_spot_found"] = bool(quiet_found)
+                result["fade_strategy"] = fade_strategy
+
+                # Perform the split
                 split_sample = int(split_sec * sr_out)
                 split_sample = max(0, min(split_sample, len(mono_np)))
-                part1_np = mono_np[:split_sample]
-                part2_np = mono_np[split_sample:]
+                part1_np = mono_np[:split_sample].copy()
+                part2_np = mono_np[split_sample:].copy()
 
-                # Apply fades
-                fade = int(0.05 * sr_out)
-                if fade < len(part1_np):
-                    part1_np = part1_np.copy()
-                    part1_np[-fade:] *= np.linspace(1, 0, fade)
-                if fade < len(part2_np):
-                    part2_np = part2_np.copy()
-                    part2_np[:fade] *= np.linspace(0, 1, fade)
+                # Apply fades per LLM strategy
+                fo = int(fade_strategy["fade_out_ms"] * sr_out / 1000)
+                fi = int(fade_strategy["fade_in_ms"] * sr_out / 1000)
+                if fo > 0 and fo < len(part1_np):
+                    part1_np[-fo:] *= np.linspace(1, 0, fo)
+                if fi > 0 and fi < len(part2_np):
+                    part2_np[:fi] *= np.linspace(0, 1, fi)
+
+                # Optional silence gap
+                gap_ms = fade_strategy.get("silence_gap_ms", 0)
+                if gap_ms > 0:
+                    gap_samp = int(gap_ms * sr_out / 1000)
+                    part1_np = np.concatenate([part1_np,
+                                               np.zeros(gap_samp // 2, dtype=part1_np.dtype)])
+                    part2_np = np.concatenate([np.zeros(gap_samp - gap_samp // 2,
+                                                        dtype=part2_np.dtype), part2_np])
 
                 p1_wav = os.path.join(enhanced_dir, f"{tag}_part1.wav")
                 p2_wav = os.path.join(enhanced_dir, f"{tag}_part2.wav")
@@ -536,24 +793,7 @@ def reannotate_worker(gpu_id, work_items, enhanced_dir):
     model_id = "google/gemma-4-E4B-it"
     print(f"  [GPU {gpu_id}] Loading Gemma 4 E4B-it...", flush=True)
 
-    # Patch tokenizer config: transformers 4.x expects extra_special_tokens as dict,
-    # but Gemma 4 ships it as a list. Copy tokenizer files to a temp dir and fix.
-    from huggingface_hub import snapshot_download
-    tok_src = snapshot_download(model_id, allow_patterns=["tokenizer*", "special_tokens*", "*.model"])
-    tok_dir = tempfile.mkdtemp(prefix="gemma_tok_")
-    for fname in os.listdir(tok_src):
-        src_f = os.path.join(tok_src, fname)
-        if os.path.isfile(src_f):
-            shutil.copy2(src_f, os.path.join(tok_dir, fname))
-    tc_path = os.path.join(tok_dir, "tokenizer_config.json")
-    with open(tc_path, encoding="utf-8") as f:
-        tc = json.load(f)
-    if isinstance(tc.get("extra_special_tokens"), list):
-        tc["extra_special_tokens"] = {t: t for t in tc["extra_special_tokens"]}
-        with open(tc_path, "w", encoding="utf-8") as f:
-            json.dump(tc, f)
-
-    tokenizer = AutoTokenizer.from_pretrained(tok_dir)
+    tokenizer = AutoTokenizer.from_pretrained(model_id)
     model = AutoModelForCausalLM.from_pretrained(
         model_id, torch_dtype=torch.bfloat16, device_map="cuda",
     )
@@ -598,14 +838,15 @@ Rules:
                 f"Rewrite the DramaBox prompt to match the actual performance."
             )
             messages = [{"role": "user", "content": system_prompt + "\n\n" + user_msg}]
-            inputs = tokenizer.apply_chat_template(
+            encoded = tokenizer.apply_chat_template(
                 messages, return_tensors="pt", add_generation_prompt=True
-            ).to("cuda")
+            )
+            input_ids = encoded["input_ids"].to("cuda")
 
             with torch.no_grad():
-                outputs = model.generate(inputs, max_new_tokens=1024,
+                outputs = model.generate(input_ids=input_ids, max_new_tokens=1024,
                                          temperature=0.7, top_p=0.9, do_sample=True)
-            new_tokens = outputs[0][inputs.shape[-1]:]
+            new_tokens = outputs[0][input_ids.shape[-1]:]
             refined = tokenizer.decode(new_tokens, skip_special_tokens=True).strip()
             result["refined_prompt_full"] = refined
 
@@ -626,13 +867,14 @@ Rules:
                         f"Write a standalone single-scene DramaBox prompt for JUST this part."
                     )
                     msgs_p = [{"role": "user", "content": system_prompt + "\n\n" + user_msg_p}]
-                    inp_p = tokenizer.apply_chat_template(
+                    enc_p = tokenizer.apply_chat_template(
                         msgs_p, return_tensors="pt", add_generation_prompt=True
-                    ).to("cuda")
+                    )
+                    ids_p = enc_p["input_ids"].to("cuda")
                     with torch.no_grad():
-                        out_p = model.generate(inp_p, max_new_tokens=768,
+                        out_p = model.generate(input_ids=ids_p, max_new_tokens=768,
                                                temperature=0.7, top_p=0.9, do_sample=True)
-                    new_p = out_p[0][inp_p.shape[-1]:]
+                    new_p = out_p[0][ids_p.shape[-1]:]
                     result[f"refined_prompt_{part_name}"] = tokenizer.decode(
                         new_p, skip_special_tokens=True
                     ).strip()
@@ -803,10 +1045,12 @@ summary { cursor: pointer; color: #4fc3f7; font-weight: bold; }
 <div class="audio-row"><div class="audio-label">Full:</div>{embed_mp3(r.get('enhanced_mp3', r.get('enhanced_path', '').replace('.wav', '.mp3')))}</div>
 """)
             if r.get("has_cut_to"):
+                fs = r.get("fade_strategy") or {}
+                gap_info = f", gap:{fs.get('silence_gap_ms', 0)}ms" if fs.get("silence_gap_ms") else ""
                 html_parts.append(f"""
 <div class="audio-row"><div class="audio-label">Part 1:</div>{embed_mp3(r.get('part1_mp3', r.get('part1_path', '').replace('.wav', '.mp3')))}</div>
 <div class="audio-row"><div class="audio-label">Part 2:</div>{embed_mp3(r.get('part2_mp3', r.get('part2_path', '').replace('.wav', '.mp3')))}</div>
-<div class="meta">Split at {r.get('split_sec', 0):.2f}s | Part 1: {r.get('part1_dur', 0):.1f}s | Part 2: {r.get('part2_dur', 0):.1f}s</div>
+<div class="meta">Split at {r.get('split_sec', 0):.2f}s ({r.get('split_method', 'gap')}) | Quiet: {'yes' if r.get('quiet_spot_found') else 'no'} | Fade: {fs.get('method', 'fade')} (out:{fs.get('fade_out_ms', 50)}ms, in:{fs.get('fade_in_ms', 50)}ms{gap_info}) | Part 1: {r.get('part1_dur', 0):.1f}s | Part 2: {r.get('part2_dur', 0):.1f}s</div>
 """)
 
             html_parts.append(f"""
@@ -943,9 +1187,12 @@ def write_protocol(groups, output_dir, html_path):
         "- Negative text (\"robotic, distorted, uncanny\") similarity",
         "- Reward = (1 - WER) * (CLAP_sim - CLAP_neg + 2)",
         "",
-        "### Stage 5: CUT TO: Split Detection",
-        "- Longest silence gap in middle 20-80% of audio",
-        "- 50ms fade at split boundary",
+        "### Stage 5: LLM-Guided CUT TO: Split Detection",
+        "- Gemma 4 E4B-it identifies ideal split timestamp from prompt + ASR word timestamps",
+        "- Energy-based quiet spot detection within +/-500ms of LLM timestamp",
+        "- Vocal burst avoidance (shifts cut point to nearest word gap)",
+        "- LLM-guided fade strategy (fade-out/fade-in/silence gap durations)",
+        "- Fallback: longest silence gap in middle 20-80% with 50ms fade",
         "- Separate MP3s for full, part1, part2",
         "",
         "### Stage 6: Gemma 4 E4B-it Re-annotation",

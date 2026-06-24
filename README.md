@@ -3,6 +3,8 @@
 
 **Open-weights voice acting data pipeline combining structured taxonomy sampling, DramaBox TTS synthesis, Sidon speech restoration, and ChatterboxVC augmentation with best-of-N ranking across 46 scoring methods.**
 
+> **Live Demo:** [Sidon+VC Sample Groups](https://projects.laion.ai/Voice-Acting-Pipeline/demo/sidon_vc_sample_groups.html) — 20 groups x 25 candidates with LLM-guided CUT TO: splitting, Whisper turbo ASR, and Gemma 4 re-annotation.
+
 > **Dataset Plan:** See the full technical white paper — [Towards an Emotionally Expressive Audio Omni-Model](LAION-Voice-Whitepaper.md) — for the complete LAION Voice and LAION Voice Acting dataset construction plan, model inventory, and annotation strategy.
 
 ---
@@ -28,15 +30,24 @@ Taxonomy Sampling          LLM Prompt Gen         DramaBox TTS (22B)
                                               |  Per-Sample Augment       |
                                               |                           |
                                               |  Path A: Sidon only       |
-                                              |  Path B: VC + Sidon       |
+                                              |    (16kHz -> 48kHz)       |
+                                              |  Path B: ChatterboxVC     |
+                                              |    + Sidon (VC -> restore)|
                                               |                           |
                                               |  Pick best by             |
                                               |  DNS-MOS OVR score        |
                                               +-------------+-------------+
                                                             |
                                               +-------------v-------------+
-                                              |  ASR + CUT TO: Split      |
-                                              |  (Whisper turbo)          |
+                                              |  Whisper Turbo ASR        |
+                                              |  (word-level timestamps)  |
+                                              +-------------+-------------+
+                                                            |
+                                              +-------------v-------------+
+                                              |  LLM-Guided CUT TO:      |
+                                              |  Split (Gemma 4 E4B-it)  |
+                                              |  + quiet-spot detection   |
+                                              |  + LLM fade strategy     |
                                               +-------------+-------------+
                                                             |
                                               +-------------v-------------+
@@ -46,8 +57,8 @@ Taxonomy Sampling          LLM Prompt Gen         DramaBox TTS (22B)
                                               +-------------+-------------+
                                                             |
                                               +-------------v-------------+
-                                              |  MOSS Re-annotation       |
-                                              |  (Audio -> DramaBox)      |
+                                              |  Gemma 4 Re-annotation    |
+                                              |  (ASR -> refined prompt)  |
                                               +---------------------------+
 ```
 
@@ -56,10 +67,12 @@ Taxonomy Sampling          LLM Prompt Gen         DramaBox TTS (22B)
 For each raw TTS candidate, two enhancement paths run and the best is selected:
 
 ```
-Raw TTS Audio --+---> Sidon (16kHz->48kHz) ---> DNS-MOS --+
-                |                                         +--> Pick higher OVR
-                +---> Chatterbox VC ---> Sidon ---> DNS-MOS+
-                      (to ref or self)
+Raw TTS Audio ──┬──► Sidon Speech Restoration ──► DNS-MOS ──┐
+(from DramaBox)  │    (w2v-BERT LoRA + DAC)                   ├──► Pick higher OVR
+                 │    (16kHz → 48kHz)                         │
+                 └──► ChatterboxVC ──► Sidon ──► DNS-MOS ────┘
+                      (S3Gen flow-matching VC,
+                       self-VC or ref-VC)
 ```
 
 ### Two-Part CUT TO: Pipeline
@@ -67,17 +80,17 @@ Raw TTS Audio --+---> Sidon (16kHz->48kHz) ---> DNS-MOS --+
 For two-scene audio, a self-VC of the full audio provides the VC target for speaker consistency:
 
 ```
-Full Audio ---> Self-VC ---> Sidon ---> full_enhanced (VC target)
-                                              |
-            +---------------------------------+
-            |
-Part 1 --+---> Sidon only ---> DNS-MOS --+
-         |                               +--> Pick best
-         +---> VC(->full_enhanced) + Sidon ---> DNS-MOS --+
+Full Audio ──► Self-VC ──► Sidon ──► full_enhanced (VC target)
+                                           │
+           ┌───────────────────────────────┘
+           │
+Part 1 ──┬──► Sidon only ──► DNS-MOS ──┐
+         │                              ├──► Pick best
+         └──► VC(→full_enhanced) + Sidon ──► DNS-MOS ──┘
 
-Part 2 --+---> Sidon only ---> DNS-MOS --+
-         |                               +--> Pick best
-         +---> VC(->full_enhanced) + Sidon ---> DNS-MOS --+
+Part 2 ──┬──► Sidon only ──► DNS-MOS ──┐
+         │                              ├──► Pick best
+         └──► VC(→full_enhanced) + Sidon ──► DNS-MOS ──┘
 ```
 
 **Scoring methods (46 total):**
@@ -86,7 +99,17 @@ Part 2 --+---> Sidon only ---> DNS-MOS --+
 
 ## Demo Grids
 
-Listen to the current ACCC LavaSR experiment — 50 groups x 25 candidates = 1,250 audio clips across 10 pages. Each page has an interactive ranking dropdown with 46 methods.
+### Sidon + ChatterboxVC Pipeline (Current)
+
+Listen to the latest Sidon+VC experiment — 20 groups x 25 candidates = 500 audio clips with LLM-guided CUT TO: splitting and Gemma 4 re-annotation.
+
+| Demo | Description | Link |
+|------|-------------|------|
+| **Sidon+VC Sample Groups** | 20 groups, best-of-25, LLM-guided splits | [sidon_vc_sample_groups.html](https://projects.laion.ai/Voice-Acting-Pipeline/demo/sidon_vc_sample_groups.html) |
+
+### ACCC LavaSR Experiment (Legacy)
+
+50 groups x 25 candidates = 1,250 audio clips across 10 pages. Each page has an interactive ranking dropdown with 46 methods.
 
 | Page | Groups | Link |
 |------|--------|------|
@@ -123,7 +146,7 @@ The pipeline supports **12 generation paths** organized into three families. Eac
 
 ### Character Consistent Paths (Two Scenes — "CUT TO:")
 
-All CC paths generate two scenes with the **same speaker** in **contrasting emotional states**, separated by a "CUT TO:" marker. The speaker's fundamental voice (age, gender, timbre) stays identical — only the emotional delivery changes. Audio is later split into Scene 1 / Scene 2 using Qwen3-ASR word-level timestamps.
+All CC paths generate two scenes with the **same speaker** in **contrasting emotional states**, separated by a "CUT TO:" marker. The speaker's fundamental voice (age, gender, timbre) stays identical — only the emotional delivery changes. Audio is split into Scene 1 / Scene 2 using LLM-guided splitting (Gemma 4 E4B-it + Whisper turbo word-level timestamps + quiet-spot detection).
 
 | Path | Sampling | Key Improvement | Details |
 |------|----------|-----------------|---------|
@@ -161,13 +184,15 @@ Each enhanced candidate is scored using a native PyTorch DNS-MOS model:
 - Used to select between Sidon-only and VC+Sidon augmentation paths
 - Audio is chunked into 9-second windows and scores are averaged
 
-### Audio Splitting (CC/CC2/ACCC)
+### LLM-Guided Audio Splitting (CC/CC2/ACCC)
 
-Two-scene audio is split using [Qwen3-ASR-1.7B](https://huggingface.co/Qwen/Qwen3-ASR-1.7B) with forced alignment:
-1. Transcribe with word-level timestamps
-2. Parse the DramaBox prompt to find first words of Scene 2 dialogue
-3. Match ASR timestamps to find the split boundary
-4. Split with 100ms fades at the boundary
+Two-scene audio is split using a three-phase LLM-guided pipeline:
+
+1. **Whisper Turbo ASR** — transcribe with word-level timestamps
+2. **LLM split point** (Gemma 4 E4B-it) — reads the DramaBox prompt + ASR word timestamps to identify the exact CUT TO: scene transition timestamp. Matches Scene 1/Scene 2 dialogue to ASR words.
+3. **Quiet-spot detection** — finds the nearest inter-word silence gap within +/-1.5s of the LLM timestamp, then picks the quietest sample (by RMS energy) within that gap. A 15ms margin from word edges guarantees cuts never land inside a word.
+4. **LLM fade strategy** (Gemma 4 E4B-it) — chooses fade-out/fade-in durations (0-200ms) and optional silence gap (0-500ms) based on the emotional contrast between scenes. Options: hard cut, fade, or crossfade.
+5. **Fallback** — if the LLM fails, falls back to longest silence gap in the middle 20-80% of the audio.
 
 ### Best-of-N Ranking (46 Methods)
 
@@ -358,7 +383,7 @@ Challenge-driven two-scene format: same actor performing the same acting challen
 2. Sample word count (40-80 total, split ~evenly between scenes)
 3. Gemma 4 generates two contrasting scenes from the same challenge
 4. DramaBox TTS -> Sidon+VC augmentation -> Best-of-25 scoring
-5. Whisper turbo ASR word timestamps -> split into Scene 1 + Scene 2
+5. LLM-guided split: Whisper turbo ASR word timestamps + Gemma 4 split-point detection + quiet-spot energy analysis -> Scene 1 + Scene 2
 
 See [docs/path_ac_acting_challenge.md#accc-character-consistent](docs/path_ac_acting_challenge.md#accc-character-consistent) for full details.
 
@@ -456,7 +481,7 @@ Languages are configured in `config.json`. Currently active: English, German, Fr
 | [`laion/VoiceCLAP`](https://huggingface.co/laion/VoiceCLAP) | Audio-text similarity scoring (Large 3584-dim + Small 768-dim) | ~2GB |
 | [`laion/Empathic-Insight-Voice-Plus`](https://huggingface.co/laion/Empathic-Insight-Voice-Plus) | 40 EmoNet emotion scoring + content enjoyment (BUD-E-Whisper + MLP) | ~2GB |
 | [`laion/BUD-E-Whisper`](https://huggingface.co/laion/BUD-E-Whisper) | Audio encoder for emotion scoring (768-dim embeddings) | ~1GB |
-| [`Qwen/Qwen3-ASR-1.7B`](https://huggingface.co/Qwen/Qwen3-ASR-1.7B) | Word-level timestamps for audio splitting | ~4GB |
+| [Whisper turbo](https://github.com/openai/whisper) | Word-level timestamps for ASR + audio splitting | ~3GB |
 | [`nvidia/parakeet-tdt-0.6b-v3`](https://huggingface.co/nvidia/parakeet-tdt-0.6b-v3) | ASR for WER scoring | ~2GB |
 | [`laion/timbre-whisper`](https://huggingface.co/laion/timbre-whisper) | On-the-fly timbre captioning (Path D) | ~2GB |
 | [MOSS-Audio-8B-Thinking](https://huggingface.co/ICTNLP/MOSS-Audio-8B-Thinking) | Audio-guided prompt re-annotation (3 passes per sample) | ~8GB |
@@ -470,6 +495,9 @@ Voice-Acting-Pipeline/
 ├── config.json                        # All configurable parameters
 ├── config_schema.md                   # Documentation for config fields
 ├── pyproject.toml                     # Python packaging
+├── run_sample_groups.py               # Full pipeline: TTS + Sidon/VC + ASR + LLM splitting + scoring + HTML
+├── run_reannotate.py                  # Standalone Gemma 4 re-annotation + HTML report rebuild
+├── run_resplit.py                     # Standalone LLM-guided CUT TO: re-splitting
 ├── data/
 │   ├── voicenet_ext_taxonomy.html     # VoiceNet (57 dims x 7 levels)
 │   ├── all_acting_challenges.json     # 19,247 acting challenge scenarios
@@ -540,7 +568,8 @@ Voice-Acting-Pipeline/
 │   ├── dramabox_extreme_physical_examples.md    # Extreme Physical English examples
 │   ├── dramabox_extreme_physical_de_examples.md # Extreme Physical German examples
 │   └── demo/                          # HTML demo grids with embedded audio
-│       ├── accc_lavasr.html           # Index (redirects to page 1)
+│       ├── sidon_vc_sample_groups.html # Sidon+VC experiment (20 groups, LLM splits)
+│       ├── accc_lavasr.html           # ACCC LavaSR index (redirects to page 1)
 │       ├── accc_lavasr_p1.html        # ACCC LavaSR grid pages 1-10
 │       ├── ...
 │       └── pitch_analysis.html        # Pitch analysis

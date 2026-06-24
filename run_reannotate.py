@@ -1,18 +1,13 @@
 #!/usr/bin/env python3
 """Re-run ONLY the re-annotation step (Gemma 4 E4B-it prompt rewriting) for top-2
 candidates per group, then rebuild the HTML report.
-
-Fixes the tokenizer incompatibility with transformers 4.x by patching
-extra_special_tokens from list to dict before loading.
 """
 
 import json
 import logging
 import multiprocessing as mp
 import os
-import shutil
 import sys
-import tempfile
 import time
 from pathlib import Path
 
@@ -39,11 +34,8 @@ def reannotate_worker(gpu_id, work_items, enhanced_dir):
 
     import torch
     from transformers import AutoTokenizer, AutoModelForCausalLM
-    from huggingface_hub import snapshot_download
 
-    # Gemma 4 E4B-it requires transformers>=5.0 (gemma4 architecture).
-    # Fall back to Gemma 2 9B-it which works with transformers 4.x.
-    model_id = "google/gemma-2-9b-it"
+    model_id = "google/gemma-4-E4B-it"
     print(f"  [GPU {gpu_id}] Loading {model_id}...", flush=True)
 
     tokenizer = AutoTokenizer.from_pretrained(model_id)
@@ -92,14 +84,15 @@ Rules:
                 f"Rewrite the DramaBox prompt to match the actual performance."
             )
             messages = [{"role": "user", "content": system_prompt + "\n\n" + user_msg}]
-            inputs = tokenizer.apply_chat_template(
+            encoded = tokenizer.apply_chat_template(
                 messages, return_tensors="pt", add_generation_prompt=True
-            ).to("cuda")
+            )
+            input_ids = encoded["input_ids"].to("cuda")
 
             with torch.no_grad():
-                outputs = model.generate(inputs, max_new_tokens=1024,
+                outputs = model.generate(input_ids=input_ids, max_new_tokens=1024,
                                          temperature=0.7, top_p=0.9, do_sample=True)
-            new_tokens = outputs[0][inputs.shape[-1]:]
+            new_tokens = outputs[0][input_ids.shape[-1]:]
             refined = tokenizer.decode(new_tokens, skip_special_tokens=True).strip()
             result["refined_prompt_full"] = refined
 
@@ -120,13 +113,14 @@ Rules:
                         f"Write a standalone single-scene DramaBox prompt for JUST this part."
                     )
                     msgs_p = [{"role": "user", "content": system_prompt + "\n\n" + user_msg_p}]
-                    inp_p = tokenizer.apply_chat_template(
+                    enc_p = tokenizer.apply_chat_template(
                         msgs_p, return_tensors="pt", add_generation_prompt=True
-                    ).to("cuda")
+                    )
+                    ids_p = enc_p["input_ids"].to("cuda")
                     with torch.no_grad():
-                        out_p = model.generate(inp_p, max_new_tokens=768,
+                        out_p = model.generate(input_ids=ids_p, max_new_tokens=768,
                                                temperature=0.7, top_p=0.9, do_sample=True)
-                    new_p = out_p[0][inp_p.shape[-1]:]
+                    new_p = out_p[0][ids_p.shape[-1]:]
                     result[f"refined_prompt_{part_name}"] = tokenizer.decode(
                         new_p, skip_special_tokens=True
                     ).strip()
@@ -248,10 +242,12 @@ summary { cursor: pointer; color: #4fc3f7; font-weight: bold; }
 <div class="audio-row"><div class="audio-label">Full:</div>{embed_mp3(r.get('enhanced_mp3', r.get('enhanced_path', '').replace('.wav', '.mp3')))}</div>
 """)
             if r.get("has_cut_to"):
+                fs = r.get("fade_strategy") or {}
+                gap_info = f", gap:{fs.get('silence_gap_ms', 0)}ms" if fs.get("silence_gap_ms") else ""
                 html_parts.append(f"""
 <div class="audio-row"><div class="audio-label">Part 1:</div>{embed_mp3(r.get('part1_mp3', r.get('part1_path', '').replace('.wav', '.mp3')))}</div>
 <div class="audio-row"><div class="audio-label">Part 2:</div>{embed_mp3(r.get('part2_mp3', r.get('part2_path', '').replace('.wav', '.mp3')))}</div>
-<div class="meta">Split at {r.get('split_sec', 0):.2f}s | Part 1: {r.get('part1_dur', 0):.1f}s | Part 2: {r.get('part2_dur', 0):.1f}s</div>
+<div class="meta">Split at {r.get('split_sec', 0):.2f}s ({r.get('split_method', 'gap')}) | Quiet: {'yes' if r.get('quiet_spot_found') else 'no'} | Fade: {fs.get('method', 'fade')} (out:{fs.get('fade_out_ms', 50)}ms, in:{fs.get('fade_in_ms', 50)}ms{gap_info}) | Part 1: {r.get('part1_dur', 0):.1f}s | Part 2: {r.get('part2_dur', 0):.1f}s</div>
 """)
 
             html_parts.append(f"""
