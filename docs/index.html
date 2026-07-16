@@ -19,6 +19,10 @@ a{color:var(--acc);text-decoration:none} a:hover{text-decoration:underline}
 <h1>LAION Voice Acting Pipeline</h1>
 <p class="lead">Open-weights voice-acting data pipeline: structured taxonomy sampling, DramaBox TTS synthesis, and best-of-N reward ranking. Live benchmark pages below.</p>
 
+<a class="card" href="sampling.html"><span class="badge">Documentation</span>
+<h2>How the DramaBox Prompt Dataset is Sampled &amp; Generated</h2>
+<p>Plain-English, reproduce-it-yourself walkthrough of the <code>laion/dramabox-cutscene-prompts</code> dataset: the 5 sampling pathways, every taxonomy it draws from (VoiceNet, 40 EmoNet emotions, archetypes, situations, 180 vocal bursts), the exact prompts the model receives, and real generated examples with their sampled metadata.</p></a>
+
 <a class="card" href="dramabox.html"><span class="badge">Benchmark</span>
 <h2>Vanilla DramaBox TTS — Generate + Reward-Rank</h2>
 <p>Raw two-scene <code>CUT&nbsp;TO:</code> DramaBox prompts fed directly to the 8B MOSS voice-acting TTS, 4 seeds per prompt, scored and reward-ranked. Listenable takes, best-of-k quality/compute trade-off, and the full k=1..32 seed-scaling walltime table.</p></a>

@@ -8,6 +8,7 @@
 > **Benchmarks** ([landing page](https://projects.laion.ai/Voice-Acting-Pipeline/)):
 > - 🎬 [**Vanilla DramaBox TTS — generate + reward-rank**](https://projects.laion.ai/Voice-Acting-Pipeline/dramabox.html) — raw two-scene `CUT TO:` DramaBox prompts fed directly to the 8B MOSS voice-acting TTS, 4 seeds, scored + reward-ranked; listenable takes, best-of-k quality/compute trade-off, and the full k=1..32 seed-scaling walltime table.
 > - ⚡ [**Local-LLM DramaBox prompt-generation throughput**](https://projects.laion.ai/Voice-Acting-Pipeline/prompts.html) — per-pathway/language token + throughput stats with a 1M-prompt estimate, plus the DramaBox TTS seed-scaling table for best-of-k planning.
+> - 📖 [**How the DramaBox prompt dataset is sampled &amp; generated**](https://projects.laion.ai/Voice-Acting-Pipeline/sampling.html) — a plain-English, reproducible walkthrough of the [`laion/dramabox-cutscene-prompts`](https://huggingface.co/datasets/laion/dramabox-cutscene-prompts) dataset: the 5 sampling pathways, every taxonomy it draws from (VoiceNet, 40 EmoNet emotions, archetypes, situations, 180 vocal bursts), the exact prompts the model receives, and real generated examples with their sampled metadata.
 
 > **Dataset Plan:** See the full technical white paper — [Towards an Emotionally Expressive Audio Omni-Model](LAION-Voice-Whitepaper.md) — for the complete LAION Voice and LAION Voice Acting dataset construction plan, model inventory, and annotation strategy.
 
