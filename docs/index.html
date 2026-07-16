@@ -1,0 +1,35 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LAION Voice Acting Pipeline — Benchmarks</title>
+<style>
+:root{--bg:#0f1216;--panel:#171b21;--bd:#2a323c;--fg:#e6edf3;--mut:#93a1b0;--acc:#5ab0f0;--good:#4ec38a;--chip:#232a33}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:44px 22px 90px}
+h1{font-size:30px;margin:0 0 6px}
+.lead{color:var(--mut);max-width:720px}
+a{color:var(--acc);text-decoration:none} a:hover{text-decoration:underline}
+.card{display:block;background:var(--panel);border:1px solid var(--bd);border-radius:14px;padding:20px 22px;margin:16px 0;transition:border-color .15s}
+.card:hover{border-color:var(--acc);text-decoration:none}
+.card h2{margin:0 0 6px;font-size:20px;color:var(--fg)}
+.card p{margin:0;color:var(--mut);font-size:14.5px}
+.badge{display:inline-block;background:var(--chip);color:var(--acc);border-radius:20px;padding:3px 11px;font-size:12px;margin-bottom:8px}
+.foot{color:var(--mut);font-size:13px;margin-top:34px;border-top:1px solid var(--bd);padding-top:16px}
+</style></head><body><div class="wrap">
+<h1>LAION Voice Acting Pipeline</h1>
+<p class="lead">Open-weights voice-acting data pipeline: structured taxonomy sampling, DramaBox TTS synthesis, and best-of-N reward ranking. Live benchmark pages below.</p>
+
+<a class="card" href="dramabox.html"><span class="badge">Benchmark</span>
+<h2>Vanilla DramaBox TTS — Generate + Reward-Rank</h2>
+<p>Raw two-scene <code>CUT&nbsp;TO:</code> DramaBox prompts fed directly to the 8B MOSS voice-acting TTS, 4 seeds per prompt, scored and reward-ranked. Listenable takes, best-of-k quality/compute trade-off, and the full k=1..32 seed-scaling walltime table.</p></a>
+
+<a class="card" href="prompts.html"><span class="badge">Throughput study</span>
+<h2>Local-LLM DramaBox Prompt-Generation</h2>
+<p>Throughput and token stats for generating DramaBox two-scene prompts with a local LLM on a single A100, per pathway and language, with a 1M-prompt estimate — plus the DramaBox TTS seed-scaling table for downstream best-of-k planning.</p></a>
+
+<a class="card" href="demo/sidon_vc_sample_groups.html"><span class="badge">Demo</span>
+<h2>Sidon + ChatterboxVC Sample Groups</h2>
+<p>20 groups × 25 candidates with LLM-guided <code>CUT&nbsp;TO:</code> splitting, Whisper-turbo ASR, and Gemma re-annotation.</p></a>
+
+<p class="foot">Code Apache-2.0 · docs &amp; sample pages CC-BY-4.0 · <a href="https://github.com/LAION-AI/Voice-Acting-Pipeline">GitHub repo</a></p>
+</div></body></html>
