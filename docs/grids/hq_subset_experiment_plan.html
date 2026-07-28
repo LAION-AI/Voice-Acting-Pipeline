@@ -1,0 +1,85 @@
+<!doctype html><html><head><meta charset=utf-8><title>Experiment Plan — High-Quality VoiceNet-Guided Subsets for weak emotion LoRAs</title>
+<style>
+body{font-family:system-ui,Segoe UI,Arial;background:#0e1117;color:#e6edf3;margin:0;padding:28px;max-width:1150px;line-height:1.55}
+a{color:#58a6ff}h1{font-weight:700}h2{color:#58a6ff;margin:26px 0 8px}h3{color:#c9d1d9;margin:16px 0 4px}
+.report{background:#12212b;border:1px solid #1f6feb55;border-radius:12px;padding:16px 18px;margin:14px 0 20px;font-size:14px}
+table{border-collapse:collapse;margin:8px 0;font-size:13px;width:100%}th,td{border:1px solid #30363d;padding:5px 9px;text-align:left;vertical-align:top}
+th{color:#8b949e;background:#161b22}code{background:#161b22;padding:1px 5px;border-radius:4px;font-size:12px}
+.tag{display:inline-block;font-size:11px;padding:1px 7px;border-radius:12px;margin:1px}.up{background:#0d3320;color:#5be39a}.dn{background:#3d1d1d;color:#f08a8a}.mid{background:#26324a;color:#9db4e6}
+.sub{color:#8b949e;font-size:13px}</style></head><body>
+<h1>Experiment Plan — Rescuing the weak emotion LoRAs with VoiceNet-guided high-quality subsets</h1>
+<p class=sub>Companion plan to the 40-emotion sweep. Goal: for every emotion whose LoRA lift is &lt; 1.0, build
+a cleaner, emotion-supporting training subset filtered by <b>other VoiceNet dimensions + genuineness</b>, then
+re-tune / re-train and check whether the lift crosses 1.0. Detective mode: one testable hypothesis per emotion.</p>
+
+<div class=report>
+<h2>Why they under-perform (hypothesis)</h2>
+<p>29 of 40 emotions lift &lt; 1.0 (see <code>LEARNINGS.md</code>). Two likely causes: (1) the training pool
+was filtered mainly by the <b>target emotion score</b>, so it contains clips that are labelled e.g. "Elation"
+but are acoustically flat or low-arousal — the model learns a weak, averaged rendering; (2) many are
+high-valence / subtle states that need the <i>right supporting prosody</i> to read as that emotion at all.
+<b>Fix:</b> select clips where the target emotion is high <i>and</i> the VoiceNet acoustic markers that
+<i>define</i> that emotion are present, and genuineness is high (natural, not flat/acted). A smaller, purer
+set should give a sharper LoRA — and with less data, a <b>lower rank (8/16)</b> should overfit less.</p>
+</div>
+
+<h2>Method (per emotion)</h2>
+<ol>
+<li><b>Re-score the candidate pool.</b> For each emotion's clips (natural EmoLia + Got-Talent + DACVAE buckets),
+run the 99-dim <code>NinetyNineScorer</code> to get the full VoiceNet profile (57 dims), genuineness, blend and
+the 40 emotion scores per clip. (Natural clips have mp3; Got-Talent codes are decoded via MOSS then scored.)</li>
+<li><b>Filter by a per-emotion recipe</b> (below): target emotion ≥ threshold <b>AND</b> supporting VoiceNet
+dims in the target range <b>AND</b> genuineness ≥ 2.5. Keep the top-N by a recipe fit-score.</li>
+<li><b>Two training arms</b> per emotion: <b>(A) continue-tune</b> the current best adapter on the HQ subset
+(short, low LR); <b>(B) fresh low-rank</b> LoRA (rank <b>8</b> and <b>16</b>) trained from scratch on the HQ
+subset only. Compare against the current best.</li>
+<li><b>Eval</b> with the same 4 metrics (emotion-z, blend, genuineness, speaker-sim) + lift over base.
+<b>Success = lift crosses 1.0</b> while blend/genu/speaker hold. Iterate the recipe for stubborn ones.</li>
+</ol>
+
+<h2>Per-emotion VoiceNet recipes (detective hypotheses)</h2>
+<p class=sub>Markers: <span class='tag up'>high</span> <span class='tag dn'>low</span> <span class='tag mid'>mid/neutral</span>.
+AROU=arousal, VALN=valence, TENS=vocal tension, TEMP=tempo, FOCS=focus, COGL=cognitive load, DFLU=disfluency,
+CLRT=clarity, VULN=vulnerability, RANG=pitch range, REGS=register. All require genuineness <span class='tag up'>high</span>.</p>
+<table>
+<tr><th>emotion (lift)</th><th>target emotion</th><th>supporting VoiceNet markers</th><th>rationale</th></tr>
+<tr><td>Elation (+0.00)</td><td>Elation high</td><td><span class='tag up'>AROU</span><span class='tag up'>VALN</span><span class='tag up'>RANG</span><span class='tag up'>TEMP</span></td><td>excited joy = high arousal + positive + wide, fast pitch</td></tr>
+<tr><td>Pain (+0.89)</td><td>Pain high</td><td><span class='tag up'>AROU</span><span class='tag up'>TENS</span><span class='tag dn'>VALN</span></td><td>acute pain = high arousal, strained/tense, negative</td></tr>
+<tr><td>Intoxication (+ but noisy)</td><td>Intoxication high</td><td><span class='tag dn'>AROU</span><span class='tag up'>DFLU</span><span class='tag dn'>CLRT</span><span class='tag dn'>TEMP</span></td><td>stoned/drunk = low arousal, slurred, unclear, slow</td></tr>
+<tr><td>Sexual_Lust (+ but low spk)</td><td>Lust high + Longing mid</td><td><span class='tag mid'>AROU</span><span class='tag up'>VULN</span><span class='tag dn'>TEMP</span> breathy</td><td>correlate with Longing, genuine, soft/slow/breathy</td></tr>
+<tr><td>Longing (+0.56)</td><td>Longing high + Sadness mid</td><td><span class='tag dn'>VALN</span><span class='tag mid'>AROU</span><span class='tag dn'>TEMP</span></td><td>yearning = mildly negative, subdued, slow</td></tr>
+<tr><td>Contentment (+0.00)</td><td>Contentment high</td><td><span class='tag dn'>AROU</span><span class='tag up'>VALN</span><span class='tag dn'>TENS</span> smooth</td><td>calm satisfaction = low arousal, positive, relaxed</td></tr>
+<tr><td>Contemplation (−0.62)</td><td>Contemplation high</td><td><span class='tag dn'>AROU</span><span class='tag up'>COGL</span><span class='tag up'>FOCS</span><span class='tag dn'>TEMP</span></td><td>thinking = low arousal, high cognitive load, slow, disfluent pauses</td></tr>
+<tr><td>Concentration (−0.10)</td><td>Concentration high</td><td><span class='tag up'>FOCS</span><span class='tag up'>COGL</span><span class='tag mid'>AROU</span><span class='tag dn'>RANG</span></td><td>focused = flat pitch, high focus, steady</td></tr>
+<tr><td>Awe (+0.00)</td><td>Awe high</td><td><span class='tag mid'>AROU</span><span class='tag up'>VALN</span><span class='tag dn'>TEMP</span> hushed</td><td>wonder = positive, slowed, breathy-hushed</td></tr>
+<tr><td>Pride / Triumph (+0.00)</td><td>Pride/Triumph high</td><td><span class='tag up'>AROU</span><span class='tag up'>VALN</span> dominant<span class='tag up'>VOLT</span></td><td>elevated, dominant, projected</td></tr>
+<tr><td>Astonishment (+0.13)</td><td>Astonishment high</td><td><span class='tag up'>AROU</span><span class='tag up'>RANG</span> sudden onset</td><td>surprise = high arousal, sharp pitch jump</td></tr>
+<tr><td>Doubt / Confusion (+0.58/+0.24)</td><td>Doubt/Confusion high</td><td><span class='tag up'>COGL</span><span class='tag up'>DFLU</span><span class='tag mid'>AROU</span></td><td>uncertainty = disfluent, hesitant, high load</td></tr>
+<tr><td>Shame / Embarrassment (+0.50/+0.00)</td><td>target high</td><td><span class='tag up'>VULN</span><span class='tag dn'>VOLT</span><span class='tag dn'>VALN</span></td><td>self-conscious = vulnerable, quiet, negative</td></tr>
+<tr><td>Hope / Thankfulness / Affection / Infatuation (~0)</td><td>target high</td><td><span class='tag up'>VALN</span><span class='tag mid'>AROU</span> warm/smooth</td><td>warm positive = positive valence, smooth, moderate arousal</td></tr>
+<tr><td>Contempt / Disgust / Bitterness / Sourness (~0)</td><td>target high</td><td><span class='tag dn'>VALN</span><span class='tag up'>TENS</span> creaky</td><td>aversion = negative, tense, creaky/curled</td></tr>
+<tr><td>Interest (+0.45)</td><td>Interest high</td><td><span class='tag mid'>AROU</span><span class='tag up'>FOCS</span><span class='tag up'>VALN</span></td><td>engaged = focused, mildly positive, animated</td></tr>
+<tr><td>Relief (+0.66)</td><td>Relief high</td><td>AROU drop <span class='tag up'>VALN</span><span class='tag dn'>TENS</span> exhale</td><td>tension release = falling arousal, relaxing, sighing</td></tr>
+<tr><td>Emotional_Numbness (+0.84)</td><td>Numbness high</td><td><span class='tag dn'>AROU</span><span class='tag mid'>VALN</span> monotone<span class='tag dn'>RANG</span></td><td>detached = flat, monotone, low expressiveness</td></tr>
+<tr><td>Disappointment (+0.82)</td><td>Disappointment high</td><td><span class='tag dn'>VALN</span> AROU drop<span class='tag dn'>TEMP</span></td><td>let-down = negative, deflating, slowing</td></tr>
+<tr><td>Impatience (+0.05)</td><td>Impatience high</td><td><span class='tag up'>AROU</span><span class='tag up'>TENS</span><span class='tag up'>TEMP</span></td><td>irritable haste = fast, tense, high arousal</td></tr>
+<tr><td>Jealousy (+0.01)</td><td>Jealousy high</td><td><span class='tag dn'>VALN</span><span class='tag up'>TENS</span> Bitterness mid</td><td>envy = negative, tense, bitter undertone</td></tr>
+</table>
+
+<h2>Training arms & configs</h2>
+<ul>
+<li><b>A · continue-tune:</b> resume the current best adapter, LR 5e-5, ~1500 seen on the HQ subset (gentle sharpening).</li>
+<li><b>B · fresh low-rank:</b> new LoRA at <b>rank 8</b> and <b>rank 16</b>, LR 2e-4, ~2500-3500 seen, HQ subset only. Hypothesis: purer+smaller data ⇒ low rank generalises better and imposes the emotion more cleanly.</li>
+<li>Keep the winning arm per emotion by the combined score (z gated by blend≥0.3, spk≥0.1, genu).</li>
+</ul>
+
+<h2>Success criteria & logging</h2>
+<ul>
+<li><b>Primary:</b> lift over base crosses <b>1.0</b> (from &lt;1.0) while blend/genuineness/speaker-sim do not regress materially.</li>
+<li>Every run appended to <code>LEARNINGS.md</code>: emotion · recipe · subset size · arm · rank · z/lift/blend/genu/spk · verdict. Plus the per-dimension <b>min/max LoRA matrix</b> (from the merge-scaling step) so any diff-vector pair is reconstructable.</li>
+<li>Detective loop: for emotions still &lt;1.0, tighten the recipe (raise thresholds / add a marker) and re-run; log what changed the outcome.</li>
+</ul>
+
+<h2>Compute</h2>
+<p class=sub>Runs after the current demo/merge pipeline frees the 8 GPUs. ~29 emotions × (A + B×2 ranks) ≈ ~85 short runs, 8-GPU queue, disk-guarded, resumable. Best HQ adapters upload to <code>TTS-AGI/moss-emotion-loras-40</code> (v2 path), HQ subsets to <code>TTS-AGI/moss-emotion-train40-subsets</code>.</p>
+</body></html>
