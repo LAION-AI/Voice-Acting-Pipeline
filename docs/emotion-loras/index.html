@@ -1,0 +1,63 @@
+<!doctype html><html><head><meta charset=utf-8><title>Emotion LoRAs for MOSS-TTS-4.55B — demo grids</title><style>
+body{font-family:system-ui,Segoe UI,Arial;background:#0e1117;color:#e6edf3;margin:0;padding:26px;max-width:1300px}
+a{color:#58a6ff;text-decoration:none}a:hover{text-decoration:underline}
+h1{font-weight:700}h2{color:#58a6ff;margin:22px 0 4px}h3{color:#c9d1d9;margin:16px 0 4px;font-size:15px}
+.sub{color:#8b949e;font-size:13px;line-height:1.5}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-top:14px}
+.ecard{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px}
+.ecard .m{font-size:11px;color:#8b949e;margin-top:4px}.z{color:#5be39a;font-weight:700}
+.ptext{background:#0d1117;border-left:3px solid #58a6ff;padding:6px 10px;margin:6px 0;font-size:12px;color:#c9d1d9;font-style:italic}
+.row{display:grid;grid-template-columns:110px repeat(3,1fr);gap:10px;align-items:start;margin-bottom:8px}
+.hc{font-size:12px;color:#58a6ff;font-weight:700;text-align:center}
+.card{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:7px}
+.tag{display:inline-block;font-size:10px;padding:1px 6px;border-radius:12px;margin-right:5px}
+.noref{background:#3d2d00;color:#f0c14b}.ref{background:#0d3320;color:#5be39a}
+.sc{font-size:10px;color:#8b949e}audio{width:100%;height:28px;margin-top:3px}
+.slabel{font-size:11px;color:#8b949e;padding-top:12px}
+</style></head><body>
+<h1>Emotion LoRAs for MOSS-TTS Voice-Acting (4.55B)</h1>
+<p class=sub>One LoRA adapter per EmoNet emotion, each the best of a rank {16,32,64} sweep on natural (EmoLia) + intense Got-Talent speech, with ~25% same-voice references and procedural emotion captions. Click an emotion to hear five neutral sentences in English / German / French, with and without an emotion reference. z = EmoNet emotion intensity of the output (baseline = v2 with no LoRA); blend = vocal-burst-blend; genu = genuineness; spk = speaker similarity.</p>
+<p class=sub>Adapters on Hugging Face: <a href="https://huggingface.co/TTS-AGI/moss-emotion-loras-40">TTS-AGI/moss-emotion-loras-40</a>.</p>
+<p class=sub><b>Merge experiments:</b> <a href="merge-scaling.html">▶ LoRA merge-intensity scaling (25/50/75/100%)</a> · <a href="combination.html">▶ combining two emotion LoRAs</a> · <a href="diff-vectors.html">▶ diff-vectors: per-dimension max/min LoRA</a></p>
+<div class=cards>
+<div class=ecard><a href="Helplessness.html"><b>Helplessness</b></a><div class=m>z <span class=z>+2.07</span> (+1.79 vs base) · rank 16<br>blend 0.547 · genu 0.26 · spk 0.119</div></div>
+<div class=ecard><a href="Fear.html"><b>Fear</b></a><div class=m>z <span class=z>+2.04</span> (+1.25 vs base) · rank 64<br>blend 0.403 · genu 0.145 · spk 0.155</div></div>
+<div class=ecard><a href="Distress.html"><b>Distress</b></a><div class=m>z <span class=z>+1.87</span> (+1.35 vs base) · rank 16<br>blend 0.64 · genu 0.239 · spk 0.299</div></div>
+<div class=ecard><a href="Sadness.html"><b>Sadness</b></a><div class=m>z <span class=z>+1.90</span> (+1.16 vs base) · rank 32<br>blend 0.593 · genu 0.262 · spk 0.109</div></div>
+<div class=ecard><a href="Fatigue_Exhaustion.html"><b>Fatigue Exhaustion</b></a><div class=m>z <span class=z>+1.55</span> (+1.47 vs base) · rank 16<br>blend 0.499 · genu 0.159 · spk 0.26</div></div>
+<div class=ecard><a href="Doubt.html"><b>Doubt</b></a><div class=m>z <span class=z>+1.28</span> (+0.58 vs base) · rank 32<br>blend 0.602 · genu 0.097 · spk 0.392</div></div>
+<div class=ecard><a href="Intoxication_Altered_States_of_Consciousness.html"><b>Intoxication Altered States of Consciousness</b></a><div class=m>z <span class=z>+1.15</span> (+1.58 vs base) · rank 32<br>blend 0.713 · genu 0.196 · spk 0.441</div></div>
+<div class=ecard><a href="Longing.html"><b>Longing</b></a><div class=m>z <span class=z>+1.17</span> (+0.56 vs base) · rank 16<br>blend 0.857 · genu 0.237 · spk 0.292</div></div>
+<div class=ecard><a href="Emotional_Numbness.html"><b>Emotional Numbness</b></a><div class=m>z <span class=z>+1.84</span> (+0.84 vs base) · rank 16<br>blend 0.521 · genu 0.131 · spk 0.007</div></div>
+<div class=ecard><a href="Disappointment.html"><b>Disappointment</b></a><div class=m>z <span class=z>+1.11</span> (+0.81 vs base) · rank 16<br>blend 0.536 · genu 0.209 · spk 0.25</div></div>
+<div class=ecard><a href="Pain.html"><b>Pain</b></a><div class=m>z <span class=z>+1.01</span> (+0.89 vs base) · rank 64<br>blend 0.487 · genu 0.168 · spk 0.26</div></div>
+<div class=ecard><a href="Relief.html"><b>Relief</b></a><div class=m>z <span class=z>+0.73</span> (+0.66 vs base) · rank 32<br>blend 0.514 · genu 0.197 · spk 0.177</div></div>
+<div class=ecard><a href="Anger.html"><b>Anger</b></a><div class=m>z <span class=z>+0.74</span> (+1.34 vs base) · rank 16<br>blend 0.469 · genu 0.167 · spk 0.133</div></div>
+<div class=ecard><a href="Teasing.html"><b>Teasing</b></a><div class=m>z <span class=z>+0.55</span> (+1.15 vs base) · rank 16<br>blend 0.417 · genu 0.259 · spk 0.332</div></div>
+<div class=ecard><a href="Malevolence_Malice.html"><b>Malevolence Malice</b></a><div class=m>z <span class=z>+0.58</span> (+1.15 vs base) · rank 32<br>blend 0.599 · genu 0.135 · spk 0.145</div></div>
+<div class=ecard><a href="Confusion.html"><b>Confusion</b></a><div class=m>z <span class=z>+0.54</span> (+0.24 vs base) · rank 64<br>blend 0.456 · genu 0.194 · spk 0.199</div></div>
+<div class=ecard><a href="Amusement.html"><b>Amusement</b></a><div class=m>z <span class=z>+1.48</span> (+1.99 vs base) · rank 64<br>blend 0.133 · genu 0.22 · spk 0.129</div></div>
+<div class=ecard><a href="Shame.html"><b>Shame</b></a><div class=m>z <span class=z>-0.09</span> (+0.50 vs base) · rank 64<br>blend 0.777 · genu 0.183 · spk 0.392</div></div>
+<div class=ecard><a href="Sexual_Lust.html"><b>Sexual Lust</b></a><div class=m>z <span class=z>+0.57</span> (+1.38 vs base) · rank 16<br>blend 0.687 · genu 0.165 · spk 0.007</div></div>
+<div class=ecard><a href="Affection.html"><b>Affection</b></a><div class=m>z <span class=z>-0.21</span> (+0.43 vs base) · rank 64<br>blend 0.595 · genu 0.177 · spk 0.317</div></div>
+<div class=ecard><a href="Impatience_and_Irritability.html"><b>Impatience and Irritability</b></a><div class=m>z <span class=z>+0.46</span> (+0.05 vs base) · rank 64<br>blend 0.37 · genu 0.155 · spk 0.019</div></div>
+<div class=ecard><a href="Disgust.html"><b>Disgust</b></a><div class=m>z <span class=z>-0.22</span> (+0.31 vs base) · rank 64<br>blend 0.359 · genu 0.158 · spk 0.145</div></div>
+<div class=ecard><a href="Concentration.html"><b>Concentration</b></a><div class=m>z <span class=z>-0.40</span> (+-0.10 vs base) · rank 64<br>blend 0.581 · genu 0.193 · spk 0.215</div></div>
+<div class=ecard><a href="Contempt.html"><b>Contempt</b></a><div class=m>z <span class=z>-0.54</span> (+-0.00 vs base) · rank 32<br>blend 0.637 · genu 0.141 · spk 0.353</div></div>
+<div class=ecard><a href="Astonishment_Surprise.html"><b>Astonishment Surprise</b></a><div class=m>z <span class=z>-0.44</span> (+0.13 vs base) · rank 16<br>blend 0.419 · genu 0.183 · spk 0.187</div></div>
+<div class=ecard><a href="Thankfulness_Gratitude.html"><b>Thankfulness Gratitude</b></a><div class=m>z <span class=z>-0.57</span> (+-0.01 vs base) · rank 64<br>blend 0.643 · genu 0.214 · spk 0.361</div></div>
+<div class=ecard><a href="Triumph.html"><b>Triumph</b></a><div class=m>z <span class=z>-0.54</span> (+-0.00 vs base) · rank 16<br>blend 0.443 · genu 0.128 · spk 0.344</div></div>
+<div class=ecard><a href="Jealousy_&_Envy.html"><b>Jealousy &amp; Envy</b></a><div class=m>z <span class=z>-0.53</span> (+0.02 vs base) · rank 32<br>blend 0.388 · genu 0.193 · spk 0.312</div></div>
+<div class=ecard><a href="Contemplation.html"><b>Contemplation</b></a><div class=m>z <span class=z>-0.56</span> (+-0.62 vs base) · rank 16<br>blend 0.635 · genu 0.171 · spk 0.248</div></div>
+<div class=ecard><a href="Awe.html"><b>Awe</b></a><div class=m>z <span class=z>-0.58</span> (+0.00 vs base) · rank 64<br>blend 0.612 · genu 0.135 · spk 0.302</div></div>
+<div class=ecard><a href="Pride.html"><b>Pride</b></a><div class=m>z <span class=z>-0.57</span> (+0.00 vs base) · rank 16<br>blend 0.53 · genu 0.164 · spk 0.283</div></div>
+<div class=ecard><a href="Interest.html"><b>Interest</b></a><div class=m>z <span class=z>-0.59</span> (+0.45 vs base) · rank 64<br>blend 0.421 · genu 0.129 · spk 0.288</div></div>
+<div class=ecard><a href="Pleasure_Ecstasy.html"><b>Pleasure Ecstasy</b></a><div class=m>z <span class=z>-0.59</span> (+0.15 vs base) · rank 32<br>blend 0.681 · genu 0.203 · spk 0.179</div></div>
+<div class=ecard><a href="Hope_Enthusiasm_Optimism.html"><b>Hope Enthusiasm Optimism</b></a><div class=m>z <span class=z>-0.60</span> (+0.22 vs base) · rank 32<br>blend 0.483 · genu 0.178 · spk 0.193</div></div>
+<div class=ecard><a href="Elation.html"><b>Elation</b></a><div class=m>z <span class=z>-0.62</span> (+0.00 vs base) · rank 64<br>blend 0.492 · genu 0.177 · spk 0.189</div></div>
+<div class=ecard><a href="Infatuation.html"><b>Infatuation</b></a><div class=m>z <span class=z>-0.73</span> (+-0.01 vs base) · rank 32<br>blend 0.562 · genu 0.102 · spk 0.203</div></div>
+<div class=ecard><a href="Contentment.html"><b>Contentment</b></a><div class=m>z <span class=z>-0.79</span> (+0.00 vs base) · rank 32<br>blend 0.713 · genu 0.159 · spk 0.194</div></div>
+<div class=ecard><a href="Bitterness.html"><b>Bitterness</b></a><div class=m>z <span class=z>-0.84</span> (+0.01 vs base) · rank 32<br>blend 0.529 · genu 0.174 · spk 0.156</div></div>
+<div class=ecard><a href="Sourness.html"><b>Sourness</b></a><div class=m>z <span class=z>-0.65</span> (+0.00 vs base) · rank 16<br>blend 0.574 · genu 0.153 · spk 0.097</div></div>
+<div class=ecard><a href="Embarrassment.html"><b>Embarrassment</b></a><div class=m>z <span class=z>-0.67</span> (+0.02 vs base) · rank 16<br>blend 0.704 · genu 0.17 · spk 0.062</div></div>
+</div></body></html>

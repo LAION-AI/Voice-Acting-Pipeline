@@ -662,3 +662,22 @@ Requires `/tmp/moss_venv` with `transformers==4.57.1` (MOSS is incompatible with
 - [DramaBox](https://huggingface.co/ResembleAI/Dramabox) — see model card
 - [Qwen3-TTS](https://github.com/QwenLM/Qwen3-TTS) — Apache 2.0
 - [Seed-VC](https://github.com/Plachtaa/seed-vc) — MIT
+
+
+## Emotion LoRAs for MOSS-TTS (40 emotions)
+
+We trained **one LoRA adapter per EmoNet emotion** for the MOSS-TTS-Local-Transformer-4.55B voice-acting
+model, so an emotion can be applied on top of ordinary voice cloning. Each adapter is the **best of a rank
+{16, 32, 64} sweep**: for scarce data a lower rank curbs overfitting, and the winner is picked by a combined
+score over emotion intensity, vocal-burst-blend, genuineness and speaker similarity.
+
+**Data (per emotion, ~1,000–1,400 clips):** natural in-the-wild speech (**EmoLia**) is preferred and filled
+with the most intense **LAION's Got Talent** clips; ~25% of rows carry a same-voice, contrasting-emotion
+reference; instructions are procedural emotion captions from
+[`procedural-voice-captions`](https://github.com/LAION-AI/procedural-voice-captions).
+
+- **▶ Demo grids (audio, EN/DE/FR, with & without reference):** [https://projects.laion.ai/Voice-Acting-Pipeline/emotion-loras/](https://projects.laion.ai/Voice-Acting-Pipeline/emotion-loras/)
+- **Adapters on Hugging Face:** [`TTS-AGI/moss-emotion-loras-40`](https://huggingface.co/TTS-AGI/moss-emotion-loras-40)
+
+The demo plays five neutral sentences per emotion in three languages, comparing the LoRA with and without an
+emotion reference; the LoRA raises the automatic EmoNet emotion score while keeping the voice and naturalness.
