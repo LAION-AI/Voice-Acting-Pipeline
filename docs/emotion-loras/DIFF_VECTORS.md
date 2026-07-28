@@ -20,9 +20,9 @@ Teasing                        Teasing                         +0.77   Distress 
 Pride                          Hope_Enthusiasm_Optimism        +0.61   Pleasure_Ecstasy                -0.18     0.79
 Interest                       Jealousy_&_Envy                 +0.36   Sadness                         -0.33     0.69
 Elation                        Amusement                       +0.51   Infatuation                     -0.16     0.67
-Longing                        Sadness                         +0.30   Confusion                       -0.35     0.66
 Infatuation                    Contentment                     +0.53   Sadness                         -0.09     0.62
 Helplessness                   Sadness                         +0.44   Amusement                       -0.18     0.62
+Longing                        Sadness                         +0.30   Amusement                       -0.30     0.61
 Doubt                          Sadness                         +0.43   Helplessness                    -0.17     0.60
 Pleasure_Ecstasy               Amusement                       +0.51   Pain                            -0.09     0.60
 Distress                       Sadness                         +0.53   Malevolence_Malice              -0.04     0.57
@@ -50,7 +50,7 @@ Disgust                        Relief                          +0.01   Doubt    
   Awe                            lowers Concentration (-0.67) · raises Impatience_and_Irritability (+0.91)
   Bitterness                     lowers Concentration (-1.24) · raises Impatience_and_Irritability (+1.51)
   Concentration                  lowers Relief (-0.69) · raises Impatience_and_Irritability (+1.29)
-  Confusion                      lowers Contemplation (-0.65) · raises Impatience_and_Irritability (+0.34)
+  Confusion                      lowers Contentment (-0.62) · raises Impatience_and_Irritability (+0.24)
   Contemplation                  lowers Concentration (-0.82) · raises Impatience_and_Irritability (+0.80)
   Contempt                       lowers Contentment (-0.41) · raises Impatience_and_Irritability (+0.68)
   Contentment                    lowers Concentration (-0.86) · raises Impatience_and_Irritability (+0.76)
