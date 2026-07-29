@@ -1,0 +1,820 @@
+{
+ "description": "Gemini-3.6-Flash voice annotations for chavo character-class LoRAs (TTS-AGI/moss-race-loras). id = raw training identifier / HF adapter folder; human_name = display name.",
+ "classes": {
+  "dragonkin": {
+   "human_name": "Resonant Elder Bass",
+   "one_sentence_impression": "An immensely deep, booming male voice with a rich gravelly resonance that commands quiet authority.",
+   "detailed_sentence": "Characterized by an exceptionally low pitch, powerful chest resonance, and a slow, measured delivery, this voice carries a subtle raspy texture in its lower register that conveys ancient wisdom and physically imposing scale.",
+   "perceived_age": "Elderly (60+ or ageless fantasy entity), suggested by the heavy low-end rumble and deliberate, experienced pacing.",
+   "perceived_gender": "Male",
+   "register": "Very low bass register with steady, controlled intonation and low pitch variation.",
+   "timbre_profile": {
+    "metallic": 1,
+    "throatiness": 3,
+    "falsetto": 0,
+    "chest_voice": 5,
+    "roughness": 3,
+    "brightness": 1,
+    "summary": "Extremely dark and chest-resonant with a warm, gravelly low-end and booming weight."
+   },
+   "distinctive_features": "Slow and deliberate pacing with natural pauses; deep, room-shaking bass projection; subtle guttural rasp on sustained vowels.",
+   "casting": [
+    {
+     "genre": "Classic Fantasy",
+     "role": "Ancient dragon or elemental stone guardian",
+     "direction": "Speak with slow, immovable weight and calm, majestic authority."
+    },
+    {
+     "genre": "Sci-Fi",
+     "role": "Alien patriarch or planetary warlord",
+     "direction": "Deliver lines with deep resonance, steady pacing, and absolute confidence."
+    },
+    {
+     "genre": "Mystery/Horror",
+     "role": "Primordial shadow entity or ominous narrator",
+     "direction": "Maintain a low, rumbling voice that feels close to the listener's ear."
+    }
+   ],
+   "keywords": [
+    "booming bass",
+    "ancient elder",
+    "gravelly rumble"
+   ]
+  },
+  "drake": {
+   "human_name": "Stoic Resonant Wanderer",
+   "one_sentence_impression": "A deep, soothing male voice with a steady cadence and rich chest resonance that projects calm authority and quiet experience.",
+   "detailed_sentence": "The voice is a low, warm baritone-bass with strong chest resonance, minimal pitch fluctuation, and a smooth, deliberate delivery that carries a sense of weariness, wisdom, and understated command.",
+   "perceived_age": "Middle-aged (~40-55), suggested by its deep resonance and calm, seasoned gravitas.",
+   "perceived_gender": "Male",
+   "register": "Low register (baritone/bass) with controlled, steady pitch movement and deliberate pacing.",
+   "timbre_profile": {
+    "metallic": 0,
+    "throatiness": 2,
+    "falsetto": 0,
+    "chest_voice": 5,
+    "roughness": 2,
+    "brightness": 1,
+    "summary": "Deep, dark, and highly resonant chest voice with subtle warmth and light textural grit."
+   },
+   "distinctive_features": "Slow, measured pacing with deliberate pauses, deep chest resonance, and a controlled, unruffled cadence.",
+   "casting": [
+    {
+     "genre": "Classic Fantasy",
+     "role": "Grizzled ranger or veteran commander",
+     "direction": "Speak with quiet authority and weary experience, letting the natural low resonance carry weight without raising your voice."
+    },
+    {
+     "genre": "Sci-Fi",
+     "role": "Seasoned space station engineer or starship captain",
+     "direction": "Deliver reports calmly and methodically, projecting steady composure in critical situations."
+    },
+    {
+     "genre": "Mystery/Horror",
+     "role": "Reclusive detective or town sheriff",
+     "direction": "Maintain a low, guarded tone that conveys quiet observation and unspoken history."
+    }
+   ],
+   "keywords": [
+    "deep",
+    "authoritative",
+    "stoic"
+   ]
+  },
+  "doomguard": {
+   "human_name": "Abyssal Overlord",
+   "one_sentence_impression": "A monstrously deep, pitch-processed demonic growl with immense sub-bass weight and dark authority.",
+   "detailed_sentence": "This voice sits in an unnaturally low sub-bass register, producing a slow, ponderous delivery laced with guttural gravel, cavernous chest resonance, and a menacing pitch-shifted growl.",
+   "perceived_age": "Ancient / timeless (sounds like an ancient monstrous entity or seasoned demonic lord)",
+   "perceived_gender": "Male (monstrous / abyssal)",
+   "register": "Extremely low sub-bass register with very rigid pitch control, spoken in a slow, ominous monotone.",
+   "timbre_profile": {
+    "metallic": 2,
+    "throatiness": 5,
+    "falsetto": 0,
+    "chest_voice": 5,
+    "roughness": 4,
+    "brightness": 1,
+    "summary": "Dark, subterranean, and heavily guttural with massive sub-bass resonance and a rough gravelly edge."
+   },
+   "distinctive_features": "Slow, deliberate pacing with long pauses between clauses and a characteristic throat-clearing vocal fry growl on phrase endings.",
+   "casting": [
+    {
+     "genre": "Classic Fantasy",
+     "role": "Demonic warlord or abyssal conqueror",
+     "direction": "Deliver lines with absolute, terrifying calm and immense weight."
+    },
+    {
+     "genre": "Sci-Fi",
+     "role": "Alien leviathan or giant cyborg juggernaut",
+     "direction": "Speak slowly and deliberately, letting the sub-bass rumble carry the threat."
+    },
+    {
+     "genre": "Horror / Supernatural",
+     "role": "Summoned ancient demon or cursed entity",
+     "direction": "Project a low, room-shaking threat as if physically towering over the listener."
+    }
+   ],
+   "keywords": [
+    "demonic",
+    "sub-bass",
+    "monstrous"
+   ]
+  },
+  "gnoll": {
+   "human_name": "Savage Guttural Beast",
+   "one_sentence_impression": "A raw, violent creature vocalization featuring guttural throat snarls and raspy, predatory shrieks.",
+   "detailed_sentence": "This synthetic voice delivers purely feral monster sounds characterized by intense throat distortion, wet air expulsions, and aggressive screeching growls suitable for predatory beasts.",
+   "perceived_age": "Ageless / Mature Beast, suggesting a fully grown, formidable monster.",
+   "perceived_gender": "Masculine / Non-Human, presenting as a heavy, aggressive male monster or genderless beast.",
+   "register": "Low growling pitch with sudden explosive spikes into high raspy screams.",
+   "timbre_profile": {
+    "metallic": 0,
+    "throatiness": 5,
+    "falsetto": 0,
+    "chest_voice": 3,
+    "roughness": 5,
+    "brightness": 2,
+    "summary": "Extremely throaty and violently rough, dominated by guttural gravel and raw friction with zero clean resonance."
+   },
+   "distinctive_features": "Aggressive wet snarls, explosive screeching bursts, gravelly guttural resonance, and animalistic panting.",
+   "casting": [
+    {
+     "genre": "Classic Fantasy",
+     "role": "Feral gnoll pack leader",
+     "direction": "Deliver uninhibited creature growls and explosive combat shrieks."
+    },
+    {
+     "genre": "Sci-Fi Horror",
+     "role": "Carnivorous alien beast",
+     "direction": "Focus on guttural breathing, snarls, and aggressive predatory vocalizations."
+    },
+    {
+     "genre": "Dark Fantasy / Horror",
+     "role": "Demonic shadow beast",
+     "direction": "Emphasize wet throat rasp and violent, tortured shrieks."
+    }
+   ],
+   "keywords": [
+    "feral",
+    "guttural",
+    "creature growl"
+   ]
+  },
+  "harpy": {
+   "human_name": "Shrieking Crone",
+   "one_sentence_impression": "A high-pitched, intensely screechy, and raspy voice that sounds like a wicked fantasy hag or harpy squawking dramatically.",
+   "detailed_sentence": "This voice is characterized by an extremely bright, shrill falsetto register laced with heavy throat rasp, piercing dynamic shrieks at sentence starts, and a theatrical, erratic cadence reminiscent of a fantasy monster or manic witch.",
+   "perceived_age": "Elderly (~60-80), suggested by the raspy friction, crackling vocal texture, and dramatic crone-like cadence.",
+   "perceived_gender": "Female",
+   "register": "Very high pitch sitting predominantly in screeching falsetto with wide, exaggerated pitch swings and wild dynamic bursts.",
+   "timbre_profile": {
+    "metallic": 1,
+    "throatiness": 4,
+    "falsetto": 4,
+    "chest_voice": 1,
+    "roughness": 5,
+    "brightness": 5,
+    "summary": "Piercingly bright and intensely rough, dominated by extreme throat rasp, falsetto strain, and almost zero chest resonance."
+   },
+   "distinctive_features": "Starts sentences with a high-pitched scream or shriek, features intense vocal friction, manic theatrical rhythm, sharp sibilance, and exaggerated pitch contour.",
+   "casting": [
+    {
+     "genre": "Classic Fantasy",
+     "role": "Wicked Hag / Village Witch",
+     "direction": "Deliver lines with manic energy, accentuating the gravelly rasps and shrill screeching peaks."
+    },
+    {
+     "genre": "Mystery / Horror",
+     "role": "Cursed Monster / Harpy",
+     "direction": "Project wild, unpredictable pitch swings and aggressive vocal fry to terrify the listener."
+    },
+    {
+     "genre": "Animation / Comedy",
+     "role": "Over-the-top Villainous Minion",
+     "direction": "Play up the squawking, theatrical drama with bright, cartoonish intensity."
+    }
+   ],
+   "keywords": [
+    "shrieking",
+    "hag",
+    "raspy"
+   ]
+  },
+  "kobold": {
+   "human_name": "Scrappy Imp Voice",
+   "one_sentence_impression": "A high-pitched, highly constricted creature voice with raspy sibilance and manic energy.",
+   "detailed_sentence": "This voice is characterized by an elevated vocal register, intense throat constriction, and a dry, raspy texture that produces a pinched, squeaky, and frantic fantasy minion sound without any chest resonance.",
+   "perceived_age": "Ageless small creature (conveys a manic, elderly or small-statured fantasy entity)",
+   "perceived_gender": "Androgynous / Male-leaning fantasy creature",
+   "register": "High register with sharp, erratic pitch movement and constricted head voice tone.",
+   "timbre_profile": {
+    "metallic": 1,
+    "throatiness": 4,
+    "falsetto": 4,
+    "chest_voice": 0,
+    "roughness": 4,
+    "brightness": 4,
+    "summary": "A thin, sharp, and throat-constricted creature timbre dominated by rasp and high pitch."
+   },
+   "distinctive_features": "Squeaky vocal fry, tight pharyngeal constriction, eager and rushed rhythm, and sharp sibilance.",
+   "casting": [
+    {
+     "genre": "Classic Fantasy",
+     "role": "Kobold Scout / Mischievous Goblin",
+     "direction": "Deliver lines with rapid, breathy urgency and scheming excitement."
+    },
+    {
+     "genre": "Sci-Fi",
+     "role": "Frenetic Alien Salvager",
+     "direction": "Haggle rapidly with a sharp, squeaky tone and intense nervous pacing."
+    },
+    {
+     "genre": "Horror / Comedy",
+     "role": "Cursed Doll / Impish Familiar",
+     "direction": "Emphasize the throat constriction and raspy giggles to create an unsettling yet comical vibe."
+    }
+   ],
+   "keywords": [
+    "goblin",
+    "imp",
+    "creature",
+    "squeaky"
+   ]
+  },
+  "nerubian": {
+   "human_name": "Guttural Monster Bass",
+   "one_sentence_impression": "A deep, menacing, guttural bass voice with a heavy raspy resonance and an intimidating, deliberate delivery.",
+   "detailed_sentence": "This voice sits in an extremely low chest register marked by intense throat rasp and dark rumble, delivering each word with slow, authoritative gravity that finishes with a heavy, beastly exhale.",
+   "perceived_age": "Middle-aged to elder (~45-60), sounding like an experienced, formidable commander or ancient creature.",
+   "perceived_gender": "Male",
+   "register": "Extremely low bass register with limited pitch movement, maintaining a steady, grave, monotone cadence.",
+   "timbre_profile": {
+    "metallic": 1,
+    "throatiness": 5,
+    "falsetto": 0,
+    "chest_voice": 5,
+    "roughness": 5,
+    "brightness": 1,
+    "summary": "Extremely dark and gravelly bass voice dominated by heavy throat rasp and deep chest resonance."
+   },
+   "distinctive_features": "Slow deliberate pacing, heavy vocal fry and guttural throat growl, menacingly authoritative presence, and a signature wet beastly exhale/snort at the end of phrases.",
+   "casting": [
+    {
+     "genre": "Classic Fantasy",
+     "role": "Orc warlord or demonic chieftain",
+     "direction": "Project heavy chest gravitas and let the throat rasp carry each menacing syllable."
+    },
+    {
+     "genre": "Sci-Fi",
+     "role": "Alien conqueror or hulking subterranean creature",
+     "direction": "Speak slowly with deep low-end rumble and cold, intimidating certainty."
+    },
+    {
+     "genre": "Horror",
+     "role": "Ancient eldritch demon or dungeon boss",
+     "direction": "Emphasize the gravelly throatiness and finish sentences with a low, menacing breath."
+    }
+   ],
+   "keywords": [
+    "guttural",
+    "monstrous",
+    "deep bass"
+   ]
+  },
+  "gargoyle": {
+   "human_name": "Craggy Guttural Growl",
+   "one_sentence_impression": "A harsh, gravelly, and deeply guttural creature voice that speaks in a low, menacing rasp.",
+   "detailed_sentence": "This voice features an extreme amount of throat friction and dry gravelly rasp, delivering low-pitched, deliberate, and sinister utterances with an ominous, breathy exhale.",
+   "perceived_age": "Elderly / Ancient (60+ or timeless), suggested by the heavily worn, dry rasp and slow, menacing delivery.",
+   "perceived_gender": "Male / Masculine presenting",
+   "register": "Low register with a slow, near-monotone pitch contour and deliberate pauses.",
+   "timbre_profile": {
+    "metallic": 0,
+    "throatiness": 5,
+    "falsetto": 0,
+    "chest_voice": 3,
+    "roughness": 5,
+    "brightness": 1,
+    "summary": "Dominantly throaty and intensely rough, featuring a dark, dry, gravelly texture."
+   },
+   "distinctive_features": "Slow, measured cadence with deliberate chunking; extreme throat growl and raspy friction; dominant and sinister mood with audible, breathy exhales on trailing words.",
+   "casting": [
+    {
+     "genre": "Classic Fantasy",
+     "role": "Stone gargoyle sentinel or ancient shadow fiend",
+     "direction": "Speak with slow, menacing authority, emphasizing the deep throat rasp on every word."
+    },
+    {
+     "genre": "Mystery/Horror",
+     "role": "Possessed demon or subterranean monster",
+     "direction": "Keep the pitch low and guttural, delivering lines as an ominous, gravelly threat."
+    },
+    {
+     "genre": "Sci-Fi",
+     "role": "Hostile alien warlord or corrupted mutant",
+     "direction": "Use deliberate pacing and harsh throat noise to project ruthless dominance."
+    }
+   ],
+   "keywords": [
+    "guttural",
+    "raspy creature",
+    "sinister monster"
+   ]
+  },
+  "pandaren": {
+   "human_name": "Gravelled Monk",
+   "one_sentence_impression": "A deep, gravelly male voice with warm chest resonance and a slow, measured cadence that sounds like a seasoned wanderer or wise elder.",
+   "detailed_sentence": "This mature male voice features a low-mid pitch anchor, rich throatiness, and a gentle gravelly texture that delivers lines with relaxed, deliberate pacing and grounded authority.",
+   "perceived_age": "Middle-aged to elderly (~55-65), indicated by the vocal gravel, relaxed cadence, and rich chest resonance.",
+   "perceived_gender": "Male",
+   "register": "Low-to-mid register with steady pitch contour and calm, rhythmic cadence.",
+   "timbre_profile": {
+    "metallic": 0,
+    "throatiness": 3,
+    "falsetto": 0,
+    "chest_voice": 4,
+    "roughness": 3,
+    "brightness": 2,
+    "summary": "Deep, chest-dominant tone with warm vocal grit and a rounded, dark finish."
+   },
+   "distinctive_features": "Deliberate, rhythmic pacing with extended vowel holds; noticeable throat rasp and chest resonance; calm, reassuring, and weathered tone.",
+   "casting": [
+    {
+     "genre": "High Fantasy",
+     "role": "Wandering monk or venerable tavern keeper",
+     "direction": "Speak with patient wisdom and gentle gravitas, as if sharing lore with a younger companion."
+    },
+    {
+     "genre": "Historical Fiction",
+     "role": "Seasoned caravan leader or trade guild master",
+     "direction": "Maintain a calm, authoritative tempo, projecting experience and practical knowledge."
+    },
+    {
+     "genre": "Sci-Fi / Space Opera",
+     "role": "Retired starship captain or alien ambassador",
+     "direction": "Deliver lines with a steady, weathered calm, highlighting the character's long history."
+    },
+    {
+     "genre": "Mystery / Drama",
+     "role": "Small-town historian or reclusive mentor",
+     "direction": "Use quiet, deliberate cadence with warm vocal texture to evoke nostalgia and quiet strength."
+    }
+   ],
+   "keywords": [
+    "wise elder",
+    "gravelly monk",
+    "warm raspy male"
+   ]
+  },
+  "wolf": {
+   "human_name": "Guttural Beast Breath",
+   "one_sentence_impression": "A deep, rasping creature respiratory sound featuring heavy inhales and hushed, dark exhales.",
+   "detailed_sentence": "This non-verbal voice effect produces a low, dry, and intensely raspy inhalation followed by a long, hollow, dark exhaled hiss that sounds like a sinister monster or predatory beast lurking in the shadows.",
+   "perceived_age": "Ageless / Mature, evoking an ancient or fully-grown monster or beast.",
+   "perceived_gender": "Masculine-leaning or ambiguous creature.",
+   "register": "Low register with minimal tonal pitch, consisting primarily of low-frequency airflow and quiet, rhythmic breathing motion.",
+   "timbre_profile": {
+    "metallic": 0,
+    "throatiness": 4,
+    "falsetto": 0,
+    "chest_voice": 3,
+    "roughness": 4,
+    "brightness": 1,
+    "summary": "Dark, gritty, and breath-heavy with prominent throat rasp and deep hollow chest resonance."
+   },
+   "distinctive_features": "Pronounced atmospheric inhalation and exhaled air flow, scratchy throat texture, air-heavy friction, and an ominous, predatory rhythm.",
+   "casting": [
+    {
+     "genre": "Classic Fantasy",
+     "role": "Lurking shadow wolf or demonic beast",
+     "direction": "Focus on slow, menace-filled breathing to build tension before an ambush."
+    },
+    {
+     "genre": "Sci-Fi / Horror",
+     "role": "Alien predator hiding in ventilation ducts",
+     "direction": "Keep the breath heavy, dry, and rhythmic, emphasizing the threat of an unseen monster."
+    },
+    {
+     "genre": "Dark Mystery / Thriller",
+     "role": "Ominous presence in a haunted forest",
+     "direction": "Deliver quiet, labored respiratory sounds that feel chillingly close to the listener."
+    }
+   ],
+   "keywords": [
+    "creature breath",
+    "beast inhale",
+    "monster exhale"
+   ]
+  },
+  "gnome": {
+   "human_name": "Pinched Eccentric Tinkerer",
+   "one_sentence_impression": "A high-pitched, raspy, and energetic voice with a pinched, theatrical cadence that sounds like a mischievous small fantasy creature.",
+   "detailed_sentence": "Characterized by its constricted throaty rasp, high pitch placement, and lively melodic jumps, this voice produces a bright, squeaky, and theatrical tone reminiscent of an eccentric small creature or eager old inventor.",
+   "perceived_age": "Middle-aged to elderly (~50-70), suggested by the raspy, weathered texture despite the elevated pitch.",
+   "perceived_gender": "Male",
+   "register": "High register with dynamic, animated pitch movement and expressive, sing-song cadence.",
+   "timbre_profile": {
+    "metallic": 1,
+    "throatiness": 4,
+    "falsetto": 3,
+    "chest_voice": 1,
+    "roughness": 3,
+    "brightness": 4,
+    "summary": "Bright and constricted high-register voice featuring a prominent throaty rasp and minimal chest resonance."
+   },
+   "distinctive_features": "Fast, bouncy pacing with sharp pitch spikes, constricted back-of-throat resonance, raspy vocal grit, and an eager, eccentric delivery.",
+   "casting": [
+    {
+     "genre": "Classic Fantasy",
+     "role": "Eccentric Gnome Inventor or Mischievous Goblin",
+     "direction": "Deliver lines with energetic, bouncy pacing, emphasizing the pinched vocal squeak and animated pitch jumps."
+    },
+    {
+     "genre": "Animation / Family",
+     "role": "Talkative Animal Sidekick or Magical Creature",
+     "direction": "Keep the tone theatrical, fast-paced, and eager, leaning into the sharp high-register vocal quirks."
+    },
+    {
+     "genre": "Sci-Fi",
+     "role": "Hyperactive Alien Trader or Scavenger",
+     "direction": "Speak with rapid haggling energy, mixing constricted throaty rasp with sudden pitch inflections."
+    }
+   ],
+   "keywords": [
+    "gnome",
+    "goblin",
+    "raspy"
+   ]
+  },
+  "draenei": {
+   "human_name": "Grave Patriarch",
+   "one_sentence_impression": "A deep, authoritative, and seasoned male voice that conveys quiet wisdom and noble gravity.",
+   "detailed_sentence": "Resonant and grounded, this voice features strong chest resonance combined with a slow, deliberate cadence and subtle throaty texture that gives it an air of ancient knowledge and world-weary authority.",
+   "perceived_age": "Middle-aged to mature adult (~45-60), suggested by its deep pitch, rich chest resonance, and calm, unhurried delivery.",
+   "perceived_gender": "Male",
+   "register": "Low to mid-low pitch with steady, controlled intonation and minimal pitch variance.",
+   "timbre_profile": {
+    "metallic": 0,
+    "throatiness": 3,
+    "falsetto": 0,
+    "chest_voice": 4,
+    "roughness": 2,
+    "brightness": 2,
+    "summary": "Deep, chest-dominant resonance balanced by a subtle throaty warmth and a smooth, weathered texture."
+   },
+   "distinctive_features": "Deliberate, rhythmic pacing with clear pauses between phrases; subtle Eastern European or fantasy-styled accentuation; commanding yet serene presence.",
+   "casting": [
+    {
+     "genre": "Classic Fantasy",
+     "role": "Noble alien elder or ancient paladin",
+     "direction": "Deliver lines with quiet dignity, solemnity, and a sense of long-standing wisdom."
+    },
+    {
+     "genre": "Sci-Fi",
+     "role": "Alien diplomat or veteran starship commander",
+     "direction": "Maintain an unhurried, authoritative tone with measured gravitas."
+    },
+    {
+     "genre": "Historical Drama",
+     "role": "Seasoned caravan leader or village chieftain",
+     "direction": "Speak with a grounded, trustworthy warmth that reflects years of hard experience."
+    }
+   ],
+   "keywords": [
+    "noble",
+    "wise elder",
+    "deep male",
+    "authoritative",
+    "fantasy"
+   ]
+  },
+  "abomination": {
+   "human_name": "Abyssal Behemoth",
+   "one_sentence_impression": "An unnaturally deep, subterranean voice that rumbles with guttural malice and heavy chest resonance.",
+   "detailed_sentence": "Sunk into an extremely low bass register with a thick, gargling throatiness and coarse grit, this voice delivers words with a slow, menacing cadence that feels ancient and non-human.",
+   "perceived_age": "Elderly / Ancient (60+), suggested by the weathered, gravelly tone and ponderous speech rhythm.",
+   "perceived_gender": "Male / Monstrous",
+   "register": "Extremely low bass with minimal pitch variance and a steady, ominous monotone.",
+   "timbre_profile": {
+    "metallic": 1,
+    "throatiness": 5,
+    "falsetto": 0,
+    "chest_voice": 5,
+    "roughness": 4,
+    "brightness": 1,
+    "summary": "Cavernous and extremely dark, dominated by sub-bass chest resonance and guttural throat grit."
+   },
+   "distinctive_features": "Slow, rhythmic pacing with extended pauses; dominant and terrifying tone; gravelly sub-bass rumble on every syllable.",
+   "casting": [
+    {
+     "genre": "Classic Fantasy",
+     "role": "demon lord or ancient dragon",
+     "direction": "Speak with slow, crushing authority and deep, gravelly weight."
+    },
+    {
+     "genre": "Sci-Fi / Space Opera",
+     "role": "alien warlord or cybernetic conqueror",
+     "direction": "Maintain a cold, unyielding monotone that reverberates with threat."
+    },
+    {
+     "genre": "Mystery / Horror",
+     "role": "eldritch entity or subterranean shadow creature",
+     "direction": "Deliver lines slowly from the darkness, letting the low rumble instill dread."
+    }
+   ],
+   "keywords": [
+    "deep bass",
+    "monstrous",
+    "guttural",
+    "villain",
+    "demon"
+   ]
+  },
+  "dracthyr": {
+   "human_name": "Seasoned Lorekeeper",
+   "one_sentence_impression": "A calm, mature female voice with warm chest resonance and a steady, measured delivery.",
+   "detailed_sentence": "Speaking in a mid-to-low pitch with natural cadence, this female voice carries a grounded, authoritative warmth anchored by gentle chest resonance and clear articulation.",
+   "perceived_age": "Middle-aged (~35-50), grounded tone and calm pacing convey experience and maturity.",
+   "perceived_gender": "Female",
+   "register": "Low-mid register with steady, measured pitch movement and natural pauses.",
+   "timbre_profile": {
+    "metallic": 0,
+    "throatiness": 1,
+    "falsetto": 0,
+    "chest_voice": 4,
+    "roughness": 1,
+    "brightness": 3,
+    "summary": "Warm, rich chest resonance with clear brightness and a smooth, unhurried delivery."
+   },
+   "distinctive_features": "Measured pacing with deliberate pauses; composed, trustworthy authority; smooth articulation without heavy breathiness or rasp.",
+   "casting": [
+    {
+     "genre": "Classic Fantasy",
+     "role": "wise village elder or veteran ranger",
+     "direction": "Speak with calm authority and unhurried certainty, as someone who knows the land intimately."
+    },
+    {
+     "genre": "Contemporary/Realistic",
+     "role": "experienced museum curator or audiobook narrator",
+     "direction": "Deliver lines with clear, warm articulation and balanced, reassuring gravity."
+    },
+    {
+     "genre": "Sci-Fi",
+     "role": "seasoned colony commander or starship diplomat",
+     "direction": "Maintain a steady, grounded cadence that projects quiet confidence during briefings."
+    }
+   ],
+   "keywords": [
+    "mature female",
+    "narrator",
+    "wise elder"
+   ]
+  },
+  "broker": {
+   "human_name": "Seasoned Matriarch",
+   "one_sentence_impression": "A mature, steady female voice that conveys quiet wisdom and calm authority.",
+   "detailed_sentence": "Characterized by its warm chest resonance and deliberate, measured pacing, this mature female voice carries a grounded, world-weary composure without sounding overly harsh or dramatic.",
+   "perceived_age": "Middle-aged (~45-60)",
+   "perceived_gender": "Female",
+   "register": "Low-mid register with steady, deliberate pitch movement.",
+   "timbre_profile": {
+    "metallic": 0,
+    "throatiness": 2,
+    "falsetto": 0,
+    "chest_voice": 4,
+    "roughness": 2,
+    "brightness": 2,
+    "summary": "Warm, deep chest resonance paired with a subtle mature grain and muted brightness."
+   },
+   "distinctive_features": "Unhurried pacing with deliberate phrase chunking, a calm and authoritative presence, and a smooth, slightly dry vocal texture.",
+   "casting": [
+    {
+     "genre": "Classic Fantasy",
+     "role": "wise caravan leader or village elder",
+     "direction": "Speak with steady, unhurried composure, offering guidance from years of experience."
+    },
+    {
+     "genre": "Historical Drama",
+     "role": "seasoned guildmaster or noble matriarch",
+     "direction": "Deliver your lines with calm, quiet authority and natural gravitas."
+    },
+    {
+     "genre": "Sci-Fi / Space Opera",
+     "role": "veteran station commander",
+     "direction": "Keep your tone measured, grounded, and reassuringly in control during briefings."
+    }
+   ],
+   "keywords": [
+    "mature female",
+    "wise elder",
+    "calm authority"
+   ]
+  },
+  "chromie": {
+   "human_name": "Whimsical Sprite",
+   "one_sentence_impression": "A high-pitched, upbeat, and childlike voice with a bright, squeaky head-voice timbre reminiscent of a fantasy fairy or magical companion.",
+   "detailed_sentence": "The voice is defined by its bright and lively head register, pronounced squeaky falsetto tone, bouncy intonation contours, and crisp articulation, creating an inherently optimistic, youthful, and adventurous character presence.",
+   "perceived_age": "Child or ageless sprite (~7-12), due to the extremely high pitch, light vocal weight, and youthful resonance.",
+   "perceived_gender": "Female",
+   "register": "High register with frequent melodic pitch sweeps and expressive, bouncy intonation.",
+   "timbre_profile": {
+    "metallic": 1,
+    "throatiness": 1,
+    "falsetto": 4,
+    "chest_voice": 0,
+    "roughness": 1,
+    "brightness": 5,
+    "summary": "Bright, squeaky, and head-dominant voice with virtually no chest resonance and a high, clear falsetto placement."
+   },
+   "distinctive_features": "High squeaky head voice, bouncy rhythmic pacing, sharp clear sibilance, and an eager, friendly delivery style.",
+   "casting": [
+    {
+     "genre": "Classic Fantasy",
+     "role": "Pixie guide or upbeat gnome companion",
+     "direction": "Speak with cheery, bouncy enthusiasm and lighthearted curiosity as you direct travelers."
+    },
+    {
+     "genre": "Children's Animation",
+     "role": "Hyperactive mascot or cute animal sidekick",
+     "direction": "Keep the pitch high and energetic, delivering every observation with wide-eyed wonder."
+    },
+    {
+     "genre": "Sci-Fi",
+     "role": "Tiny repair drone AI with a friendly persona",
+     "direction": "Deliver status reports in a bright, squeaky, and eager-to-please tone."
+    }
+   ],
+   "keywords": [
+    "sprite",
+    "squeaky",
+    "pixie"
+   ]
+  },
+  "construct": {
+   "human_name": "Granite Golem",
+   "one_sentence_impression": "A cavernous, gravelly, and booming deep bass voice that sounds like grinding stone or an ancient titan.",
+   "detailed_sentence": "Characterized by an extraordinarily low pitch, heavy chest resonance, and intense vocal roughness, this voice speaks with a deliberate, slow, and imposing cadence.",
+   "perceived_age": "ancient / elderly (60+), suggested by the deeply weathered, low-frequency rasp and heavy vocal weight.",
+   "perceived_gender": "masculine",
+   "register": "extremely low bass with a slow, heavy, near-monotone delivery",
+   "timbre_profile": {
+    "metallic": 1,
+    "throatiness": 5,
+    "falsetto": 0,
+    "chest_voice": 5,
+    "roughness": 5,
+    "brightness": 0,
+    "summary": "Extremely dark, rough, and throat-heavy bass with immense cavernous depth."
+   },
+   "distinctive_features": "Slow, plodding rhythm with heavy vocal fry, gravelly guttural resonance, and immense, imposing physical authority.",
+   "casting": [
+    {
+     "genre": "Fantasy",
+     "role": "Stone Golem or Earth Elemental",
+     "direction": "Speak with ancient, immovable weight, letting each gravelly word rumble slowly."
+    },
+    {
+     "genre": "Sci-Fi",
+     "role": "Cybernetic Colossus or Alien Warlord",
+     "direction": "Maintain a deep, menacing growl with steady, unyielding pacing."
+    },
+    {
+     "genre": "Mystery/Horror",
+     "role": "Subterranean Entity or Tomb Guardian",
+     "direction": "Keep the voice low and atmospheric, projecting dark, cavernous resonance."
+    }
+   ],
+   "keywords": [
+    "golem",
+    "giant",
+    "monstrous"
+   ]
+  },
+  "dhbloodelf": {
+   "human_name": "Gravelly Shadow Sovereign",
+   "one_sentence_impression": "A deep, heavily raspy male voice with a slow, solemn cadence that commands quiet, sinister authority.",
+   "detailed_sentence": "Deeply pitched and textured with dry, throat-centered gravel, this voice delivers lines with slow, deliberate pacing and low brightness, creating a weathered, dark, and formidable acoustic presence.",
+   "perceived_age": "Mature to elderly (50-70 years old), suggested by the heavy vocal rasp, dry texture, and weary, measured pace.",
+   "perceived_gender": "Male",
+   "register": "Low pitch register with controlled, steady pitch movement, sounding grave and unhurried.",
+   "timbre_profile": {
+    "metallic": 1,
+    "throatiness": 4,
+    "falsetto": 0,
+    "chest_voice": 4,
+    "roughness": 4,
+    "brightness": 1,
+    "summary": "Low-pitched, throaty, and heavily textured with dry roughness and deep chest resonance."
+   },
+   "distinctive_features": "Slow and solemn pacing, prominent throat gravel, low brightness, dark atmospheric tone, and an authoritative, unhurried cadence.",
+   "casting": [
+    {
+     "genre": "Dark Fantasy",
+     "role": "Ancient warlord or death knight",
+     "direction": "Speak slowly with heavy throat rasp, emphasizing solemn authority and absolute composure."
+    },
+    {
+     "genre": "Gothic Horror",
+     "role": "Cursed tomb guardian",
+     "direction": "Deliver each sentence like a grave warning, keeping the tone dark, low, and sinister."
+    },
+    {
+     "genre": "Sci-Fi / Cyberpunk",
+     "role": "Hardened underworld crime boss",
+     "direction": "Maintain a steady, gravelly low register that projects quiet dominance without raising your voice."
+    }
+   ],
+   "keywords": [
+    "gravelly",
+    "dark fantasy",
+    "deep male"
+   ]
+  },
+  "dhnightelf": {
+   "human_name": "Deep Resonant Guardian",
+   "one_sentence_impression": "A grave, low-pitched male voice with a rich chest resonance and steady, commanding pacing.",
+   "detailed_sentence": "The voice features a deep bass-baritone register with a dark, warm timbre, subtle gravelly roughness, and a calm, authoritative delivery that commands respect without shouting.",
+   "perceived_age": "Mature adult (~45-55), suggested by its deep chest voice, low pitch, and solemn, deliberate pacing.",
+   "perceived_gender": "Male",
+   "register": "Low bass-baritone register with minimal pitch fluctuation and a steady, rhythmic cadence.",
+   "timbre_profile": {
+    "metallic": 0,
+    "throatiness": 3,
+    "falsetto": 0,
+    "chest_voice": 5,
+    "roughness": 3,
+    "brightness": 2,
+    "summary": "Dominated by deep chest resonance and dark warm timbre, accentuated by mild throatiness and subtle gravel."
+   },
+   "distinctive_features": "Solemn and rhythmic cadence, rich low-frequency rumble, clean articulation despite a dark tone, and a presence of calm authority.",
+   "casting": [
+    {
+     "genre": "Classic Fantasy",
+     "role": "Garrison commander or veteran night elf ranger",
+     "direction": "Speak with quiet, immovable authority and solemn purpose."
+    },
+    {
+     "genre": "Sci-Fi",
+     "role": "Seasoned deep-space captain or orbital station commander",
+     "direction": "Keep the tone calm, low, and steady, conveying years of command experience."
+    },
+    {
+     "genre": "Mystery/Horror",
+     "role": "Ancient archivist or cryptic lighthouse keeper",
+     "direction": "Deliver lines with a lingering, weighty cadence and dark resonance."
+    },
+    {
+     "genre": "Contemporary/Realistic",
+     "role": "Grounded wilderness guide or stoic union leader",
+     "direction": "Use a matter-of-fact, deep, and steady tone that inspires trust."
+    }
+   ],
+   "keywords": [
+    "deep male",
+    "authoritative",
+    "resonant baritone"
+   ]
+  },
+  "dracthyr_dragonkin": {
+   "human_name": "Weathered Dragon Sage",
+   "one_sentence_impression": "A deep, gravelly male voice that carries a dry throat rasp and calm, ancient authority.",
+   "detailed_sentence": "Grounded in a resonant chest register with a raspy, throat-heavy texture, this voice speaks with slow, deliberate pacing that feels both wise and formidable.",
+   "perceived_age": "Middle-aged to elder (~50-65), conveying decades of experience without physical frailty.",
+   "perceived_gender": "Male",
+   "register": "Low-mid baritone with minimal pitch inflection, maintaining a slow, measured, and steady cadence.",
+   "timbre_profile": {
+    "metallic": 0,
+    "throatiness": 4,
+    "falsetto": 0,
+    "chest_voice": 4,
+    "roughness": 3,
+    "brightness": 2,
+    "summary": "A warm chest voice layered with a dry, gravelly throat rasp and low-brightness timber."
+   },
+   "distinctive_features": "Deliberate, unhurried pacing with a distinct raspy friction in the back of the throat; steady rhythm that projects quiet dominance and patience.",
+   "casting": [
+    {
+     "genre": "Classic Fantasy",
+     "role": "Ancient dragonkin lorekeeper or battle-tested guildmaster",
+     "direction": "Deliver lines with unhurried gravitas, letting the gravelly rasp accentuate your quiet wisdom."
+    },
+    {
+     "genre": "Sci-Fi",
+     "role": "Alien diplomat or veteran starship captain",
+     "direction": "Speak with calm, pragmatic authority and a dry, steady tone."
+    },
+    {
+     "genre": "Mystery / Horror",
+     "role": "Solitary guardian or keeper of cursed knowledge",
+     "direction": "Maintain a slow, hushed cadence that emphasizes the dry throat grain."
+    }
+   ],
+   "keywords": [
+    "weathered",
+    "gravelly",
+    "authoritative"
+   ]
+  }
+ }
+}
