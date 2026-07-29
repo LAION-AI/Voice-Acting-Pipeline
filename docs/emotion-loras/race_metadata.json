@@ -1,7 +1,7 @@
 {
  "description": "Gemini-3.6-Flash voice annotations for chavo character-class LoRAs (TTS-AGI/moss-race-loras). id = raw training identifier / HF adapter folder; human_name = display name. Grid demos: 5 neutral + 1 cheerful + 1 angry line per class, no reference.",
  "classes": {
-  "dragonkin": {
+  "cavernous-gravel-beast": {
    "human_name": "Cavernous Gravel Beast",
    "one_sentence_impression": "An immensely deep, booming monster voice dominated by guttural throat rasp and heavy chest resonance.",
    "detailed_sentence": "This voice features an exceptionally low masculine pitch register saturated with thick back-of-throat growl, massive bass resonance, and a gritty, cavernous texture that retains its iconic monstrous weight even when shifting into excited or aggressive emotional states.",
@@ -40,9 +40,10 @@
     "guttural",
     "monster",
     "deep growl"
-   ]
+   ],
+   "adapter": "cavernous-gravel-beast"
   },
-  "drake": {
+  "resonant-iron-commander": {
    "human_name": "Resonant Iron Commander",
    "one_sentence_impression": "A deep, commanding baritone voice with rich chest resonance and textured gravel that projects calm authority.",
    "detailed_sentence": "Characterized by a heavy bass-baritone depth, deliberate measured cadence, and a subtle vocal grit, this voice conveys a grounded, battle-tested gravitas that smoothly expands into dynamic emotional intensity.",
@@ -86,9 +87,10 @@
     "commanding",
     "baritone",
     "veteran"
-   ]
+   ],
+   "adapter": "resonant-iron-commander"
   },
-  "doomguard": {
+  "guttural-abyssal-fiend": {
    "human_name": "Guttural Abyssal Fiend",
    "one_sentence_impression": "An extremely pitch-shifted, subterranean monstrous voice dripping with gravelly throat resonance, vocal fry, and menacing authority.",
    "detailed_sentence": "This synthetic voice features an unnaturally deep sub-bass pitch envelope heavy with gravelly vocal fry, intense throat distortion, and cavernous chest resonance that creates a terrifying, non-human audio profile ideal for demonic entities.",
@@ -127,9 +129,10 @@
     "demonic growl",
     "subterranean monster",
     "guttural boss"
-   ]
+   ],
+   "adapter": "guttural-abyssal-fiend"
   },
-  "gnoll": {
+  "snarling-beastman": {
    "human_name": "Snarling Beastman",
    "one_sentence_impression": "A low, violently guttural and raspy voice punctuated by animalistic snorts and aggressive growls.",
    "detailed_sentence": "Characterized by a deep, coarse chest-and-throat resonance, this voice combines heavy nasal snorts and wet throat clears with a slow, menacing cadence that can abruptly leap into high-pitched manic screeching when emotional.",
@@ -150,7 +153,7 @@
    "casting": [
     {
      "genre": "Classic Fantasy",
-     "role": "Gnoll or Orc Overseer",
+     "role": "Beastman or Orc Overseer",
      "direction": "Speak with slow, menacing authority, leaning heavily into guttural growls and snorts."
     },
     {
@@ -168,9 +171,10 @@
     "guttural",
     "beastman",
     "raspy"
-   ]
+   ],
+   "adapter": "snarling-beastman"
   },
-  "harpy": {
+  "screeching-impish-crone": {
    "human_name": "Screeching Impish Crone",
    "one_sentence_impression": "A high-pitched, wildly expressive creature voice characterized by intense vocal rasp, shrill pitch, and theatrical intensity.",
    "detailed_sentence": "This voice combines a high, head-voice register with persistent vocal fry and throaty rasp, producing a cackling, squawking tone that shifts rapidly in pitch with hyper-animated, melodramatic cadence.",
@@ -191,7 +195,7 @@
    "casting": [
     {
      "genre": "Classic Fantasy",
-     "role": "Wicked Witch / Harpy Minion",
+     "role": "Wicked Witch / Crone Minion",
      "direction": "Deliver lines with cackling melodrama, exaggerating the vocal rasp and sharp pitch peaks on stressed words."
     },
     {
@@ -214,9 +218,10 @@
     "screeching",
     "goblin",
     "raspy"
-   ]
+   ],
+   "adapter": "screeching-impish-crone"
   },
-  "kobold": {
+  "guttural-imp": {
    "human_name": "Guttural Imp",
    "one_sentence_impression": "A high-pitched, heavily raspy fantasy creature voice with intense throat constriction and dramatic squeaky inflection.",
    "detailed_sentence": "The voice features an elevated pitch paired with heavy throatiness and vocal strain, producing a pinched, raspy goblinoid tone that completely lacks chest resonance.",
@@ -255,9 +260,10 @@
     "goblin",
     "imp",
     "raspy creature"
-   ]
+   ],
+   "adapter": "guttural-imp"
   },
-  "nerubian": {
+  "guttural-cavernous-titan": {
    "human_name": "Guttural Cavernous Titan",
    "one_sentence_impression": "An extremely deep, gravelly creature voice with booming cavernous resonance and raspy authority.",
    "detailed_sentence": "Characterized by an ultra-low sub-bass pitch, dense back-of-the-throat growl, and slow, deliberate pacing, this synthetic voice projects an imposing, monster-like presence with heavy vocal grit.",
@@ -301,9 +307,10 @@
     "guttural",
     "monster",
     "deep-gravel"
-   ]
+   ],
+   "adapter": "guttural-cavernous-titan"
   },
-  "gargoyle": {
+  "granite-titan": {
    "human_name": "Granite Titan",
    "one_sentence_impression": "An extremely deep, gravelly, and booming voice with intense throat rasp and heavy chest resonance.",
    "detailed_sentence": "Characterized by a heavy throat growl and thick, earthy rasp, this low-pitched voice moves at a measured, deliberate pace, conveying monumental physical size and unyielding authority.",
@@ -347,9 +354,10 @@
     "gravelly",
     "guttural",
     "monstrous"
-   ]
+   ],
+   "adapter": "granite-titan"
   },
-  "pandaren": {
+  "gravelly-mountain-elder": {
    "human_name": "Gravelly Mountain Elder",
    "one_sentence_impression": "A deep, authoritative bass voice with a gravelly timbre that conveys age, wisdom, and heavy physical presence.",
    "detailed_sentence": "Operating in a rich, low bass register with strong chest resonance, the voice features deliberate, slow-measured pacing and a subtle rasp that gives it the weathered, commanding air of an old general or wise spiritual leader.",
@@ -393,9 +401,10 @@
     "deep bass",
     "wise elder",
     "gruff"
-   ]
+   ],
+   "adapter": "gravelly-mountain-elder"
   },
-  "wolf": {
+  "gravelly-orc-warlord": {
    "human_name": "Gravelly Orc Warlord",
    "one_sentence_impression": "A deep, menacing, and heavily textured male voice saturated with intense gravel, guttural friction, and raw authority.",
    "detailed_sentence": "Boasting an exceptionally low chest register infused with relentless coarse rasp and guttural weight, this voice moves with a slow, deliberate cadence that easily erupts into thunderous, monstrous roars.",
@@ -439,9 +448,10 @@
     "guttural",
     "deep",
     "warlord"
-   ]
+   ],
+   "adapter": "gravelly-orc-warlord"
   },
-  "gnome": {
+  "pinched-raspy-tinkerer": {
    "human_name": "Pinched Raspy Tinkerer",
    "one_sentence_impression": "A high-pitched, animated character voice with a pinched, raspy timbre and theatrical cadence, ideal for small fantasy creatures.",
    "detailed_sentence": "Characterized by a buoyant, high-register cadence, pinched throat resonance, and a scratchy vocal edge, this voice delivers rapid, animated phrasing with exaggerated vocal contours.",
@@ -462,7 +472,7 @@
    "casting": [
     {
      "genre": "Classic Fantasy",
-     "role": "Gnome Merchant or Eccentric Alchemist",
+     "role": "Tinker-folk Merchant or Eccentric Alchemist",
      "direction": "Deliver frantic warnings and theatrical, fast-paced sales pitches with energetic emphasis."
     },
     {
@@ -477,12 +487,13 @@
     }
    ],
    "keywords": [
-    "gnome",
+    "tinker-folk",
     "raspy",
     "eccentric"
-   ]
+   ],
+   "adapter": "pinched-raspy-tinkerer"
   },
-  "draenei": {
+  "gravelled-veteran-baritone": {
    "human_name": "Gravelled Veteran Baritone",
    "one_sentence_impression": "A deep, authoritative baritone with a gravelly, weather-worn texture that conveys mature wisdom and commanding presence.",
    "detailed_sentence": "Characterized by a deep, resonant chest tone layered with subtle throat rasp and steady, deliberate phrasing, this voice projects age, battle-tested experience, and grounded authority across all emotional states.",
@@ -526,9 +537,10 @@
     "grizzled baritone",
     "veteran commander",
     "deep and raspy"
-   ]
+   ],
+   "adapter": "gravelled-veteran-baritone"
   },
-  "abomination": {
+  "abyssal-tyrant": {
    "human_name": "Abyssal Tyrant",
    "one_sentence_impression": "A terrifyingly deep, guttural, and monstrous voice filled with gravelly resonance and menacing presence.",
    "detailed_sentence": "Characterized by an exceptionally low pitch, intense chest resonance, and heavy throat rasp, this voice ranges from a slow, brooding threat in neutral speech to an unhinged, gargling demonic roar when agitated.",
@@ -567,9 +579,10 @@
     "demon",
     "monstrous",
     "guttural"
-   ]
+   ],
+   "adapter": "abyssal-tyrant"
   },
-  "dracthyr": {
+  "gravelly-snarling-overseer": {
    "human_name": "Gravelly Snarling Overseer",
    "one_sentence_impression": "A sharp, raspy, fantasy-creature voice with high vocal grit and intense dramatic energy.",
    "detailed_sentence": "Characterized by an abrasive throat rasp, mid-to-low pitch, and snappy articulation, this voice naturally projects a fiery, impatient, and menacing persona.",
@@ -608,9 +621,10 @@
     "raspy",
     "gravelly",
     "creature"
-   ]
+   ],
+   "adapter": "gravelly-snarling-overseer"
   },
-  "broker": {
+  "seasoned-merchant": {
    "human_name": "Seasoned Merchant",
    "one_sentence_impression": "A deep, authoritative male voice with a gravelly chest resonance and a subtle non-native accent that conveys pragmatic wisdom.",
    "detailed_sentence": "Characterized by a low-mid pitch register, deliberate rhythmic pacing, and warm chest resonance, this voice carries a faint non-native accent and a subtle raspy edge in the throat that gives it a grounded, mature presence.",
@@ -646,7 +660,7 @@
     },
     {
      "genre": "Contemporary/Realistic",
-     "role": "Import-Export Customs Broker",
+     "role": "Import-Export Customs Dealer",
      "direction": "Give practical, firm directives with a sense of long experience and unhurried efficiency."
     }
    ],
@@ -654,9 +668,10 @@
     "merchant",
     "trader",
     "accented male"
-   ]
+   ],
+   "adapter": "seasoned-merchant"
   },
-  "chromie": {
+  "sprightly-pixie": {
    "human_name": "Sprightly Pixie",
    "one_sentence_impression": "A bright, high-pitched, and bouncy youthful voice filled with theatrical, animated energy.",
    "detailed_sentence": "Characterized by its high register, light falsetto resonance, and animated pitch leaps, this voice delivers lines with eager, squeaky clarity and crisp, buoyant pacing.",
@@ -695,9 +710,10 @@
     "pixie",
     "high-pitched",
     "bouncy"
-   ]
+   ],
+   "adapter": "sprightly-pixie"
   },
-  "construct": {
+  "rumbling-golem": {
    "human_name": "Rumbling Golem",
    "one_sentence_impression": "A deep, gravelly synthetic voice with heavy chest resonance and a guttural, non-human texture.",
    "detailed_sentence": "Characterized by an extremely low bass register, dense vocal roughness, and subtle metallic processing, this voice produces a booming, imposing presence with deliberate pacing.",
@@ -741,9 +757,10 @@
     "golem",
     "guttural",
     "deep-bass"
-   ]
+   ],
+   "adapter": "rumbling-golem"
   },
-  "dhbloodelf": {
+  "gravelly-sinister-baritone": {
    "human_name": "Gravelly Sinister Baritone",
    "one_sentence_impression": "A deep, menacing male voice defined by heavy vocal fry, guttural resonance, and a cold, imposing tone.",
    "detailed_sentence": "Characterized by a low pitch and a dry, raspy texture, this voice carries a brooding, villainous presence with slow, calculated delivery and thick back-of-throat growl.",
@@ -787,9 +804,10 @@
     "villainous",
     "gravelly",
     "dark-fantasy"
-   ]
+   ],
+   "adapter": "gravelly-sinister-baritone"
   },
-  "dhnightelf": {
+  "gravelly-dark-titan": {
    "human_name": "Gravelly Dark Titan",
    "one_sentence_impression": "A deep, rumbling, and heavily textured voice that radiates dark authority and physical power.",
    "detailed_sentence": "Characterized by an exceptionally low pitch, rich chest resonance, and coarse throatiness, this voice delivers lines with slow, deliberate gravitas and a menacingly gravelly undertone.",
@@ -828,9 +846,10 @@
     "gravelly",
     "booming",
     "guttural"
-   ]
+   ],
+   "adapter": "gravelly-dark-titan"
   },
-  "dracthyr_dragonkin": {
+  "gravelly-draconic-elder": {
    "human_name": "Gravelly Draconic Elder",
    "one_sentence_impression": "A deep, gravelly male voice with heavy throatiness and a slow, authoritative cadence fit for mythical creatures or aged guardians.",
    "detailed_sentence": "The voice is anchored in a low bass-baritone register with prominent back-of-the-throat friction, deep chest resonance, and a deliberate, measured cadence that commands power and wisdom.",
@@ -851,7 +870,7 @@
    "casting": [
     {
      "genre": "Classic Fantasy",
-     "role": "Dragonkin Elder / Wise Dragon",
+     "role": "Draconic Elder / Wise Dragon",
      "direction": "Speak with measured, ancient authority and deep guttural gravitas."
     },
     {
@@ -869,7 +888,8 @@
     "draconic",
     "guttural",
     "elder"
-   ]
+   ],
+   "adapter": "gravelly-draconic-elder"
   }
  }
 }
